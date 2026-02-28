@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: "The Silver Brook Public School",
   description:
     "The Silver Brook Public School — learning with purpose, rooted in community and excellence.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export const viewport = {

@@ -6,6 +6,7 @@ export default function Footer() {
       <div className="container">
         <div className="grid grid-3">
           <div className="footer-contact">
+            <img className="footer-logo" src="/logo.png" alt="The Silver Brook Public School logo" />
             <h4>The Silver Brook Public School</h4>
             <div className="info-row">
               <span className="icon" aria-hidden="true">
