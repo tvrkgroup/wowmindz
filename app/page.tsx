@@ -176,17 +176,17 @@ export default function Home() {
               <span className="icon" aria-hidden="true">
                 📞
               </span>
-              <span>
+              <a href="tel:+919944055929">
                 <strong>Call Us:</strong> 99440 55929
-              </span>
+              </a>
             </div>
             <div className="info-row">
               <span className="icon" aria-hidden="true">
                 ✉️
               </span>
-              <span>
+              <a href="mailto:thesilverbrookpublicschool@gmail.com">
                 <strong>Email:</strong> thesilverbrookpublicschool@gmail.com
-              </span>
+              </a>
             </div>
           </div>
         </div>

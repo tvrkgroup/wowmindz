@@ -16,6 +16,54 @@ body {
   line-height: 1.6;
 }
 
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  background: rgba(251, 250, 246, 0.98);
+  pointer-events: none;
+  animation: splash-fade 1.4s ease forwards;
+}
+
+.splash-screen img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  animation: splash-pop 1.2s ease forwards;
+}
+
+@keyframes splash-pop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes splash-fade {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  80% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 img {
   max-width: 100%;
   display: block;
@@ -163,12 +211,14 @@ p {
 footer {
   background: var(--ink-950);
   color: #ffffff;
-  padding: 56px 0 30px;
+  padding: 36px 0 18px;
+  font-size: 0.9rem;
 }
 
 footer h4 {
   color: white;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
+  font-size: 1rem;
 }
 
 footer a {
@@ -212,6 +262,7 @@ footer .footer-contact .divider {
   gap: 16px;
   flex-wrap: wrap;
   color: #ffffff;
+  font-size: 0.84rem;
 }
 
 @media (max-width: 900px) {
@@ -223,7 +274,7 @@ footer .footer-contact .divider {
 .nav-shell {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 1100;
   backdrop-filter: blur(18px);
   background: rgba(247, 244, 236, 0.88);
   border-bottom: 1px solid rgba(34, 42, 39, 0.08);
@@ -257,8 +308,8 @@ footer .footer-contact .divider {
 }
 
 .logo-image {
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
   object-fit: cover;
 }
 
@@ -271,7 +322,7 @@ footer .footer-contact .divider {
 
 .logo-text strong {
   color: var(--ink-900);
-  font-size: 1rem;
+  font-size: 1.08rem;
 }
 
 .nav-links {
@@ -314,25 +365,18 @@ footer .footer-contact .divider {
 
 @media (max-width: 960px) {
   .nav-bar {
-    grid-template-columns: 1fr;
-    justify-items: start;
-  }
-
-  .nav-links {
-    justify-content: flex-start;
-  }
-}
-
-@media (max-width: 720px) {
-  .nav-links {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
     gap: 12px;
-    font-size: 0.9rem;
   }
 
-  .logo-mark {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
+  .logo-image {
+    width: 48px;
+    height: 48px;
+  }
+
+  .logo-text strong {
+    font-size: 1.04rem;
   }
 }
 
@@ -594,6 +638,7 @@ code {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease;
+  z-index: 2100;
 }
 
 .nav-drawer.open {
@@ -615,6 +660,7 @@ code {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  z-index: 2101;
 }
 
 .nav-drawer.open .nav-drawer-panel {
@@ -655,6 +701,7 @@ code {
 
   .nav-toggle {
     display: grid;
+    align-self: center;
   }
 }
 
@@ -670,7 +717,7 @@ code {
 /* Home page full realign */
 .home-section .container {
   display: grid;
-  gap: 24px;
+  gap: 20px;
 }
 
 .home-hero {
@@ -761,7 +808,7 @@ code {
 .home-cards-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .home-feature-card {
@@ -770,8 +817,12 @@ code {
 }
 
 .home-feature-card h3 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: 1.25;
+}
+
+.home-feature-card p {
+  font-size: 0.92rem;
 }
 
 .home-dot {
@@ -784,7 +835,7 @@ code {
 .home-benefits-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .home-benefit-card {
@@ -799,7 +850,7 @@ code {
   display: grid;
   gap: 8px;
   color: var(--ink-700);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .home-contact-card {
@@ -842,7 +893,7 @@ code {
 .home-final-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .home-list-card {
@@ -870,7 +921,15 @@ code {
 }
 
 @media (max-width: 700px) {
-  .home-cards-grid,
+  .home-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .home-cards-grid .card {
+    padding: 14px;
+  }
+
   .home-benefits-grid {
     grid-template-columns: 1fr;
   }
@@ -881,5 +940,20 @@ code {
 
   .home-subline {
     font-size: 1rem;
+  }
+
+  .home-feature-card p {
+    font-size: 0.84rem;
+    line-height: 1.35;
+  }
+
+  .home-feature-card h3 {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-cards-grid {
+    grid-template-columns: 1fr;
   }
 }

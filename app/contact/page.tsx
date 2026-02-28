@@ -33,13 +33,15 @@ export default function ContactPage() {
               <span className="icon" aria-hidden="true">
                 📞
               </span>
-              <span>Phone: +91 99440 55929</span>
+              <a href="tel:+919944055929">Phone: +91 99440 55929</a>
             </div>
             <div className="info-row">
               <span className="icon" aria-hidden="true">
                 ✉️
               </span>
-              <span>Email: thesilverbrookpublicschool@gmail.com</span>
+              <a href="mailto:thesilverbrookpublicschool@gmail.com">
+                Email: thesilverbrookpublicschool@gmail.com
+              </a>
             </div>
           </div>
           <div className="card">

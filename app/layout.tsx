@@ -25,6 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <div className="splash-screen" aria-hidden="true">
+          <img src="/logo.png" alt="" />
+        </div>
         <div className="site-shell">{children}</div>
       </body>
     </html>
