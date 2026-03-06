@@ -18,11 +18,22 @@ const FIREBASE_KEY = "siteConfig";
 function sanitizeEvent(input: Partial<SiteEvent>, index: number): SiteEvent {
   const date = (input.date ?? "").toString().trim().slice(0, 40);
   const title = (input.title ?? "").toString().trim().slice(0, 160);
+  const statusCandidate = (input.status ?? "published").toString();
+  const status =
+    statusCandidate === "draft" || statusCandidate === "scheduled" || statusCandidate === "published"
+      ? statusCandidate
+      : "published";
   return {
     id: input.id?.toString().trim() || `event-${index + 1}`,
     date,
     title,
-    description: (input.description ?? "").toString().trim().slice(0, 240),
+    category: (input.category ?? "Events").toString().trim().slice(0, 50),
+    location: (input.location ?? "School Campus").toString().trim().slice(0, 120),
+    shortDescription: (input.shortDescription ?? input.description ?? "").toString().trim().slice(0, 220),
+    description: (input.description ?? "").toString().trim().slice(0, 1400),
+    image: (input.image ?? "").toString().trim().slice(0, 220),
+    status,
+    scheduledAt: (input.scheduledAt ?? "").toString().trim().slice(0, 40),
   };
 }
 
@@ -66,6 +77,20 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
   const hiddenPages = rawHiddenPages.filter((page): page is ManagedPageKey =>
     ALL_MANAGED_PAGES.includes(page as ManagedPageKey)
   );
+  const hasVisibleInput = Array.isArray(input.visiblePages);
+  const rawVisiblePages = hasVisibleInput
+    ? input.visiblePages
+    : ALL_MANAGED_PAGES.filter((page) => !hiddenPages.includes(page));
+  const visiblePageCandidates = rawVisiblePages ?? [];
+  const visiblePages = visiblePageCandidates.filter((page): page is ManagedPageKey =>
+    ALL_MANAGED_PAGES.includes(page as ManagedPageKey)
+  );
+  const hasMenuInput = Array.isArray(input.menuPages);
+  const rawMenuPages = hasMenuInput ? input.menuPages : defaultSiteConfig.menuPages;
+  const menuPageCandidates = rawMenuPages ?? [];
+  const menuPages = menuPageCandidates.filter((page): page is ManagedPageKey =>
+    ALL_MANAGED_PAGES.includes(page as ManagedPageKey)
+  );
 
   const eventsInput = Array.isArray(input.events) ? input.events : defaultSiteConfig.events;
   const events = eventsInput
@@ -92,6 +117,8 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
     contactPhone: (input.contactPhone ?? defaultSiteConfig.contactPhone).toString().trim(),
     contactEmail: (input.contactEmail ?? defaultSiteConfig.contactEmail).toString().trim(),
     address: (input.address ?? defaultSiteConfig.address).toString().trim(),
+    visiblePages: hasVisibleInput ? visiblePages : visiblePages.length > 0 ? visiblePages : [...ALL_MANAGED_PAGES],
+    menuPages: hasMenuInput ? menuPages : menuPages.length > 0 ? menuPages : defaultSiteConfig.menuPages,
     hiddenPages,
     events: events.length > 0 ? events : defaultSiteConfig.events,
     newsPosts: newsPosts.length > 0 ? newsPosts : defaultSiteConfig.newsPosts,
@@ -109,6 +136,18 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
       brand700: sanitizeHexColor(
         input.theme?.brand700 ?? defaultSiteConfig.theme.brand700,
         defaultSiteConfig.theme.brand700
+      ),
+      surface: sanitizeHexColor(
+        input.theme?.surface ?? defaultSiteConfig.theme.surface,
+        defaultSiteConfig.theme.surface
+      ),
+      surfaceSoft: sanitizeHexColor(
+        input.theme?.surfaceSoft ?? defaultSiteConfig.theme.surfaceSoft,
+        defaultSiteConfig.theme.surfaceSoft
+      ),
+      highlight: sanitizeHexColor(
+        input.theme?.highlight ?? defaultSiteConfig.theme.highlight,
+        defaultSiteConfig.theme.highlight
       ),
     },
   };
@@ -242,6 +281,9 @@ export async function updateSiteConfig(partial: Partial<SiteConfig>): Promise<Si
 
 export async function isPageHidden(page: ManagedPageKey): Promise<boolean> {
   const config = await getSiteConfig();
+  if (Array.isArray(config.visiblePages) && config.visiblePages.length > 0) {
+    return !config.visiblePages.includes(page);
+  }
   return config.hiddenPages.includes(page);
 }
 

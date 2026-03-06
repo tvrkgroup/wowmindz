@@ -48,6 +48,9 @@ async function RootWithConfig({
     "--brand-400": config.theme.brand400,
     "--brand-600": config.theme.brand600,
     "--brand-700": config.theme.brand700,
+    "--surface": config.theme.surface,
+    "--surface-soft": config.theme.surfaceSoft,
+    "--highlight": config.theme.highlight,
   };
 
   return (

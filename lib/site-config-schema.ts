@@ -24,7 +24,13 @@ export interface SiteEvent {
   id: string;
   date: string;
   title: string;
-  description?: string;
+  category: string;
+  location: string;
+  shortDescription: string;
+  description: string;
+  image?: string;
+  status: "published" | "draft" | "scheduled";
+  scheduledAt?: string;
 }
 
 export interface SitePost {
@@ -48,6 +54,8 @@ export interface SiteConfig {
   contactPhone: string;
   contactEmail: string;
   address: string;
+  visiblePages: ManagedPageKey[];
+  menuPages: ManagedPageKey[];
   hiddenPages: ManagedPageKey[];
   events: SiteEvent[];
   newsPosts: SitePost[];
@@ -57,6 +65,9 @@ export interface SiteConfig {
     brand400: string;
     brand600: string;
     brand700: string;
+    surface: string;
+    surfaceSoft: string;
+    highlight: string;
   };
 }
 
@@ -92,31 +103,49 @@ export const defaultSiteConfig: SiteConfig = {
   contactEmail: "thesilverbrookpublicschool@gmail.com",
   address:
     "Pillaiyar Kovil Street, Near Astalakshmi Temple, Karatoor, Gobichettipalayam, Erode District - 638476",
+  visiblePages: [...ALL_MANAGED_PAGES],
+  menuPages: ["about", "academics", "admissions", "campus", "activities", "blog", "news", "contact"],
   hiddenPages: [],
   events: [
     {
       id: "event-1",
-      date: "Mar 05",
+      date: "2026-03-05",
       title: "Annual Sports Day",
-      description: "Inter-house athletics and team games.",
+      category: "Events",
+      location: "Main Sports Ground",
+      shortDescription: "Inter-house athletics and team games.",
+      description: "Inter-house athletics and team games with parent participation and awards.",
+      status: "published",
     },
     {
       id: "event-2",
-      date: "Mar 18",
+      date: "2026-03-18",
       title: "Parent-Teacher Meetings",
-      description: "Academic review and goal setting discussions.",
+      category: "Announcements",
+      location: "Academic Block",
+      shortDescription: "Academic review and goal setting discussions.",
+      description: "One-on-one discussions with teachers to review student progress and term goals.",
+      status: "published",
     },
     {
       id: "event-3",
-      date: "Apr 02",
+      date: "2026-04-02",
       title: "Science Expo",
-      description: "Student-led innovation and project showcase.",
+      category: "Competitions",
+      location: "Innovation Lab",
+      shortDescription: "Student-led innovation and project showcase.",
+      description: "Project showcase featuring robotics, environmental models, and STEM experiments.",
+      status: "published",
     },
     {
       id: "event-4",
-      date: "Apr 20",
+      date: "2026-04-20",
       title: "Summer Break Begins",
-      description: "End of term closing and holiday briefing.",
+      category: "Notices",
+      location: "School Campus",
+      shortDescription: "End of term closing and holiday briefing.",
+      description: "Final day briefing with holiday schedules and optional enrichment recommendations.",
+      status: "published",
     },
   ],
   newsPosts: [
@@ -152,5 +181,8 @@ export const defaultSiteConfig: SiteConfig = {
     brand400: "#6f93f5",
     brand600: "#2f5bd7",
     brand700: "#2345a6",
+    surface: "#ffffff",
+    surfaceSoft: "#eef3ff",
+    highlight: "#dbe6ff",
   },
 };

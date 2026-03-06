@@ -94,6 +94,7 @@ a {
 
 .section {
   padding: 80px 0;
+  animation: section-in 0.45s ease both;
 }
 
 .section-tight {
@@ -118,14 +119,17 @@ h4 {
 
 h1 {
   font-size: clamp(2.6rem, 5vw, 4.2rem);
+  letter-spacing: -0.02em;
 }
 
 h2 {
   font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+  letter-spacing: -0.015em;
 }
 
 h3 {
   font-size: clamp(1.3rem, 2.3vw, 1.8rem);
+  letter-spacing: -0.01em;
 }
 
 p {
@@ -219,11 +223,18 @@ h4 {
 }
 
 .card {
-  background: white;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, white), color-mix(in srgb, var(--surface-soft) 42%, var(--surface)));
   border-radius: 20px;
   padding: 24px;
-  border: 1px solid rgba(48, 58, 56, 0.08);
-  box-shadow: 0 15px 50px rgba(15, 24, 20, 0.08);
+  border: 1px solid color-mix(in srgb, var(--highlight) 55%, rgba(48, 58, 56, 0.08));
+  box-shadow: 0 15px 40px rgba(15, 24, 20, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--brand-400) 35%, rgba(48, 58, 56, 0.12));
+  box-shadow: 0 20px 36px rgba(15, 24, 20, 0.12);
 }
 
 .card h3 {
@@ -473,7 +484,7 @@ footer .footer-contact .divider {
 }
 
 .hero-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(232, 240, 236, 0.9));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 96%, white), color-mix(in srgb, var(--surface-soft) 80%, white));
   border-radius: 28px;
   padding: 32px;
   box-shadow: 0 25px 60px rgba(12, 18, 15, 0.15);
@@ -594,6 +605,17 @@ footer .footer-contact .divider {
 }
 
 @keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes section-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);
@@ -982,8 +1004,8 @@ code {
 .home-hero-right {
   display: grid;
   gap: 12px;
-  background: linear-gradient(140deg, #ffffff, #eef3ff);
-  border: 1px solid rgba(47, 91, 215, 0.16);
+  background: linear-gradient(140deg, color-mix(in srgb, var(--surface) 96%, white), color-mix(in srgb, var(--surface-soft) 74%, white));
+  border: 1px solid color-mix(in srgb, var(--highlight) 70%, rgba(47, 91, 215, 0.16));
 }
 
 .home-stats {
@@ -993,7 +1015,7 @@ code {
 }
 
 .home-stats div {
-  background: #fff;
+  background: var(--surface);
   border-radius: 12px;
   border: 1px solid rgba(47, 91, 215, 0.16);
   padding: 10px;
@@ -1076,8 +1098,8 @@ code {
 }
 
 .home-theme-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(233, 241, 255, 0.92));
-  border: 1px solid rgba(47, 91, 215, 0.16);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 98%, white), color-mix(in srgb, var(--surface-soft) 70%, white));
+  border: 1px solid color-mix(in srgb, var(--highlight) 70%, rgba(47, 91, 215, 0.16));
   box-shadow: 0 18px 40px rgba(47, 91, 215, 0.1);
 }
 
@@ -1166,15 +1188,20 @@ code {
   gap: 12px;
 }
 
-.school-calendar-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
+.school-calendar-controls {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 8px;
+  align-items: center;
 }
 
-.school-calendar-head p {
-  font-size: 0.88rem;
+.school-calendar-controls select {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--highlight) 70%, rgba(47, 91, 215, 0.24));
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--surface);
+  font: inherit;
 }
 
 .school-calendar-grid {
@@ -1195,11 +1222,13 @@ code {
   min-height: 62px;
   border-radius: 10px;
   border: 1px solid rgba(47, 91, 215, 0.12);
-  background: #fff;
+  background: var(--surface);
   padding: 8px;
   display: grid;
   align-content: space-between;
   gap: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .school-calendar-day strong {
@@ -1223,15 +1252,23 @@ code {
   border-color: rgba(47, 91, 215, 0.28);
 }
 
+.school-calendar-day.is-selected {
+  border-color: var(--brand-600);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--brand-400) 26%, white), color-mix(in srgb, var(--brand-600) 12%, white));
+  transform: translateY(-1px);
+}
+
 .school-calendar-event-list {
   display: grid;
   gap: 10px;
+  max-height: 320px;
+  overflow: auto;
 }
 
 .school-calendar-event-item {
   border: 1px solid rgba(47, 91, 215, 0.14);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   padding: 10px;
   display: grid;
   gap: 5px;
@@ -1251,6 +1288,52 @@ code {
 
 .school-calendar-event-item p {
   font-size: 0.9rem;
+}
+
+.school-calendar-event-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(47, 91, 215, 0.16);
+}
+
+.school-calendar-selected-date {
+  color: var(--ink-700);
+  font-weight: 700;
+}
+
+.school-calendar-month-list {
+  display: grid;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.school-calendar-month-item {
+  text-align: left;
+  border: 1px solid color-mix(in srgb, var(--highlight) 70%, rgba(47, 91, 215, 0.2));
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 10px;
+  display: grid;
+  gap: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.school-calendar-month-item:hover {
+  border-color: var(--brand-400);
+  background: color-mix(in srgb, var(--surface-soft) 70%, var(--surface));
+}
+
+.school-calendar-month-item span {
+  font-size: 0.74rem;
+  color: var(--ink-600);
+}
+
+.school-calendar-month-item strong {
+  color: var(--ink-900);
 }
 
 @media (max-width: 980px) {
@@ -1331,6 +1414,14 @@ code {
   .school-calendar-weekdays span {
     font-size: 0.7rem;
   }
+
+  .school-calendar-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .school-calendar-controls .button {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 520px) {
@@ -1351,7 +1442,7 @@ code {
 
 .admin-panel {
   padding: 28px;
-  background: linear-gradient(180deg, #ffffff, #f7faff);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 95%, white), color-mix(in srgb, var(--surface-soft) 80%, white));
 }
 
 .admin-login-form,
@@ -1421,7 +1512,7 @@ code {
 .admin-article-card {
   border: 1px solid rgba(47, 91, 215, 0.16);
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--surface);
   padding: 14px;
   display: grid;
   gap: 10px;
@@ -1583,7 +1674,7 @@ code {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #ffffff;
+  background: var(--surface);
   border: 1px solid rgba(47, 91, 215, 0.16);
   border-radius: 10px;
   padding: 8px 10px;
@@ -1626,9 +1717,17 @@ code {
 
 .admin-color-strip {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 8px;
   margin-top: 10px;
+}
+
+.admin-inline-actions {
+  margin-top: 10px;
+}
+
+.admin-check.is-disabled {
+  opacity: 0.55;
 }
 
 .admin-color-swatch {
@@ -1707,5 +1806,12 @@ code {
   .article-meta-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
   }
 }

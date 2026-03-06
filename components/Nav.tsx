@@ -16,10 +16,6 @@ const navLinks = [
   { href: "/contact", label: "Contact", pageKey: "contact" },
 ] as const satisfies ReadonlyArray<{ href: string; label: string; pageKey: ManagedPageKey }>;
 
-function toVisibleLinks(hiddenPages: ManagedPageKey[]) {
-  return navLinks.filter((link) => !hiddenPages.includes(link.pageKey));
-}
-
 function formatPhoneForHref(phone: string) {
   return phone.replace(/[^\d+]/g, "");
 }
@@ -58,7 +54,14 @@ const safeFallback = {
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const config = useSiteConfig();
-  const visibleLinks = toVisibleLinks(config.hiddenPages);
+  const hiddenFallback = (config.hiddenPages || []) as ManagedPageKey[];
+  const visiblePages = (config.visiblePages || []) as ManagedPageKey[];
+  const menuPages = (config.menuPages || []) as ManagedPageKey[];
+  const visibleLinks = navLinks.filter((link) => {
+    const generallyVisible = visiblePages.length > 0 ? visiblePages.includes(link.pageKey) : !hiddenFallback.includes(link.pageKey);
+    const inMenu = menuPages.length > 0 ? menuPages.includes(link.pageKey) : generallyVisible;
+    return generallyVisible && inMenu;
+  });
   const nameLines = config.schoolNameShort
     ? splitHeaderName(config.schoolNameShort)
     : safeFallback;
@@ -99,7 +102,7 @@ export default function Nav() {
           ))}
         </nav>
         <div className="nav-actions">
-          {!config.hiddenPages.includes("admissions") ? (
+          {(visiblePages.length > 0 ? visiblePages.includes("admissions") : !hiddenFallback.includes("admissions")) ? (
             <Link href="/admissions" className="button">
               Apply Now
             </Link>
@@ -151,7 +154,7 @@ export default function Nav() {
                 {link.label}
               </Link>
             ))}
-            {!config.hiddenPages.includes("admissions") ? (
+            {(visiblePages.length > 0 ? visiblePages.includes("admissions") : !hiddenFallback.includes("admissions")) ? (
               <Link href="/admissions" className="button" onClick={() => setOpen(false)}>
                 Apply Now
               </Link>

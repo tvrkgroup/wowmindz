@@ -61,21 +61,32 @@ const NEWS_CATEGORIES = [
   "Others / Miscellaneous",
 ];
 
-function normalizeEventInput(value: string): SiteEvent[] {
-  return value
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line, index) => {
-      const [date, title = "", description = ""] = line.split("|").map((item) => item.trim());
-      return {
-        id: `event-${index + 1}`,
-        date,
-        title,
-        description,
-      };
-    })
-    .filter((item) => item.date && item.title);
+const EVENT_CATEGORIES = [
+  "Announcements",
+  "Events",
+  "Achievements",
+  "Competitions",
+  "Admissions",
+  "Notices",
+  "Academics",
+  "Sports",
+  "Others / Miscellaneous",
+];
+
+function emptyEvent(): SiteEvent {
+  const now = Date.now();
+  return {
+    id: `event-${now}`,
+    date: "",
+    title: "",
+    category: EVENT_CATEGORIES[0],
+    location: "School Campus",
+    shortDescription: "",
+    description: "",
+    image: "",
+    status: "draft",
+    scheduledAt: "",
+  };
 }
 
 function emptyPost(type: "news" | "blog"): SitePost {
@@ -102,23 +113,34 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function deepClone<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
 export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
   const router = useRouter();
   const [config, setConfig] = useState<SiteConfig>(initialConfig);
-  const [eventsRawInput, setEventsRawInput] = useState(
-    initialConfig.events
-      .map((event) => `${event.date} | ${event.title} | ${event.description ?? ""}`)
-      .join("\n")
-  );
   const [logoUploadFile, setLogoUploadFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [expandedEvents, setExpandedEvents] = useState<Record<string, boolean>>({});
   const [expandedNews, setExpandedNews] = useState<Record<string, boolean>>({});
   const [expandedBlogs, setExpandedBlogs] = useState<Record<string, boolean>>({});
+  const [eventSnapshots, setEventSnapshots] = useState<Record<string, SiteEvent>>({});
+  const [newsSnapshots, setNewsSnapshots] = useState<Record<string, SitePost>>({});
+  const [blogSnapshots, setBlogSnapshots] = useState<Record<string, SitePost>>({});
   const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
 
-  const eventsPreview = useMemo(() => normalizeEventInput(eventsRawInput), [eventsRawInput]);
+  const visiblePageSet = useMemo(() => new Set(config.visiblePages), [config.visiblePages]);
+  const menuPageSet = useMemo(() => new Set(config.menuPages), [config.menuPages]);
+
+  const updateEvent = (id: string, patch: Partial<SiteEvent>) => {
+    setConfig((prev) => ({
+      ...prev,
+      events: prev.events.map((event) => (event.id === id ? { ...event, ...patch } : event)),
+    }));
+  };
 
   const updatePost = (type: "newsPosts" | "blogPosts", id: string, patch: Partial<SitePost>) => {
     setConfig((prev) => ({
@@ -147,8 +169,20 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
       ...prev,
       [type]: [empty, ...prev[type]],
     }));
-    if (type === "newsPosts") setExpandedNews((prev) => ({ ...prev, [empty.id]: true }));
-    else setExpandedBlogs((prev) => ({ ...prev, [empty.id]: true }));
+    if (type === "newsPosts") {
+      setExpandedNews((prev) => ({ ...prev, [empty.id]: true }));
+      setNewsSnapshots((prev) => ({ ...prev, [empty.id]: deepClone(empty) }));
+    } else {
+      setExpandedBlogs((prev) => ({ ...prev, [empty.id]: true }));
+      setBlogSnapshots((prev) => ({ ...prev, [empty.id]: deepClone(empty) }));
+    }
+  };
+
+  const addEvent = () => {
+    const next = emptyEvent();
+    setConfig((prev) => ({ ...prev, events: [next, ...prev.events] }));
+    setExpandedEvents((prev) => ({ ...prev, [next.id]: true }));
+    setEventSnapshots((prev) => ({ ...prev, [next.id]: deepClone(next) }));
   };
 
   const confirmDeletePost = (type: "newsPosts" | "blogPosts", id: string) => {
@@ -157,6 +191,107 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     removePost(type, id);
     if (type === "newsPosts") setExpandedNews((prev) => ({ ...prev, [id]: false }));
     else setExpandedBlogs((prev) => ({ ...prev, [id]: false }));
+  };
+
+  const confirmDeleteEvent = (id: string) => {
+    const accepted = window.confirm("Delete this event permanently?");
+    if (!accepted) return;
+    setConfig((prev) => ({ ...prev, events: prev.events.filter((event) => event.id !== id) }));
+    setExpandedEvents((prev) => ({ ...prev, [id]: false }));
+  };
+
+  const toggleEditor = (type: "events" | "newsPosts" | "blogPosts", id: string) => {
+    if (type === "events") {
+      const currentlyOpen = Boolean(expandedEvents[id]);
+      if (currentlyOpen) {
+        const current = config.events.find((event) => event.id === id);
+        const snapshot = eventSnapshots[id];
+        const changed = Boolean(current && snapshot && JSON.stringify(current) !== JSON.stringify(snapshot));
+        if (changed && !window.confirm("You have unsaved changes. Discard and close?")) return;
+        closeEditor("events", id, changed);
+        return;
+      }
+      const current = config.events.find((event) => event.id === id);
+      if (current && !eventSnapshots[id]) {
+        setEventSnapshots((snapshots) => ({ ...snapshots, [id]: deepClone(current) }));
+      }
+      setExpandedEvents((prev) => ({ ...prev, [id]: true }));
+      return;
+    }
+
+    if (type === "newsPosts") {
+      const currentlyOpen = Boolean(expandedNews[id]);
+      if (currentlyOpen) {
+        const current = config.newsPosts.find((post) => post.id === id);
+        const snapshot = newsSnapshots[id];
+        const changed = Boolean(current && snapshot && JSON.stringify(current) !== JSON.stringify(snapshot));
+        if (changed && !window.confirm("You have unsaved changes. Discard and close?")) return;
+        closeEditor("newsPosts", id, changed);
+        return;
+      }
+      const current = config.newsPosts.find((post) => post.id === id);
+      if (current && !newsSnapshots[id]) {
+        setNewsSnapshots((snapshots) => ({ ...snapshots, [id]: deepClone(current) }));
+      }
+      setExpandedNews((prev) => ({ ...prev, [id]: true }));
+      return;
+    }
+
+    const currentlyOpen = Boolean(expandedBlogs[id]);
+    if (currentlyOpen) {
+      const current = config.blogPosts.find((post) => post.id === id);
+      const snapshot = blogSnapshots[id];
+      const changed = Boolean(current && snapshot && JSON.stringify(current) !== JSON.stringify(snapshot));
+      if (changed && !window.confirm("You have unsaved changes. Discard and close?")) return;
+      closeEditor("blogPosts", id, changed);
+      return;
+    }
+    const current = config.blogPosts.find((post) => post.id === id);
+    if (current && !blogSnapshots[id]) {
+      setBlogSnapshots((snapshots) => ({ ...snapshots, [id]: deepClone(current) }));
+    }
+    setExpandedBlogs((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const closeEditor = (type: "events" | "newsPosts" | "blogPosts", id: string, discard: boolean) => {
+    if (type === "events") {
+      if (discard) {
+        const snapshot = eventSnapshots[id];
+        if (snapshot) updateEvent(id, snapshot);
+      }
+      setExpandedEvents((prev) => ({ ...prev, [id]: false }));
+      setEventSnapshots((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+      return;
+    }
+
+    if (type === "newsPosts") {
+      if (discard) {
+        const snapshot = newsSnapshots[id];
+        if (snapshot) updatePost("newsPosts", id, snapshot);
+      }
+      setExpandedNews((prev) => ({ ...prev, [id]: false }));
+      setNewsSnapshots((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+      return;
+    }
+
+    if (discard) {
+      const snapshot = blogSnapshots[id];
+      if (snapshot) updatePost("blogPosts", id, snapshot);
+    }
+    setExpandedBlogs((prev) => ({ ...prev, [id]: false }));
+    setBlogSnapshots((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
 
   const applyFormat = (postId: string, type: "bold" | "italic" | "line") => {
@@ -179,10 +314,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     setSaving(true);
     setStatus("Saving...");
 
-    const payload: SiteConfig = {
-      ...nextConfig,
-      events: eventsPreview,
-    };
+    const payload: SiteConfig = { ...nextConfig };
 
     try {
       const response = await fetch("/api/admin/config", {
@@ -198,11 +330,6 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
       }
 
       setConfig(result.config);
-      setEventsRawInput(
-        result.config.events
-          .map((event) => `${event.date} | ${event.title} | ${event.description ?? ""}`)
-          .join("\n")
-      );
       setStatus("Saved successfully");
       router.refresh();
     } catch {
@@ -223,11 +350,6 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
         return;
       }
       setConfig(result.config);
-      setEventsRawInput(
-        result.config.events
-          .map((event) => `${event.date} | ${event.title} | ${event.description ?? ""}`)
-          .join("\n")
-      );
       setStatus("Rolled back to baseline config");
       router.refresh();
     } catch {
@@ -372,6 +494,9 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               { key: "brand400", label: "Brand 400" },
               { key: "brand600", label: "Brand 600" },
               { key: "brand700", label: "Brand 700" },
+              { key: "surface", label: "Card Surface" },
+              { key: "surfaceSoft", label: "Soft Surface" },
+              { key: "highlight", label: "Highlight" },
             ].map((item) => (
               <label key={item.key}>
                 {item.label}
@@ -422,36 +547,198 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               Brand 700
               <span className="admin-color-preview" style={{ background: config.theme.brand700 }} />
             </div>
+            <div className="admin-color-swatch">
+              Card Surface
+              <span className="admin-color-preview" style={{ background: config.theme.surface }} />
+            </div>
+            <div className="admin-color-swatch">
+              Soft Surface
+              <span className="admin-color-preview" style={{ background: config.theme.surfaceSoft }} />
+            </div>
+            <div className="admin-color-swatch">
+              Highlight
+              <span className="admin-color-preview" style={{ background: config.theme.highlight }} />
+            </div>
+          </div>
+          <div className="admin-inline-actions">
+            <button
+              type="button"
+              className="button secondary"
+              onClick={() =>
+                setConfig((prev) => ({
+                  ...prev,
+                  theme: defaultSiteConfig.theme,
+                }))
+              }
+            >
+              Reset Theme Only
+            </button>
           </div>
 
           <div className="divider" />
           <h3>Page Visibility</h3>
-          <p className="admin-help">Checked means hidden (returns 404 and removed from menu).</p>
+          <p className="admin-help">Checked means shown. Unchecked means hidden.</p>
+          <h4>Page Visibility (general)</h4>
           <div className="admin-check-grid">
             {ALL_MANAGED_PAGES.map((page) => (
               <label key={page} className="admin-check">
                 <input
                   type="checkbox"
-                  checked={config.hiddenPages.includes(page)}
+                  checked={visiblePageSet.has(page)}
                   onChange={(event) => {
-                    const hiddenSet = new Set(config.hiddenPages);
-                    if (event.target.checked) hiddenSet.add(page);
-                    else hiddenSet.delete(page);
-                    setConfig({ ...config, hiddenPages: Array.from(hiddenSet) as ManagedPageKey[] });
+                    const nextVisible = new Set(config.visiblePages);
+                    const nextMenu = new Set(config.menuPages);
+                    if (event.target.checked) {
+                      nextVisible.add(page);
+                    } else {
+                      nextVisible.delete(page);
+                      nextMenu.delete(page);
+                    }
+                    setConfig({
+                      ...config,
+                      visiblePages: Array.from(nextVisible) as ManagedPageKey[],
+                      menuPages: Array.from(nextMenu) as ManagedPageKey[],
+                      hiddenPages: ALL_MANAGED_PAGES.filter((item) => !nextVisible.has(item)),
+                    });
                   }}
                 />
                 <span>{PAGE_LABELS[page]}</span>
               </label>
             ))}
           </div>
+          <h4>Show In Menu</h4>
+          <div className="admin-check-grid">
+            {ALL_MANAGED_PAGES.map((page) => {
+              const disabled = !visiblePageSet.has(page);
+              return (
+                <label key={`${page}-menu`} className={`admin-check ${disabled ? "is-disabled" : ""}`}>
+                  <input
+                    type="checkbox"
+                    checked={menuPageSet.has(page) && !disabled}
+                    disabled={disabled}
+                    onChange={(event) => {
+                      const next = new Set(config.menuPages);
+                      if (event.target.checked) next.add(page);
+                      else next.delete(page);
+                      setConfig({
+                        ...config,
+                        menuPages: Array.from(next) as ManagedPageKey[],
+                      });
+                    }}
+                  />
+                  <span>{PAGE_LABELS[page]}</span>
+                </label>
+              );
+            })}
+          </div>
 
           <div className="divider" />
-          <h3>Events</h3>
-          <p className="admin-help">
-            One line: <code>Date | Event title | Short description</code>
-          </p>
-          <textarea className="admin-events" rows={8} value={eventsRawInput} onChange={(e) => setEventsRawInput(e.target.value)} />
-          <p className="admin-help">Valid events parsed: {eventsPreview.length}</p>
+          <div className="admin-section-head">
+            <h3>Events</h3>
+            <button type="button" className="button secondary" onClick={addEvent}>
+              Add Event
+            </button>
+          </div>
+          <div className="admin-article-list">
+            {config.events.map((event) => (
+              <article className="admin-article-card" key={event.id}>
+                <div className="admin-article-actions">
+                  <strong>{event.title || "Untitled event"}</strong>
+                  <button type="button" className="button secondary" onClick={() => toggleEditor("events", event.id)}>
+                    {expandedEvents[event.id] ? "Close Edit" : "Edit"}
+                  </button>
+                </div>
+                <p className="admin-help">
+                  {event.date || "No date"} · {event.category || "No category"} · {event.status}
+                </p>
+                {expandedEvents[event.id] ? (
+                  <>
+                    <div className="admin-grid">
+                      <label>
+                        Title
+                        <input value={event.title} placeholder="Event title" onChange={(e) => updateEvent(event.id, { title: e.target.value })} />
+                      </label>
+                      <label>
+                        Date
+                        <input type="date" value={event.date} onChange={(e) => updateEvent(event.id, { date: e.target.value })} />
+                      </label>
+                      <label>
+                        Category
+                        <select value={event.category} onChange={(e) => updateEvent(event.id, { category: e.target.value })}>
+                          {(EVENT_CATEGORIES.includes(event.category)
+                            ? EVENT_CATEGORIES
+                            : [event.category, ...EVENT_CATEGORIES]
+                          ).map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        Location
+                        <input value={event.location} placeholder="Campus / Hall / Ground" onChange={(e) => updateEvent(event.id, { location: e.target.value })} />
+                      </label>
+                      <label>
+                        Status
+                        <select
+                          value={event.status}
+                          onChange={(e) => updateEvent(event.id, { status: e.target.value as SiteEvent["status"] })}
+                        >
+                          <option value="draft">Draft</option>
+                          <option value="published">Published</option>
+                          <option value="scheduled">Scheduled</option>
+                        </select>
+                      </label>
+                      {event.status === "scheduled" ? (
+                        <label>
+                          Schedule Time
+                          <input
+                            type="datetime-local"
+                            value={event.scheduledAt || ""}
+                            onChange={(e) => updateEvent(event.id, { scheduledAt: e.target.value })}
+                          />
+                        </label>
+                      ) : null}
+                      <label>
+                        Image URL / Path
+                        <input value={event.image || ""} placeholder="/images/event-cover.jpg" onChange={(e) => updateEvent(event.id, { image: e.target.value })} />
+                      </label>
+                    </div>
+                    <label className="admin-field">
+                      Short Description
+                      <textarea
+                        rows={2}
+                        placeholder="Brief summary for lists and previews"
+                        value={event.shortDescription}
+                        onChange={(e) => updateEvent(event.id, { shortDescription: e.target.value })}
+                      />
+                    </label>
+                    <label className="admin-field">
+                      Full Description
+                      <textarea
+                        rows={4}
+                        placeholder="Detailed event information"
+                        value={event.description}
+                        onChange={(e) => updateEvent(event.id, { description: e.target.value })}
+                      />
+                    </label>
+                    <div className="admin-rich-toolbar">
+                      <button type="button" className="button secondary" onClick={() => closeEditor("events", event.id, false)}>
+                        Save and Close
+                      </button>
+                      <button type="button" className="button secondary" onClick={() => closeEditor("events", event.id, true)}>
+                        Discard Changes
+                      </button>
+                      <button type="button" className="button secondary" onClick={() => confirmDeleteEvent(event.id)}>
+                        Delete Event
+                      </button>
+                    </div>
+                  </>
+                ) : null}
+              </article>
+            ))}
+          </div>
 
           <div className="divider" />
           <div className="admin-section-head">
@@ -465,16 +752,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               <article className="admin-article-card" key={post.id}>
                 <div className="admin-article-actions">
                   <strong>{post.title || "Untitled news"}</strong>
-                  <button
-                    type="button"
-                    className="button secondary"
-                    onClick={() =>
-                      setExpandedNews((prev) => ({
-                        ...prev,
-                        [post.id]: !prev[post.id],
-                      }))
-                    }
-                  >
+                  <button type="button" className="button secondary" onClick={() => toggleEditor("newsPosts", post.id)}>
                     {expandedNews[post.id] ? "Close Edit" : "Edit"}
                   </button>
                 </div>
@@ -543,6 +821,12 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                       <button type="button" className="button secondary" onClick={() => applyFormat(post.id, "bold")}>Bold</button>
                       <button type="button" className="button secondary" onClick={() => applyFormat(post.id, "italic")}>Italic</button>
                       <button type="button" className="button secondary" onClick={() => applyFormat(post.id, "line")}>Bullet</button>
+                      <button type="button" className="button secondary" onClick={() => closeEditor("newsPosts", post.id, false)}>
+                        Save and Close
+                      </button>
+                      <button type="button" className="button secondary" onClick={() => closeEditor("newsPosts", post.id, true)}>
+                        Discard Changes
+                      </button>
                       <button type="button" className="button secondary" onClick={() => confirmDeletePost("newsPosts", post.id)}>
                         Delete Article
                       </button>
@@ -576,16 +860,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               <article className="admin-article-card" key={post.id}>
                 <div className="admin-article-actions">
                   <strong>{post.title || "Untitled blog"}</strong>
-                  <button
-                    type="button"
-                    className="button secondary"
-                    onClick={() =>
-                      setExpandedBlogs((prev) => ({
-                        ...prev,
-                        [post.id]: !prev[post.id],
-                      }))
-                    }
-                  >
+                  <button type="button" className="button secondary" onClick={() => toggleEditor("blogPosts", post.id)}>
                     {expandedBlogs[post.id] ? "Close Edit" : "Edit"}
                   </button>
                 </div>
@@ -654,6 +929,12 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                       <button type="button" className="button secondary" onClick={() => applyFormat(post.id, "bold")}>Bold</button>
                       <button type="button" className="button secondary" onClick={() => applyFormat(post.id, "italic")}>Italic</button>
                       <button type="button" className="button secondary" onClick={() => applyFormat(post.id, "line")}>Bullet</button>
+                      <button type="button" className="button secondary" onClick={() => closeEditor("blogPosts", post.id, false)}>
+                        Save and Close
+                      </button>
+                      <button type="button" className="button secondary" onClick={() => closeEditor("blogPosts", post.id, true)}>
+                        Discard Changes
+                      </button>
                       <button type="button" className="button secondary" onClick={() => confirmDeletePost("blogPosts", post.id)}>
                         Delete Article
                       </button>
@@ -684,11 +965,6 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               className="button secondary"
               onClick={() => {
                 setConfig(defaultSiteConfig);
-                setEventsRawInput(
-                  defaultSiteConfig.events
-                    .map((event) => `${event.date} | ${event.title} | ${event.description ?? ""}`)
-                    .join("\n")
-                );
                 setStatus("Loaded defaults in form. Click Save Settings to apply.");
               }}
             >
