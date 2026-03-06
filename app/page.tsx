@@ -104,6 +104,7 @@ export default async function Home() {
       <section className="section home-hero">
         <div className="container home-hero-grid">
           <div className="home-hero-left">
+            <p className="eyebrow home-hero-eyebrow">THE SILVER BROOK PUBLIC SCHOOL</p>
             <h1>{config.tagline}</h1>
             <p className="home-subline">Where Knowledge Sparks Confidence</p>
             <p className="home-address">{config.address}</p>
@@ -195,22 +196,26 @@ export default async function Home() {
       <section className="section accent home-section section-pattern">
         <div className="container">
           <article className="card home-cbse-card home-theme-card">
-            <div className="home-cbse-head">
-              <img className="hero-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
-              <h2>THE SILVER BROOK PUBLIC SCHOOL</h2>
+            <div className="home-cbse-layout">
+              <div className="home-cbse-logo-wrap">
+                <img className="home-cbse-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
+              </div>
+              <div className="home-cbse-content">
+                <h2>THE SILVER BROOK PUBLIC SCHOOL</h2>
+                <p>(To be affiliated to CBSE Board, New Delhi)</p>
+                <p>Near Ashtalakshmi Temple, Karatoor, Gobichettipalayam</p>
+                <p>Contact: 9944055929</p>
+                <div className="divider" />
+                <p>
+                  <strong>CBSE SYLLABUS</strong>
+                </p>
+                <p>Learning is the key to leadership</p>
+                <p>Where Knowledge sparks confidence</p>
+                <p>
+                  <strong>Admissions Open 2026-2027</strong>
+                </p>
+              </div>
             </div>
-            <p>(To be affiliated to CBSE Board, New Delhi)</p>
-            <p>Near Ashtalakshmi Temple, Karatoor, Gobichettipalayam</p>
-            <p>Contact: 9944055929</p>
-            <div className="divider" />
-            <p>
-              <strong>CBSE SYLLABUS</strong>
-            </p>
-            <p>Learning is the key to leadership</p>
-            <p>Where Knowledge sparks confidence</p>
-            <p>
-              <strong>Admissions Open 2026-2027</strong>
-            </p>
           </article>
         </div>
       </section>

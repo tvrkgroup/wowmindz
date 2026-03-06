@@ -1058,8 +1058,8 @@ code {
 }
 
 .home-hero {
-  padding-top: 34px;
-  padding-bottom: 56px;
+  padding-top: 52px;
+  padding-bottom: 68px;
 }
 
 .home-hero-grid {
@@ -1071,7 +1071,13 @@ code {
 
 .home-hero-left {
   display: grid;
-  gap: 16px;
+  gap: 14px;
+  align-content: start;
+  max-width: 680px;
+}
+
+.home-hero-eyebrow {
+  margin-bottom: 2px;
 }
 
 .home-branding {
@@ -1222,18 +1228,39 @@ code {
 
 .home-cbse-card {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
-.home-cbse-head {
+.home-cbse-layout {
   display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 4px;
+  grid-template-columns: minmax(170px, 230px) 1fr;
+  gap: 20px;
+  align-items: stretch;
 }
 
-.home-cbse-head h2 {
+.home-cbse-logo-wrap {
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface-soft) 72%, white);
+  border: 1px solid color-mix(in srgb, var(--highlight) 76%, rgba(47, 91, 215, 0.2));
+  padding: 16px;
+}
+
+.home-cbse-logo {
+  width: 100%;
+  max-width: 210px;
+  height: auto;
+  object-fit: contain;
+}
+
+.home-cbse-content {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.home-cbse-content h2 {
   font-size: clamp(1.35rem, 2.6vw, 2.1rem);
 }
 
@@ -1550,10 +1577,17 @@ code {
     height: 92px;
   }
 
-  .home-cbse-head {
+  .home-cbse-layout {
     grid-template-columns: 1fr;
-    justify-items: start;
     gap: 10px;
+  }
+
+  .home-cbse-logo-wrap {
+    justify-items: start;
+  }
+
+  .home-cbse-logo {
+    max-width: 140px;
   }
 
   .activity-program-card {
