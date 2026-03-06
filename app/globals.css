@@ -142,8 +142,7 @@ p {
   border: 1px solid transparent;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 12px 30px rgba(53, 76, 64, 0.22);
-  margin-top: 8px;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 .button.secondary {
@@ -167,8 +166,7 @@ p {
   color: var(--brand-700);
   font-weight: 600;
   font-size: 0.85rem;
-  margin-top: 8px;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 .grid {
@@ -201,8 +199,7 @@ p {
   font-weight: 600;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  margin-top: 8px;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 .divider {
@@ -458,7 +455,7 @@ footer .footer-contact .divider {
 }
 
 .accent {
-  background: rgba(239, 245, 242, 0.85);
+  background: color-mix(in srgb, var(--brand-400) 12%, white);
 }
 
 .image-card {
@@ -553,7 +550,11 @@ footer .footer-contact .divider {
 
 .page-hero {
   padding: 80px 0 40px;
-  background: linear-gradient(120deg, rgba(231, 240, 236, 0.8), rgba(247, 244, 236, 0.9));
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--brand-400) 22%, white),
+    color-mix(in srgb, var(--paper) 86%, white)
+  );
 }
 
 .page-hero .container {
@@ -626,18 +627,18 @@ code {
   background: rgba(255, 255, 255, 0.9);
   align-items: center;
   justify-content: center;
-  grid-auto-rows: 2px;
+  flex-direction: column;
   gap: 5px;
-  padding: 0;
+  padding: 8px;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(15, 24, 20, 0.08);
 }
 
 .nav-toggle span {
   display: block;
-  width: 20px;
-  height: 2px;
-  background: var(--ink-800);
+  width: 22px;
+  min-height: 2px;
+  background: #1a2437;
   border-radius: 999px;
 }
 
@@ -726,7 +727,7 @@ code {
   overflow: auto;
   display: grid;
   align-content: start;
-  gap: 10px;
+  gap: 12px;
   padding: 4px 0 6px;
 }
 
@@ -766,7 +767,7 @@ code {
   }
 
   .nav-toggle {
-    display: grid;
+    display: flex;
     align-self: center;
   }
 
@@ -1054,14 +1055,24 @@ code {
   margin: 0 auto;
 }
 
+.admin-panel {
+  padding: 28px;
+}
+
 .admin-login-form,
 .admin-grid {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .admin-grid {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.admin-grid label {
+  display: grid;
+  align-content: start;
+  gap: 6px;
 }
 
 .admin-login-form input,
@@ -1094,7 +1105,8 @@ code {
 }
 
 .admin-field {
-  display: block;
+  display: grid;
+  gap: 6px;
   margin-top: 14px;
 }
 
@@ -1131,11 +1143,15 @@ code {
 }
 
 .admin-actions {
-  margin-top: 16px;
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
+}
+
+.admin-upload-btn {
+  margin-top: 6px;
 }
 
 .admin-status {

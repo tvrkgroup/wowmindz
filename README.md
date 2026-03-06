@@ -20,3 +20,24 @@ npm run dev
    - News/events entries
 
 Saved settings are stored in `data/site-config.json`.
+
+## Vercel production setup
+
+Set these environment variables in Vercel Project Settings:
+
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
+- `KV_REST_API_URL`
+- `KV_REST_API_TOKEN`
+
+For logo upload from admin directly to GitHub:
+
+- `GITHUB_REPO` (format: `owner/repo`)
+- `GITHUB_BRANCH` (usually `main`)
+- `GITHUB_TOKEN` (repo write permission)
+
+Notes:
+- If KV vars are present, admin config is persisted in KV (works on Vercel).
+- If KV vars are not present, local file storage (`data/site-config.json`) is used.
+- "Rollback to Baseline" in dashboard resets config to built-in default settings.

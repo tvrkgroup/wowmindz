@@ -53,22 +53,29 @@ function normalizeEventInput(value: string): SiteEvent[] {
 
 export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
   const [config, setConfig] = useState<SiteConfig>(initialConfig);
+  const [eventsRawInput, setEventsRawInput] = useState(
+    initialConfig.events.map((event) => `${event.date} | ${event.title}`).join("\n")
+  );
+  const [logoUploadFile, setLogoUploadFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
-  const eventsText = useMemo(
-    () => config.events.map((event) => `${event.date} | ${event.title}`).join("\n"),
-    [config.events]
-  );
+  const eventsPreview = useMemo(() => normalizeEventInput(eventsRawInput), [eventsRawInput]);
 
   async function saveConfig(nextConfig: SiteConfig) {
     setSaving(true);
     setStatus("Saving...");
 
+    const payload: SiteConfig = {
+      ...nextConfig,
+      events: eventsPreview,
+    };
+
     const response = await fetch("/api/admin/config", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(nextConfig),
+      body: JSON.stringify(payload),
     });
 
     const result = (await response.json()) as { ok: boolean; message?: string; config?: SiteConfig };
@@ -79,8 +86,59 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     }
 
     setConfig(result.config);
+    setEventsRawInput(result.config.events.map((event) => `${event.date} | ${event.title}`).join("\n"));
     setSaving(false);
     setStatus("Saved successfully");
+  }
+
+  async function resetToBaseline() {
+    setSaving(true);
+    setStatus("Rolling back to baseline...");
+    const response = await fetch("/api/admin/config/reset", { method: "POST" });
+    const result = (await response.json()) as { ok: boolean; message?: string; config?: SiteConfig };
+    setSaving(false);
+    if (!result.ok || !result.config) {
+      setStatus(result.message || "Rollback failed");
+      return;
+    }
+    setConfig(result.config);
+    setEventsRawInput(result.config.events.map((event) => `${event.date} | ${event.title}`).join("\n"));
+    setStatus("Rolled back to baseline config");
+  }
+
+  async function uploadLogoToGitHub() {
+    if (!logoUploadFile) {
+      setStatus("Pick an image file first.");
+      return;
+    }
+
+    setUploadingLogo(true);
+    setStatus("Uploading logo to GitHub...");
+    const formData = new FormData();
+    formData.append("file", logoUploadFile);
+
+    const response = await fetch("/api/admin/upload-logo", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = (await response.json()) as {
+      ok: boolean;
+      message?: string;
+      logoPath?: string;
+      committedPath?: string;
+    };
+    setUploadingLogo(false);
+
+    if (!result.ok || !result.logoPath) {
+      setStatus(result.message || "Logo upload failed");
+      return;
+    }
+
+    setConfig((prev) => ({ ...prev, logoPath: result.logoPath as string }));
+    setStatus(
+      `Logo uploaded (${result.committedPath}). Click "Save Settings" to apply it to website config.`
+    );
   }
 
   async function logout() {
@@ -134,6 +192,22 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               />
             </label>
             <label>
+              Upload Logo to GitHub
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                onChange={(event) => setLogoUploadFile(event.target.files?.[0] || null)}
+              />
+              <button
+                type="button"
+                className="button secondary admin-upload-btn"
+                onClick={uploadLogoToGitHub}
+                disabled={uploadingLogo}
+              >
+                {uploadingLogo ? "Uploading..." : "Upload Logo"}
+              </button>
+            </label>
+            <label>
               Phone (with country code)
               <input
                 value={config.contactPhone}
@@ -165,6 +239,16 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
             <label>
               Page Background
               <input
+                type="color"
+                value={config.theme.paper}
+                onChange={(event) =>
+                  setConfig({
+                    ...config,
+                    theme: { ...config.theme, paper: event.target.value },
+                  })
+                }
+              />
+              <input
                 value={config.theme.paper}
                 onChange={(event) =>
                   setConfig({
@@ -177,6 +261,16 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
             </label>
             <label>
               Brand 400
+              <input
+                type="color"
+                value={config.theme.brand400}
+                onChange={(event) =>
+                  setConfig({
+                    ...config,
+                    theme: { ...config.theme, brand400: event.target.value },
+                  })
+                }
+              />
               <input
                 value={config.theme.brand400}
                 onChange={(event) =>
@@ -191,6 +285,16 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
             <label>
               Brand 600
               <input
+                type="color"
+                value={config.theme.brand600}
+                onChange={(event) =>
+                  setConfig({
+                    ...config,
+                    theme: { ...config.theme, brand600: event.target.value },
+                  })
+                }
+              />
+              <input
                 value={config.theme.brand600}
                 onChange={(event) =>
                   setConfig({
@@ -203,6 +307,16 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
             </label>
             <label>
               Brand 700
+              <input
+                type="color"
+                value={config.theme.brand700}
+                onChange={(event) =>
+                  setConfig({
+                    ...config,
+                    theme: { ...config.theme, brand700: event.target.value },
+                  })
+                }
+              />
               <input
                 value={config.theme.brand700}
                 onChange={(event) =>
@@ -247,9 +361,10 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
           <textarea
             className="admin-events"
             rows={7}
-            value={eventsText}
-            onChange={(event) => setConfig({ ...config, events: normalizeEventInput(event.target.value) })}
+            value={eventsRawInput}
+            onChange={(event) => setEventsRawInput(event.target.value)}
           />
+          <p className="admin-help">Valid events parsed: {eventsPreview.length}</p>
 
           <div className="admin-actions">
             <button type="button" className="button" disabled={saving} onClick={() => saveConfig(config)}>
@@ -260,10 +375,14 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               className="button secondary"
               onClick={() => {
                 setConfig(defaultSiteConfig);
+                setEventsRawInput(defaultSiteConfig.events.map((event) => `${event.date} | ${event.title}`).join("\n"));
                 setStatus("Loaded defaults in form. Click Save Settings to apply.");
               }}
             >
               Reset Form to Defaults
+            </button>
+            <button type="button" className="button secondary" disabled={saving} onClick={resetToBaseline}>
+              Rollback to Baseline
             </button>
             <span className="admin-status">{status}</span>
           </div>

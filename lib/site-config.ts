@@ -10,6 +10,7 @@ import {
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const CONFIG_PATH = path.join(DATA_DIR, "site-config.json");
+const KV_KEY = "site-config";
 
 function sanitizeEvent(input: Partial<SiteEvent>, index: number): SiteEvent {
   const date = (input.date ?? "").toString().trim().slice(0, 40);
@@ -76,7 +77,46 @@ async function ensureConfigFile() {
   }
 }
 
+function hasKvConfig() {
+  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
+async function kvFetch(pathname: string) {
+  const baseUrl = process.env.KV_REST_API_URL as string;
+  const token = process.env.KV_REST_API_TOKEN as string;
+  const response = await fetch(`${baseUrl}${pathname}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    throw new Error(`KV request failed: ${response.status}`);
+  }
+  return response.json();
+}
+
+async function readConfigFromKv(): Promise<SiteConfig | null> {
+  if (!hasKvConfig()) return null;
+  try {
+    const result = (await kvFetch(`/get/${encodeURIComponent(KV_KEY)}`)) as { result?: string };
+    if (!result?.result) return null;
+    return sanitizeConfig(JSON.parse(result.result) as Partial<SiteConfig>);
+  } catch {
+    return null;
+  }
+}
+
+async function writeConfigToKv(config: SiteConfig) {
+  if (!hasKvConfig()) return;
+  const payload = encodeURIComponent(JSON.stringify(config));
+  await kvFetch(`/set/${encodeURIComponent(KV_KEY)}/${payload}`);
+}
+
 export async function getSiteConfig(): Promise<SiteConfig> {
+  const kvConfig = await readConfigFromKv();
+  if (kvConfig) return kvConfig;
+
   await ensureConfigFile();
   try {
     const raw = await fs.readFile(CONFIG_PATH, "utf8");
@@ -89,8 +129,12 @@ export async function getSiteConfig(): Promise<SiteConfig> {
 
 export async function saveSiteConfig(nextConfig: Partial<SiteConfig>): Promise<SiteConfig> {
   const merged = sanitizeConfig(nextConfig);
-  await ensureConfigFile();
-  await fs.writeFile(CONFIG_PATH, JSON.stringify(merged, null, 2), "utf8");
+  if (hasKvConfig()) {
+    await writeConfigToKv(merged);
+  } else {
+    await ensureConfigFile();
+    await fs.writeFile(CONFIG_PATH, JSON.stringify(merged, null, 2), "utf8");
+  }
   return merged;
 }
 
@@ -110,4 +154,8 @@ export async function updateSiteConfig(partial: Partial<SiteConfig>): Promise<Si
 export async function isPageHidden(page: ManagedPageKey): Promise<boolean> {
   const config = await getSiteConfig();
   return config.hiddenPages.includes(page);
+}
+
+export async function resetSiteConfigToDefault() {
+  return saveSiteConfig(defaultSiteConfig);
 }
