@@ -114,6 +114,12 @@
     "brand700": "#2345a6",
     "surface": "#ffffff",
     "surfaceSoft": "#eef3ff",
-    "highlight": "#dbe6ff"
+    "highlight": "#dbe6ff",
+    "glareBlue": "#4976ec",
+    "glareGold": "#d4a648",
+    "glareBlur": 24,
+    "glareSpeed": 24,
+    "glareSize": 420,
+    "heroHighlight": "#dbe6ff"
   }
 }

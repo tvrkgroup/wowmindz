@@ -10,7 +10,11 @@ interface SessionPayload {
 }
 
 function getSecret() {
-  return process.env.ADMIN_SESSION_SECRET || "silver-brook-admin-secret-change-me";
+  const secret = process.env.ADMIN_SESSION_SECRET || "silver-brook-admin-secret-change-me";
+  if (process.env.NODE_ENV === "production" && secret === "silver-brook-admin-secret-change-me") {
+    throw new Error("ADMIN_SESSION_SECRET must be configured in production");
+  }
+  return secret;
 }
 
 function toBase64Url(input: string) {
@@ -38,6 +42,13 @@ export function getAdminCredentials() {
     username: process.env.ADMIN_USERNAME || "admin",
     password: process.env.ADMIN_PASSWORD || "admin@123",
   };
+}
+
+export function verifyAdminCredentials(inputUsername: string, inputPassword: string) {
+  const creds = getAdminCredentials();
+  const usernameOk = isSafeEqual(inputUsername.trim(), creds.username.trim());
+  const passwordOk = isSafeEqual(inputPassword.trim(), creds.password.trim());
+  return usernameOk && passwordOk;
 }
 
 export function createSessionToken(username: string) {

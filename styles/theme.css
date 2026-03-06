@@ -19,6 +19,12 @@
   --surface: #ffffff;
   --surface-soft: #eef3ff;
   --highlight: #dbe6ff;
+  --glare-blue: #4976ec;
+  --glare-gold: #d4a648;
+  --glare-blur: 24px;
+  --glare-speed: 24s;
+  --glare-size: 420px;
+  --hero-highlight: #dbe6ff;
 
   --sand-200: #efe1c9;
   --sun-300: #f2c06c;
@@ -36,4 +42,10 @@
   --surface: #ffffff;
   --surface-soft: #eef2fb;
   --highlight: #d2dff6;
+  --glare-blue: #4d6ea8;
+  --glare-gold: #bf9a5d;
+  --glare-blur: 24px;
+  --glare-speed: 24s;
+  --glare-size: 420px;
+  --hero-highlight: #d2dff6;
 }

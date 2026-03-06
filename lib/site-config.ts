@@ -72,6 +72,12 @@ function sanitizeHexColor(value: string, fallback: string): string {
   return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(normalized) ? normalized : fallback;
 }
 
+function sanitizeNumber(value: unknown, fallback: number, min: number, max: number): number {
+  const parsed = Number(value);
+  if (Number.isNaN(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
+}
+
 function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
   const rawHiddenPages = Array.isArray(input.hiddenPages) ? input.hiddenPages : [];
   const hiddenPages = rawHiddenPages.filter((page): page is ManagedPageKey =>
@@ -156,6 +162,13 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
       glareGold: sanitizeHexColor(
         input.theme?.glareGold ?? defaultSiteConfig.theme.glareGold,
         defaultSiteConfig.theme.glareGold
+      ),
+      glareBlur: sanitizeNumber(input.theme?.glareBlur, defaultSiteConfig.theme.glareBlur, 0, 80),
+      glareSpeed: sanitizeNumber(input.theme?.glareSpeed, defaultSiteConfig.theme.glareSpeed, 4, 60),
+      glareSize: sanitizeNumber(input.theme?.glareSize, defaultSiteConfig.theme.glareSize, 140, 760),
+      heroHighlight: sanitizeHexColor(
+        input.theme?.heroHighlight ?? defaultSiteConfig.theme.heroHighlight,
+        defaultSiteConfig.theme.heroHighlight
       ),
     },
   };

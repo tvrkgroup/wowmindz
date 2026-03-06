@@ -134,6 +134,74 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
 
   const visiblePageSet = useMemo(() => new Set(config.visiblePages), [config.visiblePages]);
   const menuPageSet = useMemo(() => new Set(config.menuPages), [config.menuPages]);
+  const themeColorFields: Array<{
+    key:
+      | "paper"
+      | "brand400"
+      | "brand600"
+      | "brand700"
+      | "surface"
+      | "surfaceSoft"
+      | "highlight"
+      | "heroHighlight"
+      | "glareBlue"
+      | "glareGold";
+    label: string;
+    description: string;
+  }> = [
+    { key: "paper", label: "Page Background", description: "Main page background color." },
+    { key: "brand400", label: "Brand 400", description: "Soft accent color for chips and light accents." },
+    { key: "brand600", label: "Brand 600", description: "Primary action color for buttons and links." },
+    { key: "brand700", label: "Brand 700", description: "Strong brand tone for heading accents." },
+    { key: "surface", label: "Card Surface", description: "Base card and panel background color." },
+    { key: "surfaceSoft", label: "Soft Surface", description: "Secondary panel background color." },
+    { key: "highlight", label: "Highlight", description: "Highlight and border-tint color." },
+    {
+      key: "heroHighlight",
+      label: "Hero Highlight Background Color",
+      description: "Background behind 'Learning is the Key to Leadership'.",
+    },
+    { key: "glareBlue", label: "Gradient Color 1", description: "Primary color used in moving gradient." },
+    { key: "glareGold", label: "Gradient Color 2", description: "Secondary color used in moving gradient." },
+  ];
+
+  const gradientNumericFields: Array<{
+    key: "glareBlur" | "glareSpeed" | "glareSize";
+    label: string;
+    description: string;
+    min: number;
+    max: number;
+    step: number;
+    unit: string;
+  }> = [
+    {
+      key: "glareBlur",
+      label: "Gradient Blur Strength",
+      description: "Controls softness of the moving gradient glow.",
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: "px",
+    },
+    {
+      key: "glareSpeed",
+      label: "Gradient Animation Speed",
+      description: "Controls how fast the gradient animation moves.",
+      min: 4,
+      max: 60,
+      step: 1,
+      unit: "s",
+    },
+    {
+      key: "glareSize",
+      label: "Gradient Size",
+      description: "Controls how large and diffused the gradient circle appears.",
+      min: 140,
+      max: 760,
+      step: 10,
+      unit: "px",
+    },
+  ];
 
   const updateEvent = (id: string, patch: Partial<SiteEvent>) => {
     setConfig((prev) => ({
@@ -410,235 +478,268 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
             <div>
               <p className="eyebrow">Control Center</p>
               <h1>Website Dashboard</h1>
-              <p>Manage branding, theme, events, news and blog content.</p>
+              <p>Manage theme, homepage, calendar, contact details, footer and publishing in one place.</p>
             </div>
             <button type="button" className="button secondary" onClick={logout}>
               Logout
             </button>
           </div>
 
-          <h3>Branding & Contact</h3>
-          <div className="admin-grid">
-            <label>
-              School Name
-              <input
-                value={config.schoolName}
-                onChange={(event) => setConfig({ ...config, schoolName: event.target.value })}
-              />
-            </label>
-            <label>
-              Header Name (short)
-              <input
-                value={config.schoolNameShort}
-                onChange={(event) => setConfig({ ...config, schoolNameShort: event.target.value })}
-              />
-            </label>
-            <label>
-              Tagline
-              <input value={config.tagline} onChange={(event) => setConfig({ ...config, tagline: event.target.value })} />
-            </label>
-            <label>
-              Logo Path
-              <input
-                value={config.logoPath}
-                onChange={(event) => setConfig({ ...config, logoPath: event.target.value })}
-                placeholder="/logo.png"
-              />
-            </label>
-            <label>
-              Upload Logo to GitHub
-              <input
-                type="file"
-                accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                onChange={(event) => setLogoUploadFile(event.target.files?.[0] || null)}
-              />
-              <button
-                type="button"
-                className="button secondary admin-upload-btn"
-                onClick={uploadLogoToGitHub}
-                disabled={uploadingLogo}
-              >
-                {uploadingLogo ? "Uploading..." : "Upload Logo"}
-              </button>
-            </label>
-            <label>
-              Phone
-              <input
-                value={config.contactPhone}
-                onChange={(event) => setConfig({ ...config, contactPhone: event.target.value })}
-              />
-            </label>
-            <label>
-              Email
-              <input
-                value={config.contactEmail}
-                onChange={(event) => setConfig({ ...config, contactEmail: event.target.value })}
-              />
-            </label>
+          <div className="admin-quick-nav">
+            <a href="#admin-branding">Branding</a>
+            <a href="#admin-theme">Theme</a>
+            <a href="#admin-visibility">Visibility</a>
+            <a href="#admin-events">Events</a>
+            <a href="#admin-news">News</a>
+            <a href="#admin-blog">Blog</a>
           </div>
 
-          <label className="admin-field">
-            Address
-            <textarea
-              value={config.address}
-              onChange={(event) => setConfig({ ...config, address: event.target.value })}
-              rows={3}
-            />
-          </label>
-
-          <div className="divider" />
-          <h3>Theme</h3>
-          <div className="admin-grid">
-            {[
-              { key: "paper", label: "Page Background" },
-              { key: "brand400", label: "Brand 400" },
-              { key: "brand600", label: "Brand 600" },
-              { key: "brand700", label: "Brand 700" },
-              { key: "surface", label: "Card Surface" },
-              { key: "surfaceSoft", label: "Soft Surface" },
-              { key: "highlight", label: "Highlight" },
-            ].map((item) => (
-              <label key={item.key}>
-                {item.label}
-                <div className="admin-theme-field">
+          <div className="admin-sections">
+            <section className="admin-section-box" id="admin-branding">
+              <h3>Homepage Settings</h3>
+              <p className="admin-help">Core school identity and public contact information.</p>
+              <div className="admin-grid">
+                <label>
+                  School Name
                   <input
-                    type="color"
-                    value={config.theme[item.key as keyof typeof config.theme]}
-                    onChange={(event) =>
-                      setConfig({
-                        ...config,
-                        theme: {
-                          ...config.theme,
-                          [item.key]: event.target.value,
-                        },
-                      })
-                    }
+                    value={config.schoolName}
+                    onChange={(event) => setConfig({ ...config, schoolName: event.target.value })}
                   />
-                  <input
-                    value={config.theme[item.key as keyof typeof config.theme]}
-                    onChange={(event) =>
-                      setConfig({
-                        ...config,
-                        theme: {
-                          ...config.theme,
-                          [item.key]: event.target.value,
-                        },
-                      })
-                    }
-                  />
-                </div>
-              </label>
-            ))}
-          </div>
-          <div className="admin-color-strip">
-            <div className="admin-color-swatch">
-              Paper
-              <span className="admin-color-preview" style={{ background: config.theme.paper }} />
-            </div>
-            <div className="admin-color-swatch">
-              Brand 400
-              <span className="admin-color-preview" style={{ background: config.theme.brand400 }} />
-            </div>
-            <div className="admin-color-swatch">
-              Brand 600
-              <span className="admin-color-preview" style={{ background: config.theme.brand600 }} />
-            </div>
-            <div className="admin-color-swatch">
-              Brand 700
-              <span className="admin-color-preview" style={{ background: config.theme.brand700 }} />
-            </div>
-            <div className="admin-color-swatch">
-              Card Surface
-              <span className="admin-color-preview" style={{ background: config.theme.surface }} />
-            </div>
-            <div className="admin-color-swatch">
-              Soft Surface
-              <span className="admin-color-preview" style={{ background: config.theme.surfaceSoft }} />
-            </div>
-            <div className="admin-color-swatch">
-              Highlight
-              <span className="admin-color-preview" style={{ background: config.theme.highlight }} />
-            </div>
-          </div>
-          <div className="admin-inline-actions">
-            <button
-              type="button"
-              className="button secondary"
-              onClick={() =>
-                setConfig((prev) => ({
-                  ...prev,
-                  theme: defaultSiteConfig.theme,
-                }))
-              }
-            >
-              Reset Theme Only
-            </button>
-          </div>
-
-          <div className="divider" />
-          <h3>Page Visibility</h3>
-          <p className="admin-help">Checked means shown. Unchecked means hidden.</p>
-          <h4>Page Visibility (general)</h4>
-          <div className="admin-check-grid">
-            {ALL_MANAGED_PAGES.map((page) => (
-              <label key={page} className="admin-check">
-                <input
-                  type="checkbox"
-                  checked={visiblePageSet.has(page)}
-                  onChange={(event) => {
-                    const nextVisible = new Set(config.visiblePages);
-                    const nextMenu = new Set(config.menuPages);
-                    if (event.target.checked) {
-                      nextVisible.add(page);
-                    } else {
-                      nextVisible.delete(page);
-                      nextMenu.delete(page);
-                    }
-                    setConfig({
-                      ...config,
-                      visiblePages: Array.from(nextVisible) as ManagedPageKey[],
-                      menuPages: Array.from(nextMenu) as ManagedPageKey[],
-                      hiddenPages: ALL_MANAGED_PAGES.filter((item) => !nextVisible.has(item)),
-                    });
-                  }}
-                />
-                <span>{PAGE_LABELS[page]}</span>
-              </label>
-            ))}
-          </div>
-          <h4>Show In Menu</h4>
-          <div className="admin-check-grid">
-            {ALL_MANAGED_PAGES.map((page) => {
-              const disabled = !visiblePageSet.has(page);
-              return (
-                <label key={`${page}-menu`} className={`admin-check ${disabled ? "is-disabled" : ""}`}>
-                  <input
-                    type="checkbox"
-                    checked={menuPageSet.has(page) && !disabled}
-                    disabled={disabled}
-                    onChange={(event) => {
-                      const next = new Set(config.menuPages);
-                      if (event.target.checked) next.add(page);
-                      else next.delete(page);
-                      setConfig({
-                        ...config,
-                        menuPages: Array.from(next) as ManagedPageKey[],
-                      });
-                    }}
-                  />
-                  <span>{PAGE_LABELS[page]}</span>
                 </label>
-              );
-            })}
-          </div>
+                <label>
+                  Header Name (short)
+                  <input
+                    value={config.schoolNameShort}
+                    onChange={(event) => setConfig({ ...config, schoolNameShort: event.target.value })}
+                  />
+                </label>
+                <label>
+                  Tagline
+                  <input
+                    value={config.tagline}
+                    onChange={(event) => setConfig({ ...config, tagline: event.target.value })}
+                  />
+                </label>
+                <label>
+                  Logo Path
+                  <input
+                    value={config.logoPath}
+                    onChange={(event) => setConfig({ ...config, logoPath: event.target.value })}
+                    placeholder="/logo.png"
+                  />
+                </label>
+                <label>
+                  Upload Logo to GitHub
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    onChange={(event) => setLogoUploadFile(event.target.files?.[0] || null)}
+                  />
+                  <button
+                    type="button"
+                    className="button secondary admin-upload-btn"
+                    onClick={uploadLogoToGitHub}
+                    disabled={uploadingLogo}
+                  >
+                    {uploadingLogo ? "Uploading..." : "Upload Logo"}
+                  </button>
+                </label>
+                <label>
+                  Phone
+                  <input
+                    value={config.contactPhone}
+                    onChange={(event) => setConfig({ ...config, contactPhone: event.target.value })}
+                  />
+                </label>
+                <label>
+                  Email
+                  <input
+                    value={config.contactEmail}
+                    onChange={(event) => setConfig({ ...config, contactEmail: event.target.value })}
+                  />
+                </label>
+              </div>
+              <label className="admin-field">
+                Address
+                <textarea
+                  value={config.address}
+                  onChange={(event) => setConfig({ ...config, address: event.target.value })}
+                  rows={3}
+                />
+              </label>
+            </section>
 
-          <div className="divider" />
-          <div className="admin-section-head">
-            <h3>Events</h3>
-            <button type="button" className="button secondary" onClick={addEvent}>
-              Add Event
-            </button>
-          </div>
+            <section className="admin-section-box" id="admin-theme">
+              <h3>Theme Settings</h3>
+              <p className="admin-help">Global theme controls used across buttons, cards, dropdowns, highlights and gradients.</p>
+              <div className="admin-grid">
+                {themeColorFields.map((item) => (
+                  <label key={item.key}>
+                    {item.label}
+                    <p className="admin-help">{item.description}</p>
+                    <div className="admin-theme-field">
+                      <input
+                        type="color"
+                        value={config.theme[item.key]}
+                        onChange={(event) =>
+                          setConfig({
+                            ...config,
+                            theme: {
+                              ...config.theme,
+                              [item.key]: event.target.value,
+                            },
+                          })
+                        }
+                      />
+                      <input
+                        value={config.theme[item.key]}
+                        onChange={(event) =>
+                          setConfig({
+                            ...config,
+                            theme: {
+                              ...config.theme,
+                              [item.key]: event.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+                  </label>
+                ))}
+                {gradientNumericFields.map((item) => (
+                  <label key={item.key}>
+                    {item.label}
+                    <p className="admin-help">{item.description}</p>
+                    <div className="admin-range-field">
+                      <input
+                        type="range"
+                        min={item.min}
+                        max={item.max}
+                        step={item.step}
+                        value={config.theme[item.key]}
+                        onChange={(event) =>
+                          setConfig({
+                            ...config,
+                            theme: {
+                              ...config.theme,
+                              [item.key]: Number(event.target.value),
+                            },
+                          })
+                        }
+                      />
+                      <span>{config.theme[item.key]}{item.unit}</span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              <div className="admin-color-strip">
+                <div className="admin-color-swatch">
+                  Paper
+                  <span className="admin-color-preview" style={{ background: config.theme.paper }} />
+                </div>
+                <div className="admin-color-swatch">
+                  Brand 400
+                  <span className="admin-color-preview" style={{ background: config.theme.brand400 }} />
+                </div>
+                <div className="admin-color-swatch">
+                  Brand 600
+                  <span className="admin-color-preview" style={{ background: config.theme.brand600 }} />
+                </div>
+                <div className="admin-color-swatch">
+                  Card Surface
+                  <span className="admin-color-preview" style={{ background: config.theme.surface }} />
+                </div>
+                <div className="admin-color-swatch">
+                  Highlight
+                  <span className="admin-color-preview" style={{ background: config.theme.highlight }} />
+                </div>
+                <div className="admin-color-swatch">
+                  Hero Highlight
+                  <span className="admin-color-preview" style={{ background: config.theme.heroHighlight }} />
+                </div>
+              </div>
+              <div className="admin-inline-actions">
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      theme: defaultSiteConfig.theme,
+                    }))
+                  }
+                >
+                  Reset Theme Only
+                </button>
+              </div>
+            </section>
+
+            <section className="admin-section-box" id="admin-visibility">
+              <h3>Navigation & Visibility</h3>
+              <p className="admin-help">Checked means shown. Unchecked means hidden.</p>
+              <h4>Page Visibility (general)</h4>
+              <div className="admin-check-grid">
+                {ALL_MANAGED_PAGES.map((page) => (
+                  <label key={page} className="admin-check">
+                    <input
+                      type="checkbox"
+                      checked={visiblePageSet.has(page)}
+                      onChange={(event) => {
+                        const nextVisible = new Set(config.visiblePages);
+                        const nextMenu = new Set(config.menuPages);
+                        if (event.target.checked) {
+                          nextVisible.add(page);
+                        } else {
+                          nextVisible.delete(page);
+                          nextMenu.delete(page);
+                        }
+                        setConfig({
+                          ...config,
+                          visiblePages: Array.from(nextVisible) as ManagedPageKey[],
+                          menuPages: Array.from(nextMenu) as ManagedPageKey[],
+                          hiddenPages: ALL_MANAGED_PAGES.filter((item) => !nextVisible.has(item)),
+                        });
+                      }}
+                    />
+                    <span>{PAGE_LABELS[page]}</span>
+                  </label>
+                ))}
+              </div>
+              <h4>Show In Menu</h4>
+              <div className="admin-check-grid">
+                {ALL_MANAGED_PAGES.map((page) => {
+                  const disabled = !visiblePageSet.has(page);
+                  return (
+                    <label key={`${page}-menu`} className={`admin-check ${disabled ? "is-disabled" : ""}`}>
+                      <input
+                        type="checkbox"
+                        checked={menuPageSet.has(page) && !disabled}
+                        disabled={disabled}
+                        onChange={(event) => {
+                          const next = new Set(config.menuPages);
+                          if (event.target.checked) next.add(page);
+                          else next.delete(page);
+                          setConfig({
+                            ...config,
+                            menuPages: Array.from(next) as ManagedPageKey[],
+                          });
+                        }}
+                      />
+                      <span>{PAGE_LABELS[page]}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className="admin-section-box" id="admin-events">
+              <div className="admin-section-head">
+                <h3>Calendar Settings</h3>
+                <button type="button" className="button secondary" onClick={addEvent}>
+                  Add Event
+                </button>
+              </div>
+              <p className="admin-help">Events power the calendar dates, event list, and event details panel.</p>
           <div className="admin-article-list">
             {config.events.map((event) => (
               <article className="admin-article-card" key={event.id}>
@@ -739,14 +840,16 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               </article>
             ))}
           </div>
+            </section>
 
-          <div className="divider" />
-          <div className="admin-section-head">
-            <h3>News Articles</h3>
-            <button type="button" className="button secondary" onClick={() => addPost("newsPosts")}>
-              Add News
-            </button>
-          </div>
+            <section className="admin-section-box" id="admin-news">
+              <div className="admin-section-head">
+                <h3>News Settings</h3>
+                <button type="button" className="button secondary" onClick={() => addPost("newsPosts")}>
+                  Add News
+                </button>
+              </div>
+              <p className="admin-help">Create, schedule, hide or publish school news updates.</p>
           <div className="admin-article-list">
             {config.newsPosts.map((post) => (
               <article className="admin-article-card" key={post.id}>
@@ -847,14 +950,16 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               </article>
             ))}
           </div>
+            </section>
 
-          <div className="divider" />
-          <div className="admin-section-head">
-            <h3>Blog Articles</h3>
-            <button type="button" className="button secondary" onClick={() => addPost("blogPosts")}>
-              Add Blog
-            </button>
-          </div>
+            <section className="admin-section-box" id="admin-blog">
+              <div className="admin-section-head">
+                <h3>Blog Settings</h3>
+                <button type="button" className="button secondary" onClick={() => addPost("blogPosts")}>
+                  Add Blog
+                </button>
+              </div>
+              <p className="admin-help">Manage rich articles with category, schedule, image and content formatting.</p>
           <div className="admin-article-list">
             {config.blogPosts.map((post) => (
               <article className="admin-article-card" key={post.id}>
@@ -954,6 +1059,8 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                 ) : null}
               </article>
             ))}
+          </div>
+            </section>
           </div>
 
           <div className="admin-actions">

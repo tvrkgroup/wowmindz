@@ -70,6 +70,10 @@ export interface SiteConfig {
     highlight: string;
     glareBlue: string;
     glareGold: string;
+    glareBlur: number;
+    glareSpeed: number;
+    glareSize: number;
+    heroHighlight: string;
   };
 }
 
@@ -188,5 +192,9 @@ export const defaultSiteConfig: SiteConfig = {
     highlight: "#dbe6ff",
     glareBlue: "#4976ec",
     glareGold: "#d4a648",
+    glareBlur: 24,
+    glareSpeed: 24,
+    glareSize: 420,
+    heroHighlight: "#dbe6ff",
   },
 };

@@ -53,6 +53,10 @@ async function RootWithConfig({
     "--highlight": config.theme.highlight,
     "--glare-blue": config.theme.glareBlue,
     "--glare-gold": config.theme.glareGold,
+    "--glare-blur": `${config.theme.glareBlur}px`,
+    "--glare-speed": `${config.theme.glareSpeed}s`,
+    "--glare-size": `${config.theme.glareSize}px`,
+    "--hero-highlight": config.theme.heroHighlight,
   };
 
   return (

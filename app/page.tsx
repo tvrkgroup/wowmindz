@@ -105,7 +105,7 @@ export default async function Home() {
         <div className="container home-hero-grid">
           <div className="home-hero-left">
             <p className="eyebrow home-hero-eyebrow">THE SILVER BROOK PUBLIC SCHOOL</p>
-            <h1 className="home-gradient-title">{config.tagline}</h1>
+            <h1 className="home-gradient-title home-tagline-highlight">{config.tagline}</h1>
             <p className="home-subline">Where Knowledge Sparks Confidence</p>
             <p className="home-vision-line">I believe I can change the world</p>
             <p className="home-address">{config.address}</p>

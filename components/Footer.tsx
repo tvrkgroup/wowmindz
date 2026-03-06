@@ -57,7 +57,7 @@ export default async function Footer() {
             <p>Sat: 9:00 AM - 1:00 PM</p>
             <p>Sun: Closed</p>
             <div className="divider" />
-            <Link className="button secondary" href="/contact">
+            <Link className="button secondary footer-contact-button" href="/contact">
               Contact Us
             </Link>
           </div>

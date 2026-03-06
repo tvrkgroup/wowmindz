@@ -31,6 +31,10 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
   const [year, setYear] = useState(now.getFullYear());
   const [selectedIso, setSelectedIso] = useState(toIsoDay(now));
   const [showAllEvents, setShowAllEvents] = useState(false);
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [filterFrom, setFilterFrom] = useState("");
+  const [filterTo, setFilterTo] = useState("");
+  const [filterQuery, setFilterQuery] = useState("");
 
   const eventMap = useMemo(() => {
     const map = new Map<string, SiteEvent[]>();
@@ -59,6 +63,19 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
   const monthEvents = sortedEvents.filter((event) => {
     const date = toEventDate(event);
     return date && date.getMonth() === month && date.getFullYear() === year;
+  });
+  const eventCategories = useMemo(() => Array.from(new Set(sortedEvents.map((item) => item.category))).sort(), [sortedEvents]);
+  const filteredEvents = sortedEvents.filter((event) => {
+    const when = toEventDate(event);
+    if (filterCategory !== "all" && event.category !== filterCategory) return false;
+    if (filterFrom && (!when || when.getTime() < new Date(filterFrom).getTime())) return false;
+    if (filterTo && (!when || when.getTime() > new Date(filterTo).getTime())) return false;
+    if (filterQuery) {
+      const q = filterQuery.toLowerCase();
+      const hay = `${event.title} ${event.shortDescription} ${event.location}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
   });
 
   const jumpToEvent = (event: SiteEvent) => {
@@ -173,27 +190,10 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
         )}
 
         <div className="school-calendar-view-all">
-          <button type="button" className="button secondary" onClick={() => setShowAllEvents((prev) => !prev)}>
-            {showAllEvents ? "Hide All Events" : "View All Events"}
+          <button type="button" className="button secondary" onClick={() => setShowAllEvents(true)}>
+            View All Events
           </button>
         </div>
-
-        {showAllEvents ? (
-          <div className="school-calendar-month-list">
-            {sortedEvents.length > 0 ? (
-              sortedEvents.map((event) => (
-                <button type="button" className="school-calendar-month-item" key={`all-${event.id}`} onClick={() => jumpToEvent(event)}>
-                  <span>
-                    {new Date(event.date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
-                  </span>
-                  <strong>{event.title}</strong>
-                </button>
-              ))
-            ) : (
-              <p className="admin-help">No events.</p>
-            )}
-          </div>
-        ) : null}
 
         <div className="divider" />
         <h4>This Month</h4>
@@ -212,6 +212,63 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
           )}
         </div>
       </article>
+
+      {showAllEvents ? (
+        <div className="calendar-modal" role="dialog" aria-modal="true" aria-label="All events">
+          <button type="button" className="calendar-modal-backdrop" onClick={() => setShowAllEvents(false)} />
+          <div className="calendar-modal-panel">
+            <div className="calendar-modal-head">
+              <h3>All Events</h3>
+              <button type="button" className="calendar-modal-close" onClick={() => setShowAllEvents(false)}>
+                X
+              </button>
+            </div>
+            <div className="calendar-modal-filters">
+              <input
+                placeholder="Search title or location"
+                value={filterQuery}
+                onChange={(e) => setFilterQuery(e.target.value)}
+              />
+              <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+                <option value="all">All Categories</option>
+                {eventCategories.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+              <input type="date" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} />
+              <input type="date" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} />
+            </div>
+            <div className="calendar-modal-list">
+              {filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
+                  <button
+                    type="button"
+                    className="school-calendar-month-item"
+                    key={`all-${event.id}`}
+                    onClick={() => {
+                      jumpToEvent(event);
+                      setShowAllEvents(false);
+                    }}
+                  >
+                    <span>
+                      {new Date(event.date).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                    <strong>{event.title}</strong>
+                  </button>
+                ))
+              ) : (
+                <p className="admin-help">No events match the selected filters.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
