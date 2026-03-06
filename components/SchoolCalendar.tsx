@@ -30,6 +30,7 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
   const [month, setMonth] = useState(now.getMonth());
   const [year, setYear] = useState(now.getFullYear());
   const [selectedIso, setSelectedIso] = useState(toIsoDay(now));
+  const [showAllEvents, setShowAllEvents] = useState(false);
 
   const eventMap = useMemo(() => {
     const map = new Map<string, SiteEvent[]>();
@@ -47,6 +48,14 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const selectedEvents = eventMap.get(selectedIso) || [];
+  const upcomingEvents = sortedEvents.filter((event) => {
+    const date = toEventDate(event);
+    if (!date) return false;
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    return date.getTime() >= startOfToday.getTime();
+  });
+  const nextEvent = upcomingEvents[0] || null;
   const monthEvents = sortedEvents.filter((event) => {
     const date = toEventDate(event);
     return date && date.getMonth() === month && date.getFullYear() === year;
@@ -149,6 +158,42 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
             <p className="admin-help">No events on this date.</p>
           )}
         </div>
+
+        <div className="divider" />
+        <h4>Next Event</h4>
+        {nextEvent ? (
+          <button type="button" className="school-calendar-month-item" onClick={() => jumpToEvent(nextEvent)}>
+            <span>
+              {new Date(nextEvent.date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+            </span>
+            <strong>{nextEvent.title}</strong>
+          </button>
+        ) : (
+          <p className="admin-help">No upcoming events.</p>
+        )}
+
+        <div className="school-calendar-view-all">
+          <button type="button" className="button secondary" onClick={() => setShowAllEvents((prev) => !prev)}>
+            {showAllEvents ? "Hide All Events" : "View All Events"}
+          </button>
+        </div>
+
+        {showAllEvents ? (
+          <div className="school-calendar-month-list">
+            {sortedEvents.length > 0 ? (
+              sortedEvents.map((event) => (
+                <button type="button" className="school-calendar-month-item" key={`all-${event.id}`} onClick={() => jumpToEvent(event)}>
+                  <span>
+                    {new Date(event.date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                  </span>
+                  <strong>{event.title}</strong>
+                </button>
+              ))
+            ) : (
+              <p className="admin-help">No events.</p>
+            )}
+          </div>
+        ) : null}
 
         <div className="divider" />
         <h4>This Month</h4>
