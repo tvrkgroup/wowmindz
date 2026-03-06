@@ -11,6 +11,7 @@ import {
 const DATA_DIR = path.join(process.cwd(), "data");
 const CONFIG_PATH = path.join(DATA_DIR, "site-config.json");
 const KV_KEY = "site-config";
+const IS_VERCEL = process.env.VERCEL === "1";
 
 function sanitizeEvent(input: Partial<SiteEvent>, index: number): SiteEvent {
   const date = (input.date ?? "").toString().trim().slice(0, 40);
@@ -69,6 +70,7 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
 }
 
 async function ensureConfigFile() {
+  if (IS_VERCEL) return;
   await fs.mkdir(DATA_DIR, { recursive: true });
   try {
     await fs.access(CONFIG_PATH);
@@ -119,6 +121,7 @@ async function writeConfigToKv(config: SiteConfig) {
 export async function getSiteConfig(): Promise<SiteConfig> {
   const kvConfig = await readConfigFromKv();
   if (kvConfig) return kvConfig;
+  if (IS_VERCEL) return defaultSiteConfig;
 
   await ensureConfigFile();
   try {
@@ -134,6 +137,8 @@ export async function saveSiteConfig(nextConfig: Partial<SiteConfig>): Promise<S
   const merged = sanitizeConfig(nextConfig);
   if (hasKvConfig()) {
     await writeConfigToKv(merged);
+  } else if (IS_VERCEL) {
+    throw new Error("KV is not configured. Set KV_REST_API_URL and KV_REST_API_TOKEN in Vercel.");
   } else {
     await ensureConfigFile();
     await fs.writeFile(CONFIG_PATH, JSON.stringify(merged, null, 2), "utf8");
