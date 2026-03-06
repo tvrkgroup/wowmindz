@@ -28,7 +28,7 @@ export default async function FacultyPage() {
         <div className="container">
           <div className="grid grid-3">
             {faculty.map((person) => (
-              <div className="card" key={person.name}>
+              <div className="card info-card" key={person.name}>
                 <h3>{person.name}</h3>
                 <p>{person.role}</p>
                 <p>

@@ -15,14 +15,14 @@ export default async function TransportPage() {
       />
       <section className="section">
         <div className="container grid grid-2">
-          <div className="card">
+          <div className="card info-card">
             <h3>Routes</h3>
             <p>
               Buses will operate across Gobichettipalayam and surrounding areas.
               Final routes will be announced before opening.
             </p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Safety</h3>
             <p>
               Dedicated transport coordinators, GPS tracking, and trained

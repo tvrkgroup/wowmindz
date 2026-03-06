@@ -17,15 +17,15 @@ export default async function FeesPage() {
       />
       <section className="section">
         <div className="container grid grid-3">
-          <div className="card">
+          <div className="card info-card">
             <h3>Primary School</h3>
             <p>Annual tuition and activity fees. Contact admissions for details.</p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Middle School</h3>
             <p>Includes lab, library, and co-curricular support.</p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Senior School</h3>
             <p>Subject-specific lab access and exam guidance support.</p>
           </div>

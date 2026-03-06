@@ -16,7 +16,7 @@ export default async function ContactPage() {
       />
       <section className="section section-pattern">
         <div className="container grid grid-2">
-          <div className="card">
+          <div className="card info-card">
             <h3>School Office</h3>
             <div className="info-row">
               <span className="icon icon-location" aria-hidden="true" />
@@ -41,7 +41,7 @@ export default async function ContactPage() {
               </a>
             </div>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Visit Hours</h3>
             <p>Monday to Friday: 8:30 AM - 4:00 PM</p>
             <p>Saturday: 9:00 AM - 1:00 PM</p>

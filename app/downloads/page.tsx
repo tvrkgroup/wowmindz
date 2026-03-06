@@ -25,7 +25,7 @@ export default async function DownloadsPage() {
       <section className="section">
         <div className="container grid grid-3">
           {docs.map((doc) => (
-            <div className="card" key={doc}>
+            <div className="card info-card" key={doc}>
               <h3>{doc}</h3>
               <p>PDF file placeholder — upload the final document.</p>
             </div>

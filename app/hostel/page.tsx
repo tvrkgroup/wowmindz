@@ -15,11 +15,11 @@ export default async function HostelPage() {
       />
       <section className="section">
         <div className="container grid grid-2">
-          <div className="card">
+          <div className="card info-card">
             <h3>Facilities</h3>
             <p>Well-ventilated rooms, study halls, and nutritious meals.</p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Student Care</h3>
             <p>House parents, wellness checks, and structured routines.</p>
           </div>

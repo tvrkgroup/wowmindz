@@ -101,6 +101,10 @@ a {
   padding: 48px 0;
 }
 
+.section .container > .divider {
+  margin: 20px 0 16px;
+}
+
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -247,6 +251,102 @@ h4 {
   color: var(--ink-700);
 }
 
+.info-card {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, white), color-mix(in srgb, var(--surface-soft) 56%, white));
+}
+
+.info-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--brand-600), color-mix(in srgb, var(--brand-400) 75%, white));
+  opacity: 0.9;
+}
+
+.info-card::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--highlight) 65%, white), transparent 68%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.info-card h3 {
+  margin-top: 6px;
+  margin-bottom: 2px;
+  font-size: clamp(1.06rem, 1.5vw, 1.2rem);
+  line-height: 1.3;
+}
+
+.info-card h3:not(:first-child) {
+  margin-top: 10px;
+}
+
+.info-card h3 + p {
+  margin-top: 2px;
+}
+
+.info-card p {
+  line-height: 1.62;
+  font-size: 0.96rem;
+}
+
+.info-card p + p {
+  margin-top: 8px;
+}
+
+.info-card .divider {
+  margin: 8px 0;
+}
+
+.info-card .info-row {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-card .info-row a {
+  line-height: 1.6;
+}
+
+.info-card .info-row + .info-row {
+  margin-top: 10px;
+}
+
+.info-card ul,
+.info-card ol {
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.grid-3 .info-card:nth-child(3n + 1) {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 97%, white), color-mix(in srgb, var(--surface-soft) 52%, white));
+}
+
+.grid-3 .info-card:nth-child(3n + 2) {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 96%, white), color-mix(in srgb, var(--highlight) 32%, white));
+}
+
+.grid-3 .info-card:nth-child(3n + 3) {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, white), color-mix(in srgb, var(--surface-soft) 48%, white));
+}
+
 .tag {
   display: inline-block;
   padding: 6px 12px;
@@ -272,10 +372,16 @@ footer {
   font-size: 0.85rem;
 }
 
+footer .grid {
+  gap: 22px;
+  align-items: start;
+}
+
 footer h4 {
   color: white;
   margin-bottom: 8px;
   font-size: 0.95rem;
+  letter-spacing: 0.02em;
 }
 
 footer a {
@@ -284,6 +390,7 @@ footer a {
 
 footer p {
   color: #ffffff;
+  line-height: 1.6;
 }
 
 footer .info-row + .info-row {
@@ -320,6 +427,8 @@ footer .footer-contact .divider {
   flex-wrap: wrap;
   color: #ffffff;
   font-size: 0.78rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 12px;
 }
 
 @media (max-width: 900px) {
@@ -638,7 +747,7 @@ footer .footer-contact .divider {
 }
 
 .page-hero {
-  padding: 80px 0 40px;
+  padding: 74px 0 36px;
   background: linear-gradient(
     120deg,
     color-mix(in srgb, var(--brand-400) 22%, white),
@@ -648,7 +757,7 @@ footer .footer-contact .divider {
 
 .page-hero .container {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .gallery-image {
@@ -678,6 +787,7 @@ footer .footer-contact .divider {
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  min-width: 0;
 }
 
 .info-row + .info-row {
@@ -695,6 +805,7 @@ footer .footer-contact .divider {
   color: var(--brand-700);
   flex: 0 0 auto;
   position: relative;
+  margin-top: 2px;
 }
 
 .icon::before {
@@ -1364,6 +1475,25 @@ code {
     padding: 40px 0;
   }
 
+  .page-hero {
+    padding: 54px 0 26px;
+  }
+
+  .info-card {
+    padding: 16px;
+    border-radius: 14px;
+    gap: 10px;
+  }
+
+  .info-card h3 {
+    font-size: 1rem;
+  }
+
+  .info-card p {
+    font-size: 0.9rem;
+    line-height: 1.52;
+  }
+
   .home-cards-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
@@ -1431,6 +1561,15 @@ code {
 
   .home-cards-grid .card {
     padding: 12px;
+  }
+
+  footer {
+    padding: 22px 0 12px;
+  }
+
+  .footer-bottom {
+    font-size: 0.74rem;
+    gap: 8px;
   }
 }
 

@@ -17,28 +17,28 @@ export default async function CurriculumPage() {
       />
       <section className="section">
         <div className="container grid grid-2">
-          <div className="card">
+          <div className="card info-card">
             <h3>Core Subjects</h3>
             <p>
               Languages, Mathematics, Science, Social Studies, and ICT aligned
               with strong academic standards.
             </p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>STEM & Innovation</h3>
             <p>
               Robotics, coding, and maker projects that connect theory to real
               application.
             </p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Life Skills</h3>
             <p>
               Communication, collaboration, leadership, and personal growth
               embedded across subjects.
             </p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Academic Readiness</h3>
             <p>
               Strong foundations for competitive exams such as NEET, IIT, and JEE

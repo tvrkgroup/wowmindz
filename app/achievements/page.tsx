@@ -27,7 +27,7 @@ export default async function AchievementsPage() {
       <section className="section">
         <div className="container grid grid-3">
           {milestones.map((item) => (
-            <div className="card" key={item}>
+            <div className="card info-card" key={item}>
               <h3>{item}</h3>
               <p>Progress toward a safe, modern, and joyful learning campus.</p>
             </div>

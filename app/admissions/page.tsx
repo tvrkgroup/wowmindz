@@ -18,7 +18,7 @@ export default async function AdmissionsPage() {
       />
       <section className="section section-pattern">
         <div className="container grid grid-2">
-          <div className="card">
+          <div className="card info-card">
             <h3>Admissions Process</h3>
             <ul className="list">
               <li>Submit enquiry form</li>
@@ -27,7 +27,7 @@ export default async function AdmissionsPage() {
               <li>Confirmation and orientation</li>
             </ul>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Required Documents</h3>
             <ul className="list">
               <li>Birth certificate</li>

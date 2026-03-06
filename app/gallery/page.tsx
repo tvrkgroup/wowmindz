@@ -23,7 +23,7 @@ export default async function GalleryPage() {
             "/images/ai-campus-5.svg",
             "/images/ai-campus-6.svg",
           ].map((src, i) => (
-            <div className="card" key={src}>
+            <div className="card info-card" key={src}>
               <img className="gallery-image" src={src} alt={`Campus view ${i + 1}`} />
               <p>Campus view #{i + 1}</p>
             </div>

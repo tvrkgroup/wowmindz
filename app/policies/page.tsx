@@ -27,7 +27,7 @@ export default async function PoliciesPage() {
       <section className="section">
         <div className="container grid grid-3">
           {policies.map((policy) => (
-            <div className="card" key={policy}>
+            <div className="card info-card" key={policy}>
               <h3>{policy}</h3>
               <p>Updated annually with input from staff and parents.</p>
             </div>

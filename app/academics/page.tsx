@@ -18,15 +18,15 @@ export default async function AcademicsPage() {
       />
       <section className="section">
         <div className="container grid grid-3">
-          <div className="card">
+          <div className="card info-card">
             <h3>Grades I–III</h3>
             <p>Core literacy, numeracy, and joyful exploration.</p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Grades IV–V</h3>
             <p>Conceptual learning with STEM labs and projects.</p>
           </div>
-          <div className="card">
+          <div className="card info-card">
             <h3>Grades VI–VII</h3>
             <p>Critical thinking, applied science, and exam readiness.</p>
           </div>
