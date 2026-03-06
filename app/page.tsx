@@ -104,12 +104,7 @@ export default async function Home() {
       <section className="section home-hero">
         <div className="container home-hero-grid">
           <div className="home-hero-left">
-            <div className="home-branding">
-              <img className="hero-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
-              <h1 className="home-school-name">{config.schoolName.toUpperCase()}</h1>
-            </div>
-            <p className="eyebrow">CBSE Curriculum</p>
-            <h2 className="home-tagline">{config.tagline}</h2>
+            <h1>{config.tagline}</h1>
             <p className="home-subline">Where Knowledge Sparks Confidence</p>
             <p className="home-address">{config.address}</p>
             <div className="home-badges">
@@ -199,8 +194,11 @@ export default async function Home() {
 
       <section className="section accent home-section section-pattern">
         <div className="container">
-          <h2>THE SILVER BROOK PUBLIC SCHOOL</h2>
           <article className="card home-cbse-card home-theme-card">
+            <div className="home-cbse-head">
+              <img className="hero-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
+              <h2>THE SILVER BROOK PUBLIC SCHOOL</h2>
+            </div>
             <p>(To be affiliated to CBSE Board, New Delhi)</p>
             <p>Near Ashtalakshmi Temple, Karatoor, Gobichettipalayam</p>
             <p>Contact: 9944055929</p>

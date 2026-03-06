@@ -32,8 +32,8 @@ body {
 }
 
 .splash-screen img {
-  width: 156px;
-  height: 156px;
+  width: 228px;
+  height: 228px;
   object-fit: contain;
   animation: splash-pop 0.8s cubic-bezier(0.2, 0.65, 0.2, 1) forwards;
 }
@@ -1225,6 +1225,18 @@ code {
   gap: 8px;
 }
 
+.home-cbse-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.home-cbse-head h2 {
+  font-size: clamp(1.35rem, 2.6vw, 2.1rem);
+}
+
 .home-theme-card {
   background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 98%, white), color-mix(in srgb, var(--surface-soft) 70%, white));
   border: 1px solid color-mix(in srgb, var(--highlight) 70%, rgba(47, 91, 215, 0.16));
@@ -1533,23 +1545,15 @@ code {
     font-size: 1rem;
   }
 
-  .home-branding {
-    grid-template-columns: 1fr;
-    justify-items: start;
-    gap: 10px;
-  }
-
   .hero-logo {
     width: 92px;
     height: 92px;
   }
 
-  .home-school-name {
-    font-size: clamp(1.36rem, 7vw, 1.7rem);
-  }
-
-  .home-tagline {
-    font-size: 1.15rem;
+  .home-cbse-head {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 10px;
   }
 
   .activity-program-card {
@@ -1587,6 +1591,13 @@ code {
 
   .school-calendar-controls .button {
     justify-content: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .splash-screen img {
+    width: 180px;
+    height: 180px;
   }
 }
 
