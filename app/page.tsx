@@ -105,13 +105,13 @@ export default async function Home() {
         <div className="container home-hero-grid">
           <div className="home-hero-left">
             <p className="eyebrow home-hero-eyebrow">THE SILVER BROOK PUBLIC SCHOOL</p>
-            <h1>{config.tagline}</h1>
+            <h1 className="home-gradient-title">{config.tagline}</h1>
             <p className="home-subline">Where Knowledge Sparks Confidence</p>
+            <p className="home-vision-line">I believe I can change the world</p>
             <p className="home-address">{config.address}</p>
             <div className="home-badges">
               <span className="home-badge">Admissions Open - 2026-27</span>
               <span className="home-badge">Grade I to VII</span>
-              <span className="home-badge">I believe I can change the world</span>
             </div>
             <div className="home-actions">
               <Link href="/admissions" className="button">

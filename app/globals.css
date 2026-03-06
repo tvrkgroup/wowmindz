@@ -984,7 +984,7 @@ code {
   border-radius: 12px;
   border: 1px solid rgba(47, 91, 215, 0.16);
   background: #ffffff;
-  color: var(--ink-800);
+  color: var(--ink-900);
   font-weight: 600;
 }
 
@@ -1074,7 +1074,7 @@ code {
 
 .home-hero-left {
   display: grid;
-  gap: 14px;
+  gap: 10px;
   align-content: start;
   max-width: 680px;
 }
@@ -1110,6 +1110,19 @@ code {
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--brand-700);
+}
+
+.home-gradient-title {
+  background: linear-gradient(120deg, var(--brand-700), var(--brand-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.home-vision-line {
+  font-weight: 400;
+  color: var(--ink-600);
+  margin-top: -2px;
 }
 
 .home-badges {

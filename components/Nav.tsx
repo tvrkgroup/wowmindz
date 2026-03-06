@@ -62,6 +62,7 @@ export default function Nav() {
     const inMenu = menuPages.length > 0 ? menuPages.includes(link.pageKey) : generallyVisible;
     return generallyVisible && inMenu;
   });
+  const safeLinks = visibleLinks.length > 0 ? visibleLinks : navLinks.filter((link) => !hiddenFallback.includes(link.pageKey));
   const nameLines = config.schoolNameShort
     ? splitHeaderName(config.schoolNameShort)
     : safeFallback;
@@ -95,7 +96,7 @@ export default function Nav() {
           </span>
         </Link>
         <nav className="nav-links">
-          {visibleLinks.map((link) => (
+          {safeLinks.map((link) => (
             <Link key={link.href} href={link.href}>
               {link.label}
             </Link>
@@ -149,7 +150,7 @@ export default function Nav() {
             </button>
           </div>
           <nav className="mobile-menu-links" aria-label="Mobile links">
-            {visibleLinks.map((link) => (
+            {safeLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>
                 {link.label}
               </Link>
