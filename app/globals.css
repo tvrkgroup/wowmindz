@@ -1074,10 +1074,27 @@ code {
   gap: 16px;
 }
 
+.home-branding {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
 .hero-logo {
-  width: 96px;
-  height: 96px;
+  width: 122px;
+  height: 122px;
   object-fit: contain;
+}
+
+.home-school-name {
+  font-size: clamp(1.75rem, 3vw, 2.6rem);
+  line-height: 1.08;
+}
+
+.home-tagline {
+  font-size: clamp(1.38rem, 2.5vw, 2rem);
+  color: var(--ink-900);
 }
 
 .home-subline {
@@ -1514,6 +1531,25 @@ code {
 
   .home-subline {
     font-size: 1rem;
+  }
+
+  .home-branding {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 10px;
+  }
+
+  .hero-logo {
+    width: 92px;
+    height: 92px;
+  }
+
+  .home-school-name {
+    font-size: clamp(1.36rem, 7vw, 1.7rem);
+  }
+
+  .home-tagline {
+    font-size: 1.15rem;
   }
 
   .activity-program-card {

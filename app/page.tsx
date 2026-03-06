@@ -104,9 +104,12 @@ export default async function Home() {
       <section className="section home-hero">
         <div className="container home-hero-grid">
           <div className="home-hero-left">
-            <img className="hero-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
-            <p className="eyebrow">{config.schoolName.toUpperCase()}</p>
-            <h1>{config.tagline}</h1>
+            <div className="home-branding">
+              <img className="hero-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
+              <h1 className="home-school-name">{config.schoolName.toUpperCase()}</h1>
+            </div>
+            <p className="eyebrow">CBSE Curriculum</p>
+            <h2 className="home-tagline">{config.tagline}</h2>
             <p className="home-subline">Where Knowledge Sparks Confidence</p>
             <p className="home-address">{config.address}</p>
             <div className="home-badges">
