@@ -6,6 +6,7 @@ import {
   type ManagedPageKey,
   type SiteConfig,
   type SiteEvent,
+  type SiteFile,
   type SitePost,
 } from "@/lib/site-config-schema";
 
@@ -67,6 +68,25 @@ function sanitizePost(input: Partial<SitePost>, index: number, type: "news" | "b
   };
 }
 
+function sanitizeSiteFile(input: Partial<SiteFile>, index: number): SiteFile {
+  const url = (input.url ?? "").toString().trim().slice(0, 600);
+  return {
+    id: input.id?.toString().trim() || `file-${Date.now()}-${index}`,
+    name: (input.name ?? "").toString().trim().slice(0, 180),
+    url,
+    storagePath: (input.storagePath ?? "").toString().trim().slice(0, 300),
+    publicId: (input.publicId ?? "").toString().trim().slice(0, 300),
+    assetId: (input.assetId ?? "").toString().trim().slice(0, 160),
+    mimeType: (input.mimeType ?? "").toString().trim().slice(0, 120),
+    size: Number(input.size ?? 0) || 0,
+    category: (input.category ?? "general").toString().trim().slice(0, 40),
+    width: Number(input.width ?? 0) || 0,
+    height: Number(input.height ?? 0) || 0,
+    createdAt: (input.createdAt ?? new Date().toISOString()).toString().trim().slice(0, 60),
+    uploadedBy: (input.uploadedBy ?? "").toString().trim().slice(0, 80),
+  };
+}
+
 function sanitizeHexColor(value: string, fallback: string): string {
   const normalized = value.trim();
   return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(normalized) ? normalized : fallback;
@@ -113,6 +133,11 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
     .map((item, index) => sanitizePost(item, index, "blog"))
     .filter((item) => item.date && item.title && item.summary);
 
+  const siteFilesInput = Array.isArray(input.siteFiles) ? input.siteFiles : defaultSiteConfig.siteFiles;
+  const siteFiles = siteFilesInput
+    .map((item, index) => sanitizeSiteFile(item, index))
+    .filter((item) => item.url.length > 0);
+
   return {
     schoolName: (input.schoolName ?? defaultSiteConfig.schoolName).toString().trim(),
     schoolNameShort: (input.schoolNameShort ?? defaultSiteConfig.schoolNameShort)
@@ -129,6 +154,7 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
     events: events.length > 0 ? events : defaultSiteConfig.events,
     newsPosts: newsPosts.length > 0 ? newsPosts : defaultSiteConfig.newsPosts,
     blogPosts: blogPosts.length > 0 ? blogPosts : defaultSiteConfig.blogPosts,
+    siteFiles,
     theme: {
       paper: sanitizeHexColor(input.theme?.paper ?? defaultSiteConfig.theme.paper, defaultSiteConfig.theme.paper),
       brand400: sanitizeHexColor(

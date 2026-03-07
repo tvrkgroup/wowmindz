@@ -84,6 +84,13 @@ export async function isAdminAuthenticated() {
   return Boolean(verifySessionToken(token));
 }
 
+export async function getAuthenticatedAdminUsername() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME)?.value;
+  const session = verifySessionToken(token);
+  return session?.username || null;
+}
+
 export async function setAdminSessionCookie(token: string) {
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_NAME, token, {

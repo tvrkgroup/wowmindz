@@ -8,6 +8,7 @@ import {
   type ManagedPageKey,
   type SiteConfig,
   type SiteEvent,
+  type SiteFile,
   type SitePost,
 } from "@/lib/site-config-schema";
 import type { InquiryItem } from "@/lib/inquiries-store";
@@ -126,6 +127,11 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
   const [status, setStatus] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [siteFileUpload, setSiteFileUpload] = useState<File | null>(null);
+  const [siteFileCategory, setSiteFileCategory] = useState<string>("general");
+  const [uploadingSiteFile, setUploadingSiteFile] = useState(false);
+  const [siteFiles, setSiteFiles] = useState<SiteFile[]>(initialConfig.siteFiles || []);
+  const [loadingSiteFiles, setLoadingSiteFiles] = useState(false);
   const [expandedEvents, setExpandedEvents] = useState<Record<string, boolean>>({});
   const [expandedNews, setExpandedNews] = useState<Record<string, boolean>>({});
   const [expandedBlogs, setExpandedBlogs] = useState<Record<string, boolean>>({});
@@ -140,6 +146,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     { id: "admin-events", label: "Events" },
     { id: "admin-news", label: "News" },
     { id: "admin-blog", label: "Blog" },
+    { id: "admin-files", label: "Site Files" },
     { id: "admin-inquiries", label: "Inquiries" },
   ] as const;
   const [activePanel, setActivePanel] = useState<string>("admin-branding");
@@ -173,9 +180,33 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     }
   };
 
+  const loadSiteFiles = async () => {
+    setLoadingSiteFiles(true);
+    try {
+      const response = await fetch("/api/admin/site-files", { cache: "no-store" });
+      const result = (await response.json()) as { ok: boolean; message?: string; files?: SiteFile[] };
+      if (!result.ok) {
+        setStatus(result.message || "Unable to load site files");
+        return;
+      }
+      const files = result.files || [];
+      setSiteFiles(files);
+      setConfig((prev) => ({ ...prev, siteFiles: files }));
+    } catch {
+      setStatus("Unable to load site files");
+    } finally {
+      setLoadingSiteFiles(false);
+    }
+  };
+
   useEffect(() => {
     if (activePanel !== "admin-inquiries") return;
     void loadInquiries();
+  }, [activePanel]);
+
+  useEffect(() => {
+    if (activePanel !== "admin-files") return;
+    void loadSiteFiles();
   }, [activePanel]);
   const themeColorFields: Array<{
     key:
@@ -511,6 +542,64 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
       setStatus("Logo upload failed due to network/server error");
     } finally {
       setUploadingLogo(false);
+    }
+  }
+
+  async function uploadSiteFile() {
+    if (!siteFileUpload) {
+      setStatus("Pick a file first.");
+      return;
+    }
+
+    setUploadingSiteFile(true);
+    setStatus("Uploading file...");
+    const formData = new FormData();
+    formData.append("file", siteFileUpload);
+    formData.append("category", siteFileCategory);
+
+    try {
+      const response = await fetch("/api/admin/upload-file", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = (await response.json()) as {
+        ok: boolean;
+        message?: string;
+        file?: SiteFile;
+      };
+
+      if (!result.ok || !result.file) {
+        setStatus(result.message || "File upload failed");
+        return;
+      }
+
+      setSiteFiles((prev) => [result.file as SiteFile, ...prev]);
+      setConfig((prev) => ({ ...prev, siteFiles: [result.file as SiteFile, ...(prev.siteFiles || [])] }));
+      setSiteFileUpload(null);
+      setStatus("File uploaded successfully.");
+    } catch {
+      setStatus("File upload failed due to network/server error");
+    } finally {
+      setUploadingSiteFile(false);
+    }
+  }
+
+  async function removeSiteFile(id: string) {
+    const accepted = window.confirm("Delete this file from media library?");
+    if (!accepted) return;
+    try {
+      const response = await fetch(`/api/admin/site-files/${id}`, { method: "DELETE" });
+      const result = (await response.json()) as { ok: boolean; message?: string };
+      if (!result.ok) {
+        setStatus(result.message || "Unable to delete file");
+        return;
+      }
+      setSiteFiles((prev) => prev.filter((item) => item.id !== id));
+      setConfig((prev) => ({ ...prev, siteFiles: (prev.siteFiles || []).filter((item) => item.id !== id) }));
+      setStatus("File deleted.");
+    } catch {
+      setStatus("Unable to delete file");
     }
   }
 
@@ -1141,6 +1230,100 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                 ) : null}
               </article>
             ))}
+              </div>
+            </section>
+
+            <section
+              className={`admin-section-box ${activePanel === "admin-files" ? "is-active" : "is-hidden"}`}
+              id="admin-files"
+            >
+              <div className="admin-section-head">
+                <h3>Site Files</h3>
+                <button type="button" className="button secondary" onClick={() => void loadSiteFiles()}>
+                  Refresh
+                </button>
+              </div>
+              <p className="admin-help">
+                Upload files directly to Cloudinary and reuse URLs across blog, news, events, and pages.
+              </p>
+              <div className="admin-grid">
+                <label>
+                  Upload file
+                  <CustomSelect
+                    value={siteFileCategory}
+                    onChange={setSiteFileCategory}
+                    ariaLabel="Select file category"
+                    options={[
+                      { value: "general", label: "General" },
+                      { value: "images", label: "Images" },
+                      { value: "events", label: "Events" },
+                      { value: "news", label: "News" },
+                      { value: "blogs", label: "Blogs" },
+                      { value: "branding", label: "Branding" },
+                      { value: "documents", label: "Documents" },
+                    ]}
+                  />
+                  <input
+                    type="file"
+                    accept="image/*,video/*,application/pdf"
+                    onChange={(event) => setSiteFileUpload(event.target.files?.[0] || null)}
+                  />
+                  <button
+                    type="button"
+                    className="button secondary admin-upload-btn"
+                    onClick={uploadSiteFile}
+                    disabled={uploadingSiteFile}
+                  >
+                    {uploadingSiteFile ? "Uploading..." : "Upload File"}
+                  </button>
+                </label>
+              </div>
+              {loadingSiteFiles ? <p className="admin-help">Loading files...</p> : null}
+              <div className="admin-article-list">
+                {siteFiles.length === 0 ? (
+                  <p className="admin-help">No site files uploaded yet.</p>
+                ) : (
+                  siteFiles.map((file) => (
+                    <article className="admin-article-card" key={file.id}>
+                      {file.mimeType?.startsWith("image/") ? (
+                        <img src={file.url} alt={file.name} className="article-preview-thumb" />
+                      ) : null}
+                      <div className="admin-article-actions">
+                        <strong>{file.name}</strong>
+                        <span className="admin-help">
+                          {(file.size / 1024).toFixed(1)} KB
+                        </span>
+                      </div>
+                      <p className="admin-help">
+                        {(file.category || "general").toUpperCase()} · {file.mimeType || "file"}
+                      </p>
+                      <input value={file.url} readOnly />
+                      <div className="admin-rich-toolbar">
+                        <button
+                          type="button"
+                          className="button secondary"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(file.url);
+                              setStatus("File URL copied");
+                            } catch {
+                              setStatus("Unable to copy URL");
+                            }
+                          }}
+                        >
+                          Copy URL
+                        </button>
+                        <button
+                          type="button"
+                          className="button secondary"
+                          onClick={() => void removeSiteFile(file.id)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </article>
+                  ))
+                )}
               </div>
             </section>
 

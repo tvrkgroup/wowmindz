@@ -46,6 +46,22 @@ export interface SitePost {
   scheduledAt?: string;
 }
 
+export interface SiteFile {
+  id: string;
+  name: string;
+  url: string;
+  storagePath: string;
+  publicId?: string;
+  assetId?: string;
+  mimeType: string;
+  size: number;
+  category: string;
+  width?: number;
+  height?: number;
+  createdAt: string;
+  uploadedBy?: string;
+}
+
 export interface SiteConfig {
   schoolName: string;
   schoolNameShort: string;
@@ -60,6 +76,7 @@ export interface SiteConfig {
   events: SiteEvent[];
   newsPosts: SitePost[];
   blogPosts: SitePost[];
+  siteFiles: SiteFile[];
   theme: {
     paper: string;
     brand400: string;
@@ -183,6 +200,7 @@ export const defaultSiteConfig: SiteConfig = {
       status: "published",
     },
   ],
+  siteFiles: [],
   theme: {
     paper: "#fbfaf6",
     brand400: "#6f93f5",
