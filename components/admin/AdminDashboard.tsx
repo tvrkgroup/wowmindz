@@ -10,6 +10,7 @@ import {
   type SiteEvent,
   type SitePost,
 } from "@/lib/site-config-schema";
+import type { InquiryItem } from "@/lib/inquiries-store";
 
 const PAGE_LABELS: Record<ManagedPageKey, string> = {
   home: "Home",
@@ -138,38 +139,43 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     { id: "admin-events", label: "Events" },
     { id: "admin-news", label: "News" },
     { id: "admin-blog", label: "Blog" },
+    { id: "admin-inquiries", label: "Inquiries" },
   ] as const;
-  const [activeSection, setActiveSection] = useState<string>("admin-branding");
+  const [activePanel, setActivePanel] = useState<string>("admin-branding");
+  const [inquiries, setInquiries] = useState<InquiryItem[]>([]);
+  const [inquiryStorage, setInquiryStorage] = useState<string>("unconfigured");
+  const [loadingInquiries, setLoadingInquiries] = useState(false);
 
   const visiblePageSet = useMemo(() => new Set(config.visiblePages), [config.visiblePages]);
   const menuPageSet = useMemo(() => new Set(config.menuPages), [config.menuPages]);
 
-  useEffect(() => {
-    const targets = sectionAnchors
-      .map((item) => document.getElementById(item.id))
-      .filter(Boolean) as HTMLElement[];
-    if (targets.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]?.target?.id) setActiveSection(visible[0].target.id);
-      },
-      { rootMargin: "-20% 0px -60% 0px", threshold: [0.1, 0.3, 0.6] }
-    );
-
-    for (const element of targets) observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  const scrollToSection = (id: string) => {
-    const target = document.getElementById(id);
-    if (!target) return;
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActiveSection(id);
+  const loadInquiries = async () => {
+    setLoadingInquiries(true);
+    try {
+      const response = await fetch("/api/admin/inquiries", { cache: "no-store" });
+      const result = (await response.json()) as {
+        ok: boolean;
+        message?: string;
+        storage?: string;
+        inquiries?: InquiryItem[];
+      };
+      if (!result.ok) {
+        setStatus(result.message || "Unable to load inquiries");
+        return;
+      }
+      setInquiries(result.inquiries || []);
+      setInquiryStorage(result.storage || "unknown");
+    } catch {
+      setStatus("Unable to load inquiries");
+    } finally {
+      setLoadingInquiries(false);
+    }
   };
+
+  useEffect(() => {
+    if (activePanel !== "admin-inquiries") return;
+    void loadInquiries();
+  }, [activePanel]);
   const themeColorFields: Array<{
     key:
       | "paper"
@@ -532,8 +538,8 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               <button
                 type="button"
                 key={item.id}
-                className={activeSection === item.id ? "is-active" : ""}
-                onClick={() => scrollToSection(item.id)}
+                className={activePanel === item.id ? "is-active" : ""}
+                onClick={() => setActivePanel(item.id)}
               >
                 {item.label}
               </button>
@@ -541,7 +547,10 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
           </div>
 
           <div className="admin-sections">
-            <section className="admin-section-box" id="admin-branding">
+            <section
+              className={`admin-section-box ${activePanel === "admin-branding" ? "is-active" : "is-hidden"}`}
+              id="admin-branding"
+            >
               <h3>Homepage Settings</h3>
               <p className="admin-help">Core school identity and public contact information.</p>
               <div className="admin-grid">
@@ -615,7 +624,10 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               </label>
             </section>
 
-            <section className="admin-section-box" id="admin-theme">
+            <section
+              className={`admin-section-box ${activePanel === "admin-theme" ? "is-active" : "is-hidden"}`}
+              id="admin-theme"
+            >
               <h3>Theme Settings</h3>
               <p className="admin-help">Global theme controls used across buttons, cards, dropdowns, highlights and gradients.</p>
               <div className="admin-grid">
@@ -724,7 +736,10 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               </div>
             </section>
 
-            <section className="admin-section-box" id="admin-visibility">
+            <section
+              className={`admin-section-box ${activePanel === "admin-visibility" ? "is-active" : "is-hidden"}`}
+              id="admin-visibility"
+            >
               <h3>Navigation & Visibility</h3>
               <p className="admin-help">Checked means shown. Unchecked means hidden.</p>
               <h4>Page Visibility (general)</h4>
@@ -782,7 +797,10 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               </div>
             </section>
 
-            <section className="admin-section-box" id="admin-events">
+            <section
+              className={`admin-section-box ${activePanel === "admin-events" ? "is-active" : "is-hidden"}`}
+              id="admin-events"
+            >
               <div className="admin-section-head">
                 <h3>Calendar Settings</h3>
                 <button type="button" className="button secondary" onClick={addEvent}>
@@ -892,7 +910,10 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
           </div>
             </section>
 
-            <section className="admin-section-box" id="admin-news">
+            <section
+              className={`admin-section-box ${activePanel === "admin-news" ? "is-active" : "is-hidden"}`}
+              id="admin-news"
+            >
               <div className="admin-section-head">
                 <h3>News Settings</h3>
                 <button type="button" className="button secondary" onClick={() => addPost("newsPosts")}>
@@ -1002,7 +1023,10 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
           </div>
             </section>
 
-            <section className="admin-section-box" id="admin-blog">
+            <section
+              className={`admin-section-box ${activePanel === "admin-blog" ? "is-active" : "is-hidden"}`}
+              id="admin-blog"
+            >
               <div className="admin-section-head">
                 <h3>Blog Settings</h3>
                 <button type="button" className="button secondary" onClick={() => addPost("blogPosts")}>
@@ -1109,7 +1133,53 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                 ) : null}
               </article>
             ))}
-          </div>
+              </div>
+            </section>
+
+            <section
+              className={`admin-section-box ${activePanel === "admin-inquiries" ? "is-active" : "is-hidden"}`}
+              id="admin-inquiries"
+            >
+              <div className="admin-section-head">
+                <h3>Inquiries Inbox</h3>
+                <button type="button" className="button secondary" onClick={() => void loadInquiries()}>
+                  Refresh
+                </button>
+              </div>
+              <p className="admin-help">
+                Storage: <strong>{inquiryStorage}</strong>
+              </p>
+              {loadingInquiries ? <p className="admin-help">Loading inquiries...</p> : null}
+              {!loadingInquiries && inquiries.length === 0 ? (
+                <p className="admin-help">No inquiries received yet.</p>
+              ) : null}
+              <div className="admin-article-list">
+                {inquiries.map((item) => (
+                  <article className="admin-article-card" key={item.id}>
+                    <div className="admin-article-actions">
+                      <strong>{item.name}</strong>
+                      <span className="admin-help">
+                        {new Date(item.createdAt).toLocaleString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <p>
+                      <strong>Phone:</strong> {item.phone}
+                    </p>
+                    {item.email ? (
+                      <p>
+                        <strong>Email:</strong> {item.email}
+                      </p>
+                    ) : null}
+                    <p>{item.message}</p>
+                  </article>
+                ))}
+              </div>
             </section>
           </div>
 

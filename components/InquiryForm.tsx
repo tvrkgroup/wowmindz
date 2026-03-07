@@ -31,7 +31,7 @@ export default function InquiryForm() {
       setPhone("");
       setEmail("");
       setMessage("");
-      setStatus("Inquiry submitted successfully.");
+      setStatus("Inquiry submitted successfully. You can view it in Admin Dashboard -> Inquiries.");
     } catch {
       setStatus("Submission failed. Please try again.");
     } finally {
