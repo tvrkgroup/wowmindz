@@ -11,6 +11,7 @@ import {
   type SitePost,
 } from "@/lib/site-config-schema";
 import type { InquiryItem } from "@/lib/inquiries-store";
+import CustomSelect from "@/components/CustomSelect";
 
 const PAGE_LABELS: Record<ManagedPageKey, string> = {
   home: "Home",
@@ -833,16 +834,15 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                       </label>
                       <label>
                         Category
-                        <select value={event.category} onChange={(e) => updateEvent(event.id, { category: e.target.value })}>
-                          {(EVENT_CATEGORIES.includes(event.category)
+                        <CustomSelect
+                          value={event.category}
+                          onChange={(next) => updateEvent(event.id, { category: next })}
+                          ariaLabel="Select event category"
+                          options={(EVENT_CATEGORIES.includes(event.category)
                             ? EVENT_CATEGORIES
                             : [event.category, ...EVENT_CATEGORIES]
-                          ).map((item) => (
-                            <option key={item} value={item}>
-                              {item}
-                            </option>
-                          ))}
-                        </select>
+                          ).map((item) => ({ value: item, label: item }))}
+                        />
                       </label>
                       <label>
                         Location
@@ -850,14 +850,16 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                       </label>
                       <label>
                         Status
-                        <select
+                        <CustomSelect
                           value={event.status}
-                          onChange={(e) => updateEvent(event.id, { status: e.target.value as SiteEvent["status"] })}
-                        >
-                          <option value="draft">Draft</option>
-                          <option value="published">Published</option>
-                          <option value="scheduled">Scheduled</option>
-                        </select>
+                          onChange={(next) => updateEvent(event.id, { status: next as SiteEvent["status"] })}
+                          ariaLabel="Select event status"
+                          options={[
+                            { value: "draft", label: "Draft" },
+                            { value: "published", label: "Published" },
+                            { value: "scheduled", label: "Scheduled" },
+                          ]}
+                        />
                       </label>
                       {event.status === "scheduled" ? (
                         <label>
@@ -950,27 +952,30 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                       </label>
                       <label>
                         Category
-                        <select value={post.category} onChange={(e) => updatePost("newsPosts", post.id, { category: e.target.value })}>
-                          {(NEWS_CATEGORIES.includes(post.category)
+                        <CustomSelect
+                          value={post.category}
+                          onChange={(next) => updatePost("newsPosts", post.id, { category: next })}
+                          ariaLabel="Select news category"
+                          options={(NEWS_CATEGORIES.includes(post.category)
                             ? NEWS_CATEGORIES
                             : [post.category, ...NEWS_CATEGORIES]
-                          ).map((item) => (
-                            <option key={item} value={item}>
-                              {item}
-                            </option>
-                          ))}
-                        </select>
+                          ).map((item) => ({ value: item, label: item }))}
+                        />
                       </label>
                       <label>
                         Status
-                        <select
+                        <CustomSelect
                           value={post.status}
-                          onChange={(e) => updatePost("newsPosts", post.id, { status: e.target.value as SitePost["status"] })}
-                        >
-                          <option value="draft">Draft</option>
-                          <option value="published">Published</option>
-                          <option value="scheduled">Scheduled</option>
-                        </select>
+                          onChange={(next) =>
+                            updatePost("newsPosts", post.id, { status: next as SitePost["status"] })
+                          }
+                          ariaLabel="Select news status"
+                          options={[
+                            { value: "draft", label: "Draft" },
+                            { value: "published", label: "Published" },
+                            { value: "scheduled", label: "Scheduled" },
+                          ]}
+                        />
                       </label>
                       {post.status === "scheduled" ? (
                         <label>
@@ -1063,27 +1068,30 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                       </label>
                       <label>
                         Category
-                        <select value={post.category} onChange={(e) => updatePost("blogPosts", post.id, { category: e.target.value })}>
-                          {(BLOG_CATEGORIES.includes(post.category)
+                        <CustomSelect
+                          value={post.category}
+                          onChange={(next) => updatePost("blogPosts", post.id, { category: next })}
+                          ariaLabel="Select blog category"
+                          options={(BLOG_CATEGORIES.includes(post.category)
                             ? BLOG_CATEGORIES
                             : [post.category, ...BLOG_CATEGORIES]
-                          ).map((item) => (
-                            <option key={item} value={item}>
-                              {item}
-                            </option>
-                          ))}
-                        </select>
+                          ).map((item) => ({ value: item, label: item }))}
+                        />
                       </label>
                       <label>
                         Status
-                        <select
+                        <CustomSelect
                           value={post.status}
-                          onChange={(e) => updatePost("blogPosts", post.id, { status: e.target.value as SitePost["status"] })}
-                        >
-                          <option value="draft">Draft</option>
-                          <option value="published">Published</option>
-                          <option value="scheduled">Scheduled</option>
-                        </select>
+                          onChange={(next) =>
+                            updatePost("blogPosts", post.id, { status: next as SitePost["status"] })
+                          }
+                          ariaLabel="Select blog status"
+                          options={[
+                            { value: "draft", label: "Draft" },
+                            { value: "published", label: "Published" },
+                            { value: "scheduled", label: "Scheduled" },
+                          ]}
+                        />
                       </label>
                       {post.status === "scheduled" ? (
                         <label>
