@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import CustomSelect from "@/components/CustomSelect";
 
 export default function InquiryForm() {
   const [type, setType] = useState<"feedback" | "inquiry">("inquiry");
@@ -44,10 +45,15 @@ export default function InquiryForm() {
     <form className="inquiry-form" onSubmit={onSubmit}>
       <label>
         Type
-        <select value={type} onChange={(event) => setType(event.target.value as "feedback" | "inquiry")}>
-          <option value="inquiry">Inquiry</option>
-          <option value="feedback">Feedback</option>
-        </select>
+        <CustomSelect
+          value={type}
+          onChange={(next) => setType(next as "feedback" | "inquiry")}
+          ariaLabel="Select inquiry type"
+          options={[
+            { value: "inquiry", label: "Inquiry" },
+            { value: "feedback", label: "Feedback" },
+          ]}
+        />
       </label>
       <label>
         Name

@@ -1995,6 +1995,92 @@ code {
   background: #ffffff;
 }
 
+.custom-select {
+  position: relative;
+  margin-top: 6px;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 36px 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--highlight) 70%, rgba(47, 91, 215, 0.24));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface) 94%, white);
+  color: var(--ink-900);
+  font: inherit;
+  text-align: left;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.custom-select-trigger:hover {
+  border-color: color-mix(in srgb, var(--brand-400) 50%, rgba(47, 91, 215, 0.24));
+  background-color: color-mix(in srgb, var(--surface-soft) 62%, white);
+}
+
+.custom-select.is-open .custom-select-trigger {
+  border-color: color-mix(in srgb, var(--brand-600) 65%, rgba(47, 91, 215, 0.24));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-400) 18%, transparent);
+}
+
+.custom-select-caret {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid var(--brand-700);
+  border-bottom: 2px solid var(--brand-700);
+  transform: translateY(-62%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.custom-select.is-open .custom-select-caret {
+  transform: translateY(-40%) rotate(-135deg);
+}
+
+.custom-select-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: grid;
+  gap: 4px;
+  max-height: 260px;
+  overflow: auto;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--highlight) 70%, rgba(47, 91, 215, 0.24));
+  background: color-mix(in srgb, var(--surface) 96%, white);
+  box-shadow: 0 14px 36px rgba(15, 24, 20, 0.14);
+}
+
+.custom-select-option {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-900);
+  text-align: left;
+  font: inherit;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.custom-select-option:hover {
+  background: color-mix(in srgb, var(--surface-soft) 70%, white);
+  border-color: color-mix(in srgb, var(--brand-400) 38%, rgba(47, 91, 215, 0.16));
+}
+
+.custom-select-option.is-selected {
+  background: color-mix(in srgb, var(--brand-50) 78%, white);
+  border-color: color-mix(in srgb, var(--brand-400) 46%, rgba(47, 91, 215, 0.16));
+  color: var(--brand-700);
+  font-weight: 700;
+}
+
 .admin-login-form label,
 .admin-panel label,
 .inquiry-form label {

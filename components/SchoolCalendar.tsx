@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { SiteEvent } from "@/lib/site-config-schema";
 import { sortEventsAsc, toEventDate, toIsoDay } from "@/lib/events";
+import CustomSelect from "@/components/CustomSelect";
 
 const MONTHS = [
   "January",
@@ -99,20 +100,18 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
           <button type="button" className="button secondary" onClick={() => stepMonth(-1)}>
             Prev
           </button>
-          <select value={month} onChange={(e) => setMonth(Number(e.target.value))} aria-label="Select month">
-            {MONTHS.map((item, index) => (
-              <option key={item} value={index}>
-                {item}
-              </option>
-            ))}
-          </select>
-          <select value={year} onChange={(e) => setYear(Number(e.target.value))} aria-label="Select year">
-            {years.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+          <CustomSelect
+            value={String(month)}
+            onChange={(next) => setMonth(Number(next))}
+            ariaLabel="Select month"
+            options={MONTHS.map((item, index) => ({ value: String(index), label: item }))}
+          />
+          <CustomSelect
+            value={String(year)}
+            onChange={(next) => setYear(Number(next))}
+            ariaLabel="Select year"
+            options={years.map((item) => ({ value: String(item), label: String(item) }))}
+          />
           <button type="button" className="button secondary" onClick={() => stepMonth(1)}>
             Next
           </button>
@@ -229,14 +228,15 @@ export default function SchoolCalendar({ events }: { events: SiteEvent[] }) {
                 value={filterQuery}
                 onChange={(e) => setFilterQuery(e.target.value)}
               />
-              <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-                <option value="all">All Categories</option>
-                {eventCategories.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
+              <CustomSelect
+                value={filterCategory}
+                onChange={setFilterCategory}
+                ariaLabel="Filter by category"
+                options={[
+                  { value: "all", label: "All Categories" },
+                  ...eventCategories.map((item) => ({ value: item, label: item })),
+                ]}
+              />
               <input type="date" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} />
               <input type="date" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} />
             </div>
