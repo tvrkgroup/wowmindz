@@ -47,33 +47,36 @@ export default async function Home() {
               ))}
             </div>
             <div className="home-actions">
-              <Link href="/admissions" className="button">
-                Apply for Admission
+              <Link href="/projects" className="button">
+                Explore Our Work
               </Link>
               <Link href="/contact" className="button secondary">
-                Contact School
+                Contact Us
               </Link>
             </div>
           </div>
 
           <aside className="home-hero-right card">
-            <h3>CBSE Syllabus</h3>
-            <p>(To be affiliated to CBSE Board, New Delhi)</p>
+            <h3>WowMindz Technologies</h3>
+            <p>Building at the intersection of technology, execution, and future-ready thinking.</p>
             <div className="divider" />
-            <p>Near Ashtalakshmi Temple, Karatoor, Gobichettipalayam</p>
+            <p>
+              From digital platforms to venture ideas, WowMindz is designed to explore, test, and build what matters
+              next.
+            </p>
             <p>Contact: {site.phone}</p>
             <div className="home-stats">
               <div>
-                <strong>I-VII</strong>
-                <span>Grades</span>
+                <strong>Build</strong>
+                <span>Products</span>
               </div>
               <div>
-                <strong>STEM</strong>
-                <span>Labs</span>
+                <strong>Scale</strong>
+                <span>Systems</span>
               </div>
               <div>
-                <strong>CBSE</strong>
-                <span>Foundation</span>
+                <strong>Launch</strong>
+                <span>Ideas</span>
               </div>
             </div>
           </aside>
@@ -132,21 +135,21 @@ export default async function Home() {
           <article className="card home-cbse-card home-theme-card">
             <div className="home-cbse-layout">
               <div className="home-cbse-logo-wrap">
-                <img className="home-cbse-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
+                <img className="home-cbse-logo" src={config.logoPath || "/logo.svg"} alt={`${config.schoolName} logo`} />
               </div>
               <div className="home-cbse-content">
                 <h2>{site.siteName.toUpperCase()}</h2>
-                <p>(To be affiliated to CBSE Board, New Delhi)</p>
-                <p>Near Ashtalakshmi Temple, Karatoor, Gobichettipalayam</p>
+                <p>Involve. Solve. Evolve.</p>
+                <p>Technology studio for digital products and scalable systems.</p>
                 <p>Contact: {site.phone}</p>
                 <div className="divider" />
                 <p>
-                  <strong>CBSE SYLLABUS</strong>
+                  <strong>MODERN EXECUTION</strong>
                 </p>
-                <p>Learning is the key to leadership</p>
-                <p>Where Knowledge sparks confidence</p>
+                <p>Product-first thinking with business logic.</p>
+                <p>Built for long-term value creation.</p>
                 <p>
-                  <strong>Admissions Open 2026-2027</strong>
+                  <strong>Explore Our Work</strong>
                 </p>
               </div>
             </div>
@@ -159,7 +162,7 @@ export default async function Home() {
           <h2>{homeAcademicExams.title}</h2>
           <div className="home-exams-grid">
             <article className="card home-exam-card home-theme-card">
-              <h3>Olympiad Exams</h3>
+              <h3>Product & Platform</h3>
               <ol className="home-ordered-list">
                 {homeAcademicExams.olympiad.map((item) => (
                   <li key={item}>{item}</li>
@@ -168,7 +171,7 @@ export default async function Home() {
             </article>
 
             <article className="card home-exam-card home-theme-card">
-              <h3>National Level Exams</h3>
+              <h3>System & Solution</h3>
               <ol className="home-ordered-list">
                 {homeAcademicExams.national.map((item) => (
                   <li key={item}>{item}</li>
@@ -177,7 +180,7 @@ export default async function Home() {
             </article>
 
             <article className="card home-exam-card home-theme-card">
-              <h3>Other Exams</h3>
+              <h3>Innovation & Venture</h3>
               <ol className="home-ordered-list">
                 {homeAcademicExams.other.map((item) => (
                   <li key={item}>{item}</li>
@@ -187,8 +190,8 @@ export default async function Home() {
           </div>
           <article className="card home-note-card home-theme-card">
             <p>
-              <strong>Note:</strong> These exams help students develop skills, gain
-              confidence and prepare for future competitive exams.
+              <strong>Note:</strong> Every initiative is shaped for practical impact, operational clarity, and future
+              scalability.
             </p>
           </article>
         </div>
@@ -203,7 +206,7 @@ export default async function Home() {
         </div>
         <div className="container home-final-grid">
           <article className="card home-list-card home-theme-card">
-            <h3>Sports</h3>
+            <h3>Technology</h3>
             <ul className="list">
               {homeStudentLife.sports.map((item) => (
                 <li key={item}>{item}</li>
@@ -212,7 +215,7 @@ export default async function Home() {
           </article>
 
           <article className="card home-list-card home-theme-card">
-            <h3>Extra Curricular Activities</h3>
+            <h3>Business & Systems</h3>
             <ul className="list">
               {homeStudentLife.activities.map((item) => (
                 <li key={item}>{item}</li>
@@ -221,7 +224,7 @@ export default async function Home() {
           </article>
 
           <article className="card home-list-card home-theme-card">
-            <h3>School Fees Includes</h3>
+            <h3>Civil & Fitness</h3>
             <ul className="list">
               {homeStudentLife.feeIncludes.map((item) => (
                 <li key={item}>{item}</li>

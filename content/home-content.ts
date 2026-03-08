@@ -9,81 +9,78 @@ export interface TemplateBenefitItem {
 }
 
 export const homeHeroContent = {
-  eyebrow: "THE SILVER BROOK PUBLIC SCHOOL",
-  subline: "Where Knowledge Sparks Confidence",
-  vision: "To nurture confident, ethical, and future-ready learners who lead with knowledge.",
+  eyebrow: "Technology Studio",
+  subline:
+    "We build digital products, scalable systems, and future-facing ideas across technology, business, and innovation.",
+  vision:
+    "To create a modern technology company that turns bold ideas into real products, scalable systems, and meaningful impact.",
   mission:
-    "To provide a safe, technology-integrated, and value-driven learning environment that builds academic excellence and life skills.",
-  badges: ["Admissions Open - 2026-27", "Grade I to VII"],
+    "WowMindz exists to involve ideas, solve real problems, and evolve them into products, platforms, and ventures that create long-term value.",
+  badges: ["Product Thinking", "IT Solutions", "Startup Ideas", "Innovation Systems"],
 };
 
 export const homeSpecialFeatures: TemplateCardItem[] = [
   {
-    title: "Smart Classrooms",
-    detail: "Technology integrated learning spaces for visual, interactive and collaborative teaching.",
+    title: "Custom Digital Solutions",
+    detail: "Custom digital solutions for modern needs.",
   },
   {
-    title: "Interdisciplinary Curriculum",
-    detail: "Focus on critical thinking, concept application and practical life skills.",
+    title: "Product-Focused Execution",
+    detail: "Product-focused execution with business thinking.",
   },
   {
-    title: "STEM Labs",
-    detail: "Robotics, coding and innovation labs for experimentation and problem solving.",
+    title: "Built for Scale",
+    detail: "Systems built for scale, not just showcase.",
   },
   {
-    title: "Safe & Vibrant Campus",
-    detail: "Student wellbeing, safety systems and a positive learning atmosphere.",
+    title: "Future-Ready Foundation",
+    detail: "Flexible foundation for future ventures and experiments.",
   },
-  { title: "Competitive Foundation", detail: "Academic foundation for NEET, IIT and JEE pathways." },
-  {
-    title: "Sports & Activities",
-    detail: "Sports galore and extra curricular activities for all-round development.",
-  },
-  {
-    title: "Language Development",
-    detail: "Strong communication practice in reading, writing and speaking.",
-  },
-  { title: "Transport Facility", detail: "Reliable route-based school transport support." },
 ];
 
 export const homeKeyBenefits: TemplateBenefitItem[] = [
   {
-    title: "Expert Curriculum",
-    points: [
-      "Structured CBSE-oriented concept progression",
-      "Critical thinking integrated into daily learning",
-    ],
+    title: "Modern Product-First Approach",
+    points: ["Build with product clarity and long-term direction."],
   },
   {
-    title: "Modern Facilities",
-    points: ["Smart classrooms, STEM labs and activity zones", "Safe infrastructure that supports focused learning"],
+    title: "Clean Execution",
+    points: ["Structured delivery with scalable architecture."],
   },
   {
-    title: "Professional Educators",
-    points: ["Experienced teachers with mentoring approach", "Individual attention for confidence and growth"],
+    title: "Innovation-Led Mindset",
+    points: ["Shape, test, and evolve ideas into working outcomes."],
+  },
+  {
+    title: "Multi-Domain Growth Potential",
+    points: ["Designed to grow across software, ventures, and new platforms."],
   },
 ];
 
 export const homeAcademicExams = {
-  title: "Competitive Exams for Grade 6 to 8",
+  title: "What We Build",
   olympiad: [
-    "Mathematics Olympiad - UMO",
-    "Science Olympiad - USO",
-    "English Olympiad - UEO",
-    "General Knowledge Olympiad - UGKO",
+    "Digital products and web platforms",
+    "Operational tools and internal systems",
+    "Scalable MVPs and prototype accelerators",
   ],
   national: [
-    "National Science Olympiad",
-    "National Interactive Mathematics Olympiad - NIMO",
-    "National Level Science Talent Search Exam - NLSTSE",
+    "Automation and workflow systems",
+    "Business-ready IT solution stacks",
+    "Product strategy and execution support",
   ],
-  other: ["International Mathematics Olympiad - IMO", "Unified Cyber Olympiad - UCO", "Spell Bee"],
+  other: [
+    "Startup concept validation",
+    "Innovation experiments and pilots",
+    "Cross-domain product initiatives",
+  ],
 };
 
 export const homeStudentLife = {
-  title: "Student Life Highlights",
-  subtitle: "Sports, co-curricular programs, and student essentials in one place.",
-  sports: ["Basketball", "Football", "Badminton", "Chess"],
-  activities: ["Robotics", "Skating", "Yoga", "Archery", "Horse Riding", "Western Dance"],
-  feeIncludes: ["3 Sets of Uniform", "School Bag", "Books and Notebooks", "Stationery Items"],
+  title: "Knowledge Streams",
+  subtitle:
+    "The blog extends the WowMindz thinking style into practical, system-led writing.",
+  sports: ["Tech insights", "Architecture notes", "Practical implementation patterns"],
+  activities: ["Business observations", "Execution lessons", "Product and startup systems"],
+  feeIncludes: ["Civil and construction learnings", "Fitness discipline", "Long-term growth thinking"],
 };

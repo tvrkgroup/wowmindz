@@ -7,16 +7,25 @@ import { getSiteConfig } from "@/lib/site-config";
 import InfoCardGrid from "@/components/sections/InfoCardGrid";
 
 const aboutCards = [
-  { title: "Vision", description: "To shape confident leaders who believe they can change the world." },
   {
-    title: "Mission",
-    description: "To deliver rigorous, tech-enabled learning with strong values and holistic development.",
-  },
-  { title: "Philosophy", description: "Learning is the Key to Leadership." },
-  {
-    title: "What makes us different",
+    title: "Who We Are",
     description:
-      "Interdisciplinary learning, STEM focus, and a safe, vibrant campus culture built from the ground up.",
+      "WowMindz is built as a forward-looking brand that blends technology, business logic, and execution. It is not limited to one service line, but structured to grow into multiple products, ventures, and innovation-driven solutions over time.",
+  },
+  {
+    title: "What We Do",
+    description:
+      "We work on digital products, IT solutions, startup concepts, and scalable system ideas. Our goal is to move beyond basic service work and build meaningful platforms with long-term value.",
+  },
+  {
+    title: "How We Think",
+    description:
+      "We believe strong ideas should not remain ideas. They should be shaped, tested, improved, and turned into working systems. That is where WowMindz stands: involving, solving, and evolving.",
+  },
+  {
+    title: "What We Aim To Build",
+    description:
+      "The long-term direction is to create a brand that can operate across multiple innovation areas, including software, venture ideas, digital tools, and future-facing platforms.",
   },
 ];
 

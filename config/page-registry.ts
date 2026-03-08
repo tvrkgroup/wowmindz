@@ -13,8 +13,8 @@ export const TEMPLATE_PAGE_REGISTRY: Record<ManagedPageKey, TemplatePageDef> = {
   about: { key: "about", href: "/about", label: "About", showInPrimaryNav: true, showInFooterQuickLinks: false },
   academics: {
     key: "academics",
-    href: "/academics",
-    label: "Academics",
+    href: "/projects",
+    label: "Projects",
     showInPrimaryNav: true,
     showInFooterQuickLinks: true,
   },

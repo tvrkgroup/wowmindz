@@ -10,11 +10,12 @@ import { getTemplateSiteIdentity } from "@/config/template-config";
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getSiteConfig();
   const site = getTemplateSiteIdentity(config);
+  const faviconPath = "/assets/branding/favicon.ico";
   return {
     title: site.siteName,
     description: `${site.siteName} — ${site.tagline}`,
     icons: {
-      icon: site.logo,
+      icon: faviconPath,
       apple: site.logo,
     },
   };
@@ -68,7 +69,7 @@ async function RootWithConfig({
     <html lang="en">
       <body style={themeVars as CSSProperties}>
         <SiteConfigProvider value={config}>
-          <SplashScreen logoPath={config.logoPath || "/logo.png"} />
+          <SplashScreen logoPath={config.logoPath || "/logo.svg"} />
           <div className="site-shell">{children}</div>
         </SiteConfigProvider>
       </body>

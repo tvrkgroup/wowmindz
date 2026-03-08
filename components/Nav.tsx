@@ -12,19 +12,10 @@ function formatPhoneForHref(phone: string) {
 function splitHeaderName(name: string) {
   const cleaned = name.trim().replace(/\s+/g, " ");
   const words = cleaned.split(" ").filter(Boolean);
-
-  if (/public school/i.test(cleaned)) {
-    const lineOne = cleaned.replace(/public school/i, "").trim();
+  if (words.length <= 2) {
     return {
-      lineOne: lineOne || "The Silver Brook",
-      lineTwo: "Public School",
-    };
-  }
-
-  if (words.length <= 3) {
-    return {
-      lineOne: words.join(" ") || "The Silver Brook",
-      lineTwo: "Public School",
+      lineOne: words.join(" ") || "WowMindz",
+      lineTwo: "Technologies",
     };
   }
 
@@ -36,8 +27,8 @@ function splitHeaderName(name: string) {
 }
 
 const safeFallback = {
-  lineOne: "The Silver Brook",
-  lineTwo: "Public School",
+  lineOne: "WowMindz",
+  lineTwo: "Technologies",
 };
 
 export default function Nav() {
@@ -71,7 +62,7 @@ export default function Nav() {
     <header className="nav-shell">
       <div className="container nav-bar">
         <Link href="/" className="logo">
-          <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
+          <img className="logo-image" src={config.logoPath || "/logo.svg"} alt={`${config.schoolName} logo`} />
           <span className="logo-text">
             <strong>{nameLines.lineOne}</strong>
             <span>{nameLines.lineTwo}</span>
@@ -116,7 +107,7 @@ export default function Nav() {
         <aside className="mobile-menu-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
           <div className="mobile-menu-head">
             <div className="mobile-menu-brand">
-              <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
+              <img className="logo-image" src={config.logoPath || "/logo.svg"} alt={`${config.schoolName} logo`} />
               <div className="logo-text">
                 <strong>{nameLines.lineOne}</strong>
                 <span>{nameLines.lineTwo}</span>

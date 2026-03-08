@@ -100,7 +100,7 @@ function emptyPost(type: "news" | "blog"): SitePost {
     date: "",
     title: "",
     category: type === "news" ? NEWS_CATEGORIES[0] : BLOG_CATEGORIES[0],
-    image: "/logo.png",
+    image: "/logo.svg",
     summary: "",
     content: "",
     status: "draft",
@@ -234,7 +234,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     {
       key: "heroHighlight",
       label: "Hero Highlight Background Color",
-      description: "Background behind 'Learning is the Key to Leadership'.",
+      description: "Background behind the home-page tagline.",
     },
     {
       key: "footerButton",
@@ -670,7 +670,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                   <input
                     value={config.logoPath}
                     onChange={(event) => setConfig({ ...config, logoPath: event.target.value })}
-                    placeholder="/logo.png"
+                    placeholder="/logo.svg"
                   />
                 </label>
                 <label>
@@ -1078,7 +1078,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                       ) : null}
                       <label>
                         Image URL / Path
-                        <input value={post.image} placeholder="/logo.png" onChange={(e) => updatePost("newsPosts", post.id, { image: e.target.value })} />
+                        <input value={post.image} placeholder="/logo.svg" onChange={(e) => updatePost("newsPosts", post.id, { image: e.target.value })} />
                       </label>
                     </div>
                     <label className="admin-field">
@@ -1194,7 +1194,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                       ) : null}
                       <label>
                         Image URL / Path
-                        <input value={post.image} placeholder="/logo.png" onChange={(e) => updatePost("blogPosts", post.id, { image: e.target.value })} />
+                        <input value={post.image} placeholder="/logo.svg" onChange={(e) => updatePost("blogPosts", post.id, { image: e.target.value })} />
                       </label>
                     </div>
                     <label className="admin-field">

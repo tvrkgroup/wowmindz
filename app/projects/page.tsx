@@ -6,7 +6,7 @@ import { enforcePageVisibility } from "@/lib/page-visibility";
 import { templatePageHeroes } from "@/content/page-content";
 import InfoCardGrid from "@/components/sections/InfoCardGrid";
 
-const academicBands = [
+const projectCards = [
   {
     title: "Digital Products",
     description: "Custom digital solutions for modern business and product needs.",
@@ -21,9 +21,10 @@ const academicBands = [
   },
 ];
 
-export default async function AcademicsPage() {
+export default async function ProjectsPage() {
   await enforcePageVisibility("academics");
   const hero = templatePageHeroes.academics!;
+
   return (
     <div>
       <Nav />
@@ -36,7 +37,7 @@ export default async function AcademicsPage() {
       />
       <section className="section">
         <div className="container">
-          <InfoCardGrid items={academicBands} />
+          <InfoCardGrid items={projectCards} />
         </div>
         <div className="container">
           <div className="divider" />

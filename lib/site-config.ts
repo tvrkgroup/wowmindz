@@ -118,17 +118,20 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
     ALL_MANAGED_PAGES.includes(page as ManagedPageKey)
   );
 
-  const eventsInput = Array.isArray(input.events) ? input.events : defaultSiteConfig.events;
+  const hasEventsInput = Array.isArray(input.events);
+  const eventsInput = (hasEventsInput ? input.events : defaultSiteConfig.events) ?? [];
   const events = eventsInput
     .map((item, index) => sanitizeEvent(item, index))
     .filter((item) => item.date && item.title);
 
-  const newsPostsInput = Array.isArray(input.newsPosts) ? input.newsPosts : defaultSiteConfig.newsPosts;
+  const hasNewsInput = Array.isArray(input.newsPosts);
+  const newsPostsInput = (hasNewsInput ? input.newsPosts : defaultSiteConfig.newsPosts) ?? [];
   const newsPosts = newsPostsInput
     .map((item, index) => sanitizePost(item, index, "news"))
     .filter((item) => item.date && item.title && item.summary);
 
-  const blogPostsInput = Array.isArray(input.blogPosts) ? input.blogPosts : defaultSiteConfig.blogPosts;
+  const hasBlogInput = Array.isArray(input.blogPosts);
+  const blogPostsInput = (hasBlogInput ? input.blogPosts : defaultSiteConfig.blogPosts) ?? [];
   const blogPosts = blogPostsInput
     .map((item, index) => sanitizePost(item, index, "blog"))
     .filter((item) => item.date && item.title && item.summary);
@@ -151,9 +154,9 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
     visiblePages: hasVisibleInput ? visiblePages : visiblePages.length > 0 ? visiblePages : [...ALL_MANAGED_PAGES],
     menuPages: hasMenuInput ? menuPages : menuPages.length > 0 ? menuPages : defaultSiteConfig.menuPages,
     hiddenPages,
-    events: events.length > 0 ? events : defaultSiteConfig.events,
-    newsPosts: newsPosts.length > 0 ? newsPosts : defaultSiteConfig.newsPosts,
-    blogPosts: blogPosts.length > 0 ? blogPosts : defaultSiteConfig.blogPosts,
+    events: hasEventsInput ? events : events.length > 0 ? events : defaultSiteConfig.events,
+    newsPosts: hasNewsInput ? newsPosts : newsPosts.length > 0 ? newsPosts : defaultSiteConfig.newsPosts,
+    blogPosts: hasBlogInput ? blogPosts : blogPosts.length > 0 ? blogPosts : defaultSiteConfig.blogPosts,
     siteFiles,
     theme: {
       paper: sanitizeHexColor(input.theme?.paper ?? defaultSiteConfig.theme.paper, defaultSiteConfig.theme.paper),

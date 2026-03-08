@@ -14,6 +14,9 @@ export default async function ContactPage() {
   await enforcePageVisibility("contact");
   const hero = templatePageHeroes.contact!;
   const config = await getSiteConfig();
+  const showAddress = Boolean(config.address.trim());
+  const showMapLink = Boolean(contactPageContent.mapLink.trim());
+  const showMapEmbed = Boolean(contactPageContent.mapEmbedUrl.trim());
   return (
     <div>
       <Nav />
@@ -27,17 +30,21 @@ export default async function ContactPage() {
           <div className="card info-card contact-office-card">
             <h3 className="contact-panel-title">{contactPageContent.officeTitle}</h3>
             <p className="contact-panel-subtitle">{contactPageContent.officeSubtitle}</p>
-            <div className="info-row">
-              <span className="icon icon-location" aria-hidden="true" />
-              <a
-                href={contactPageContent.mapLink}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {config.address}
-              </a>
-            </div>
-            <div className="divider" />
+            {showAddress ? (
+              <>
+                <div className="info-row">
+                  <span className="icon icon-location" aria-hidden="true" />
+                  {showMapLink ? (
+                    <a href={contactPageContent.mapLink} target="_blank" rel="noreferrer">
+                      {config.address}
+                    </a>
+                  ) : (
+                    <span>{config.address}</span>
+                  )}
+                </div>
+                <div className="divider" />
+              </>
+            ) : null}
             <div className="info-row">
               <span className="icon icon-phone" aria-hidden="true" />
               <a href={`tel:${formatPhoneForHref(config.contactPhone)}`}>Phone: {config.contactPhone}</a>
@@ -52,18 +59,20 @@ export default async function ContactPage() {
             {contactPageContent.visitHours.map((slot) => (
               <p key={slot}>{slot}</p>
             ))}
-            <div className="contact-map-wrap">
-              <iframe
-                src={contactPageContent.mapEmbedUrl}
-                width="600"
-                height="450"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="School Location Map"
-              />
-            </div>
+            {showMapEmbed ? (
+              <div className="contact-map-wrap">
+                <iframe
+                  src={contactPageContent.mapEmbedUrl}
+                  width="600"
+                  height="450"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Office Location Map"
+                />
+              </div>
+            ) : null}
           </div>
           <div className="card info-card contact-form-card">
             <h3 className="contact-panel-title">{contactPageContent.formTitle}</h3>
