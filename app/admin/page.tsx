@@ -4,10 +4,8 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminLogin from "@/components/admin/AdminLogin";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { getSiteConfig } from "@/lib/site-config";
-import { enforcePageVisibility } from "@/lib/page-visibility";
 
 export default async function AdminPage() {
-  await enforcePageVisibility("home");
   const authenticated = await isAdminAuthenticated();
 
   return (
