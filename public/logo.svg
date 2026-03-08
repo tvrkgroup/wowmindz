@@ -1,26 +1,19 @@
-<svg width="300" height="260" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="50%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#d97706"/>
-    </linearGradient>
-  </defs>
-
-  <g fill="none" stroke="url(#goldGradient)" stroke-width="18" stroke-linejoin="round">
-    
-    <!-- Left V -->
-    <path d="M20 120 L100 230 L140 140"/>
-
-    <!-- Right V -->
-    <path d="M280 120 L200 230 L160 140"/>
-
-    <!-- Center diamond -->
-    <path d="M150 30 L185 80 L150 130 L115 80 Z"/>
-
-    <!-- Top crown lines -->
-    <path d="M20 120 L150 30"/>
-    <path d="M150 30 L280 120"/>
-
-  </g>
+<svg width="114" height="98" viewBox="0 0 114 98" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M62 69.5L82.5 32H110.5C113 32 114.229 34.6965 113 37L82.5 95.5C81.2292 97.6965 77.7292 98.1965 76 95L62 69.5Z" fill="url(#paint0_linear_0_1)"/>
+<path d="M51.4814 69.5L30.9814 32H2.98143C0.481426 32 -0.747787 34.6965 0.481426 37L30.9814 95.5C32.2522 97.6965 35.7522 98.1965 37.4814 95L51.4814 69.5Z" fill="url(#paint1_linear_0_1)"/>
+<path d="M52.4917 2.78507L36 29.8786L56.6146 66.9848L77.2292 29.8786L60.1485 2.78507C57.5 -0.928467 55 -0.928282 52.4917 2.78507Z" fill="url(#paint2_linear_0_1)"/>
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="116.729" y1="71.1965" x2="63.2292" y2="42.6965" gradientUnits="userSpaceOnUse">
+<stop/>
+<stop offset="1" stop-color="#545454"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_1" x1="26" y1="51" x2="53.5" y2="37" gradientUnits="userSpaceOnUse">
+<stop stop-color="#545454"/>
+<stop offset="1"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_1" x1="77.2292" y1="33.5281" x2="36" y2="33.5281" gradientUnits="userSpaceOnUse">
+<stop stop-color="#2B2B2B"/>
+<stop offset="1" stop-color="#545454"/>
+</linearGradient>
+</defs>
 </svg>
