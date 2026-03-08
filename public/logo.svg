@@ -1,0 +1,26 @@
+<svg width="300" height="260" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <g fill="none" stroke="url(#goldGradient)" stroke-width="18" stroke-linejoin="round">
+    
+    <!-- Left V -->
+    <path d="M20 120 L100 230 L140 140"/>
+
+    <!-- Right V -->
+    <path d="M280 120 L200 230 L160 140"/>
+
+    <!-- Center diamond -->
+    <path d="M150 30 L185 80 L150 130 L115 80 Z"/>
+
+    <!-- Top crown lines -->
+    <path d="M20 120 L150 30"/>
+    <path d="M150 30 L280 120"/>
+
+  </g>
+</svg>
