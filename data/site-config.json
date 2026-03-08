@@ -6,8 +6,20 @@
   "contactPhone": "+91 999 102 3333",
   "contactEmail": "wowmindz@gmail.com",
   "address": "",
-  "visiblePages": ["home", "about", "academics", "blog", "contact"],
-  "menuPages": ["home", "academics", "blog", "about", "contact"],
+  "visiblePages": [
+    "home",
+    "about",
+    "academics",
+    "blog",
+    "contact"
+  ],
+  "menuPages": [
+    "home",
+    "academics",
+    "blog",
+    "about",
+    "contact"
+  ],
   "hiddenPages": [
     "admissions",
     "activities",
@@ -37,24 +49,25 @@
       "image": "/images/ai-campus-3.svg",
       "summary": "Why product execution improves when teams design systems instead of isolated features.",
       "content": "Product quality compounds when teams think in systems. At WowMindz, we map dependencies, feedback loops, and execution constraints early so each release improves the next one. This creates cleaner decisions, better delivery speed, and stronger long-term outcomes.",
-      "status": "published"
+      "status": "published",
+      "scheduledAt": ""
     }
   ],
   "siteFiles": [],
   "theme": {
     "paper": "#0A0A0B",
-    "brand400": "#60A5FA",
-    "brand600": "#3B82F6",
-    "brand700": "#93C5FD",
-    "surface": "#111214",
-    "surfaceSoft": "#17191D",
-    "highlight": "#23272F",
-    "glareBlue": "#2563EB",
-    "glareGold": "#374151",
-    "glareBlur": 24,
-    "glareSpeed": 24,
-    "glareSize": 420,
-    "heroHighlight": "#13161B",
-    "footerButton": "#3B82F6"
+    "brand400": "#fb6060",
+    "brand600": "#f73b3b",
+    "brand700": "#fd9191",
+    "surface": "#161313",
+    "surfaceSoft": "#1d1616",
+    "highlight": "#322525",
+    "glareBlue": "#eb2424",
+    "glareGold": "#523838",
+    "glareBlur": 39,
+    "glareSpeed": 45,
+    "glareSize": 640,
+    "heroHighlight": "#1b1313",
+    "footerButton": "#f73b3b"
   }
 }
