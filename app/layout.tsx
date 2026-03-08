@@ -5,6 +5,7 @@ import "./globals.css";
 import { getSiteConfig } from "@/lib/site-config";
 import { SiteConfigProvider } from "@/components/SiteConfigProvider";
 import SplashScreen from "@/components/SplashScreen";
+import CursorGlow from "@/components/CursorGlow";
 import { getTemplateSiteIdentity } from "@/config/template-config";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -68,6 +69,7 @@ async function RootWithConfig({
     <html lang="en">
       <body style={themeVars as CSSProperties}>
         <SiteConfigProvider value={config}>
+          <CursorGlow />
           <SplashScreen logoPath={config.logoPath || "/logo.png"} />
           <div className="site-shell">{children}</div>
         </SiteConfigProvider>
