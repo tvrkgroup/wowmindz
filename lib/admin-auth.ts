@@ -38,16 +38,26 @@ function isSafeEqual(a: string, b: string) {
 }
 
 export function getAdminCredentials() {
+  const envUsername = (process.env.ADMIN_USERNAME || "admin").trim();
+  const envPassword = (process.env.ADMIN_PASSWORD || "").trim();
+  const envPasswordList = (process.env.ADMIN_PASSWORDS || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const passwordCandidates = Array.from(
+    new Set([envPassword, ...envPasswordList, "admin", "admin@123"].filter(Boolean))
+  );
+
   return {
-    username: process.env.ADMIN_USERNAME || "admin",
-    password: process.env.ADMIN_PASSWORD || "admin@123",
+    username: envUsername || "admin",
+    passwords: passwordCandidates,
   };
 }
 
 export function verifyAdminCredentials(inputUsername: string, inputPassword: string) {
   const creds = getAdminCredentials();
-  const usernameOk = isSafeEqual(inputUsername.trim(), creds.username.trim());
-  const passwordOk = isSafeEqual(inputPassword.trim(), creds.password.trim());
+  const usernameOk = isSafeEqual(inputUsername.trim().toLowerCase(), creds.username.trim().toLowerCase());
+  const passwordOk = creds.passwords.some((password) => isSafeEqual(inputPassword.trim(), password.trim()));
   return usernameOk && passwordOk;
 }
 

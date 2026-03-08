@@ -14,7 +14,7 @@ npm run dev
 3. Sign in with `ADMIN_USERNAME` / `ADMIN_PASSWORD`.
 4. Manage:
    - School name, tagline, phone, email, address
-   - Logo path (example: `/logo.svg`)
+   - Logo path (example: `/assets/branding/logo.png`)
    - Theme colors (`paper`, `brand400`, `brand600`, `brand700`)
    - Page visibility (hidden pages return 404)
    - News/events entries
@@ -40,6 +40,7 @@ For logo upload from admin directly to GitHub:
 - `GITHUB_TOKEN` (repo write permission)
 
 Notes:
+- Redeploy after changing environment variables in Vercel so runtime picks up new values.
 - If Firebase vars are present, admin config is persisted in Firebase Realtime DB.
 - If Firebase vars are not present and KV vars are present, KV is used.
 - If neither Firebase nor KV is present, local file storage (`data/site-config.json`) is used.
