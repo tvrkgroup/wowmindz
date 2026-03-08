@@ -10,11 +10,25 @@ interface SessionPayload {
 }
 
 function getSecret() {
-  const secret = process.env.ADMIN_SESSION_SECRET || "silver-brook-admin-secret-change-me";
-  if (process.env.NODE_ENV === "production" && secret === "silver-brook-admin-secret-change-me") {
-    throw new Error("ADMIN_SESSION_SECRET must be configured in production");
+  const candidates = [
+    process.env.ADMIN_SESSION_SECRET,
+    process.env.SB_ADMIN_SESSION_SECRET,
+    process.env.SESSION_SECRET,
+    process.env.AUTH_SECRET,
+    process.env.NEXTAUTH_SECRET,
+  ]
+    .map((value) => value?.trim() || "")
+    .filter(Boolean);
+
+  if (candidates.length > 0) return candidates[0];
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "Missing session secret. Set one of: ADMIN_SESSION_SECRET, SB_ADMIN_SESSION_SECRET, SESSION_SECRET, AUTH_SECRET, NEXTAUTH_SECRET."
+    );
   }
-  return secret;
+
+  return "silver-brook-admin-secret-change-me";
 }
 
 function toBase64Url(input: string) {
