@@ -122,19 +122,19 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
   const eventsInput = (hasEventsInput ? input.events : defaultSiteConfig.events) ?? [];
   const events = eventsInput
     .map((item, index) => sanitizeEvent(item, index))
-    .filter((item) => item.date && item.title);
+    .filter((item) => item.status === "draft" || Boolean(item.date && item.title));
 
   const hasNewsInput = Array.isArray(input.newsPosts);
   const newsPostsInput = (hasNewsInput ? input.newsPosts : defaultSiteConfig.newsPosts) ?? [];
   const newsPosts = newsPostsInput
     .map((item, index) => sanitizePost(item, index, "news"))
-    .filter((item) => item.date && item.title && item.summary);
+    .filter((item) => item.status === "draft" || Boolean(item.date && item.title && item.summary));
 
   const hasBlogInput = Array.isArray(input.blogPosts);
   const blogPostsInput = (hasBlogInput ? input.blogPosts : defaultSiteConfig.blogPosts) ?? [];
   const blogPosts = blogPostsInput
     .map((item, index) => sanitizePost(item, index, "blog"))
-    .filter((item) => item.date && item.title && item.summary);
+    .filter((item) => item.status === "draft" || Boolean(item.date && item.title && item.summary));
 
   const siteFilesInput = Array.isArray(input.siteFiles) ? input.siteFiles : defaultSiteConfig.siteFiles;
   const siteFiles = siteFilesInput

@@ -1039,15 +1039,15 @@ footer h4 {
 }
 
 .admin-panel {
-  padding: clamp(16px, 2.2vw, 28px);
+  padding: clamp(20px, 2.8vw, 36px);
 }
 
 .admin-panel-head {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 14px;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 18px;
 }
 
 .admin-quick-nav {
@@ -1086,14 +1086,14 @@ footer h4 {
 
 .admin-sections {
   display: grid;
-  gap: 16px;
+  gap: 18px;
 }
 
 .admin-section-box {
   border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 14px;
+  border-radius: 16px;
   background: rgba(10, 14, 21, 0.7);
-  padding: 14px;
+  padding: 18px;
 }
 
 .admin-section-box.is-hidden {
@@ -1102,7 +1102,7 @@ footer h4 {
 
 .admin-section-box.is-active {
   display: block;
-  max-height: 70vh;
+  max-height: 76vh;
   overflow: auto;
 }
 
@@ -1116,12 +1116,13 @@ footer h4 {
 .admin-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 14px;
 }
 
 .admin-help {
   color: #94a3b8;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
 }
 
 .admin-check-grid {
@@ -1143,17 +1144,17 @@ footer h4 {
 
 .admin-article-list {
   display: grid;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 14px;
+  margin-top: 12px;
 }
 
 .admin-article-card {
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 14px;
   background: rgba(15, 23, 42, 0.6);
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .admin-article-actions,
@@ -1175,8 +1176,72 @@ footer h4 {
   gap: 8px;
 }
 
+.admin-theme-field {
+  grid-template-columns: 68px 1fr;
+  align-items: center;
+}
+
 .admin-color-strip {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.admin-theme-presets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0 16px;
+}
+
+.admin-theme-preset-card {
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.54);
+  display: grid;
+  gap: 10px;
+}
+
+.admin-theme-palette-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.admin-theme-palette-row span {
+  display: block;
+  height: 22px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-theme-live-preview {
+  margin-top: 14px;
+}
+
+.admin-theme-live-surface {
+  border: 1px solid;
+  border-radius: 14px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.admin-theme-live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-inline-alert {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(120, 53, 15, 0.2);
+  margin-top: 10px;
 }
 
 .admin-color-swatch {
@@ -1204,6 +1269,10 @@ footer h4 {
   height: 88px;
   object-fit: cover;
   border-radius: 10px;
+}
+
+.admin-rich-toolbar {
+  justify-content: flex-start;
 }
 
 /* Utilities */
@@ -1253,7 +1322,8 @@ footer h4 {
   .school-calendar-controls,
   .admin-grid,
   .admin-check-grid,
-  .admin-color-strip {
+  .admin-color-strip,
+  .admin-theme-presets {
     grid-template-columns: 1fr;
   }
 

@@ -76,6 +76,93 @@ const EVENT_CATEGORIES = [
   "Others / Miscellaneous",
 ];
 
+const THEME_PRESETS: Array<{ id: string; name: string; description: string; values: SiteConfig["theme"] }> = [
+  {
+    id: "midnight",
+    name: "Midnight Blue",
+    description: "High-contrast navy look with cool blue accents.",
+    values: {
+      paper: "#0A0A0B",
+      brand400: "#60A5FA",
+      brand600: "#3B82F6",
+      brand700: "#93C5FD",
+      surface: "#111214",
+      surfaceSoft: "#17191D",
+      highlight: "#23272F",
+      glareBlue: "#2563EB",
+      glareGold: "#374151",
+      glareBlur: 24,
+      glareSpeed: 24,
+      glareSize: 420,
+      heroHighlight: "#13161B",
+      footerButton: "#3B82F6",
+    },
+  },
+  {
+    id: "sunrise",
+    name: "Sunrise Coral",
+    description: "Warm peach and coral palette for a brighter brand tone.",
+    values: {
+      paper: "#fff8f3",
+      brand400: "#fb923c",
+      brand600: "#ea580c",
+      brand700: "#9a3412",
+      surface: "#ffffff",
+      surfaceSoft: "#ffedd5",
+      highlight: "#fdba74",
+      glareBlue: "#fb923c",
+      glareGold: "#f59e0b",
+      glareBlur: 18,
+      glareSpeed: 20,
+      glareSize: 360,
+      heroHighlight: "#ffedd5",
+      footerButton: "#ea580c",
+    },
+  },
+  {
+    id: "forest",
+    name: "Forest Mint",
+    description: "Green-led palette with soft mint highlights.",
+    values: {
+      paper: "#07150f",
+      brand400: "#34d399",
+      brand600: "#059669",
+      brand700: "#6ee7b7",
+      surface: "#0d2119",
+      surfaceSoft: "#123126",
+      highlight: "#1f4a39",
+      glareBlue: "#10b981",
+      glareGold: "#84cc16",
+      glareBlur: 26,
+      glareSpeed: 22,
+      glareSize: 420,
+      heroHighlight: "#143a2d",
+      footerButton: "#059669",
+    },
+  },
+  {
+    id: "charcoal",
+    name: "Charcoal Cyan",
+    description: "Dark neutral base with cyan accents for crisp contrast.",
+    values: {
+      paper: "#0b0f12",
+      brand400: "#67e8f9",
+      brand600: "#06b6d4",
+      brand700: "#a5f3fc",
+      surface: "#141b20",
+      surfaceSoft: "#1c252c",
+      highlight: "#2b3b45",
+      glareBlue: "#22d3ee",
+      glareGold: "#14b8a6",
+      glareBlur: 22,
+      glareSpeed: 18,
+      glareSize: 430,
+      heroHighlight: "#1b2932",
+      footerButton: "#0891b2",
+    },
+  },
+];
+
 function emptyEvent(): SiteEvent {
   const now = Date.now();
   return {
@@ -287,6 +374,13 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     setConfig((prev) => ({
       ...prev,
       events: prev.events.map((event) => (event.id === id ? { ...event, ...patch } : event)),
+    }));
+  };
+
+  const applyThemePreset = (preset: SiteConfig["theme"]) => {
+    setConfig((prev) => ({
+      ...prev,
+      theme: { ...preset },
     }));
   };
 
@@ -719,7 +813,27 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               id="admin-theme"
             >
               <h3>Theme Settings</h3>
-              <p className="admin-help">Global theme controls used across buttons, cards, dropdowns, highlights and gradients.</p>
+              <p className="admin-help">Global controls for buttons, cards, highlights, and animated gradients.</p>
+              <div className="admin-theme-presets">
+                {THEME_PRESETS.map((preset) => (
+                  <article className="admin-theme-preset-card" key={preset.id}>
+                    <div>
+                      <strong>{preset.name}</strong>
+                      <p className="admin-help">{preset.description}</p>
+                    </div>
+                    <div className="admin-theme-palette-row">
+                      <span style={{ background: preset.values.paper }} />
+                      <span style={{ background: preset.values.brand600 }} />
+                      <span style={{ background: preset.values.surface }} />
+                      <span style={{ background: preset.values.highlight }} />
+                      <span style={{ background: preset.values.footerButton }} />
+                    </div>
+                    <button type="button" className="button secondary" onClick={() => applyThemePreset(preset.values)}>
+                      Apply {preset.name}
+                    </button>
+                  </article>
+                ))}
+              </div>
               <div className="admin-grid">
                 {themeColorFields.map((item) => (
                   <label key={item.key}>
@@ -780,6 +894,33 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                   </label>
                 ))}
               </div>
+              <article className="admin-theme-live-preview">
+                <p className="admin-help">Live palette preview</p>
+                <div
+                  className="admin-theme-live-surface"
+                  style={{
+                    background: `linear-gradient(130deg, ${config.theme.surface} 0%, ${config.theme.surfaceSoft} 50%, ${config.theme.highlight} 100%)`,
+                    borderColor: config.theme.highlight,
+                  }}
+                >
+                  <h4 style={{ color: config.theme.brand700 }}>WowMindz Theme Preview</h4>
+                  <p style={{ color: config.theme.brand400 }}>
+                    Preview cards, accents and CTA colors before you save.
+                  </p>
+                  <div className="admin-theme-live-actions">
+                    <button type="button" className="button" style={{ background: config.theme.brand600 }}>
+                      Primary CTA
+                    </button>
+                    <button
+                      type="button"
+                      className="button secondary"
+                      style={{ borderColor: config.theme.footerButton, color: config.theme.footerButton }}
+                    >
+                      Secondary CTA
+                    </button>
+                  </div>
+                </div>
+              </article>
               <div className="admin-color-strip">
                 <div className="admin-color-swatch">
                   Paper
@@ -815,10 +956,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                   type="button"
                   className="button secondary"
                   onClick={() =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      theme: defaultSiteConfig.theme,
-                    }))
+                    applyThemePreset(defaultSiteConfig.theme)
                   }
                 >
                   Reset Theme Only
@@ -1012,6 +1150,29 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                 </button>
               </div>
               <p className="admin-help">Create, schedule, hide or publish school news updates.</p>
+              {!visiblePageSet.has("news") ? (
+                <div className="admin-inline-alert">
+                  <p className="admin-help">
+                    News page is currently hidden. Publish news and enable visibility to show `/news`.
+                  </p>
+                  <button
+                    type="button"
+                    className="button secondary"
+                    onClick={() =>
+                      setConfig((prev) => ({
+                        ...prev,
+                        visiblePages: prev.visiblePages.includes("news")
+                          ? prev.visiblePages
+                          : [...prev.visiblePages, "news"],
+                        menuPages: prev.menuPages.includes("news") ? prev.menuPages : [...prev.menuPages, "news"],
+                        hiddenPages: prev.hiddenPages.filter((item) => item !== "news"),
+                      }))
+                    }
+                  >
+                    Enable News Page + Menu Link
+                  </button>
+                </div>
+              ) : null}
           <div className="admin-article-list">
             {config.newsPosts.map((post) => (
               <article className="admin-article-card" key={post.id}>
