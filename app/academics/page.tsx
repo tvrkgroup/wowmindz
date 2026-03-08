@@ -8,16 +8,28 @@ import InfoCardGrid from "@/components/sections/InfoCardGrid";
 
 const academicBands = [
   {
-    title: "Digital Products",
-    description: "Custom digital solutions for modern business and product needs.",
+    title: "ktvr.in",
+    description: "Core platform and execution stream.",
   },
   {
-    title: "Scalable Systems",
-    description: "Architecture and implementation built for long-term growth.",
+    title: "prathipa.com",
+    description: "Brand and product web presence.",
   },
   {
-    title: "Innovation Tracks",
-    description: "Startup ideas and future-facing concepts shaped into practical experiments.",
+    title: "wowmyspace.com",
+    description: "Digital ecosystem initiative.",
+  },
+  {
+    title: "thrivikram.com",
+    description: "Personal brand and public profile.",
+  },
+  {
+    title: "TiGR Election Code",
+    description: "Election-related implementation project.",
+  },
+  {
+    title: "Collaborative: nutopia.in",
+    description: "Collaborative partnership build.",
   },
 ];
 

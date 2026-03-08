@@ -10,12 +10,11 @@ import { getTemplateSiteIdentity } from "@/config/template-config";
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getSiteConfig();
   const site = getTemplateSiteIdentity(config);
-  const faviconPath = "/assets/branding/favicon.ico";
   return {
     title: site.siteName,
     description: `${site.siteName} — ${site.tagline}`,
     icons: {
-      icon: faviconPath,
+      icon: site.logo,
       apple: site.logo,
     },
   };
