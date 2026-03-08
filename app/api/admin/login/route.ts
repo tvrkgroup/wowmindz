@@ -78,7 +78,15 @@ export async function POST(request: Request) {
     const token = createSessionToken(username);
     await setAdminSessionCookie(token);
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ ok: false, message: "Invalid request" }, { status: 400 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown login error";
+    console.error("[admin/login] failed:", message);
+    if (message.includes("ADMIN_SESSION_SECRET")) {
+      return NextResponse.json(
+        { ok: false, message: "Server auth misconfigured. Set ADMIN_SESSION_SECRET and redeploy." },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json({ ok: false, message: "Server error during login" }, { status: 500 });
   }
 }
