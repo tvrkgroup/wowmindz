@@ -9,6 +9,10 @@ interface SessionPayload {
   issuedAt: number;
 }
 
+const globalAdminAuthState = globalThis as unknown as {
+  __sbAdminSecretFallbackWarned?: boolean;
+};
+
 function getSecret() {
   const candidates = [
     process.env.ADMIN_SESSION_SECRET,
@@ -22,13 +26,24 @@ function getSecret() {
 
   if (candidates.length > 0) return candidates[0];
 
-  if (process.env.NODE_ENV === "production") {
-    throw new Error(
-      "Missing session secret. Set one of: ADMIN_SESSION_SECRET, SB_ADMIN_SESSION_SECRET, SESSION_SECRET, AUTH_SECRET, NEXTAUTH_SECRET."
+  const fallbackSeed = [
+    process.env.ADMIN_USERNAME || "",
+    process.env.ADMIN_PASSWORD || "",
+    process.env.ADMIN_PASSWORDS || "",
+    process.env.VERCEL_PROJECT_PRODUCTION_URL || "",
+    process.env.VERCEL_URL || "",
+    process.env.NEXT_PUBLIC_SITE_URL || "",
+    "wowmindz-admin-fallback-secret-v1",
+  ].join("|");
+
+  if (process.env.NODE_ENV === "production" && !globalAdminAuthState.__sbAdminSecretFallbackWarned) {
+    console.warn(
+      "[admin-auth] No explicit session secret env var found. Using derived fallback secret; set ADMIN_SESSION_SECRET."
     );
+    globalAdminAuthState.__sbAdminSecretFallbackWarned = true;
   }
 
-  return "silver-brook-admin-secret-change-me";
+  return crypto.createHash("sha256").update(fallbackSeed).digest("hex");
 }
 
 function toBase64Url(input: string) {
