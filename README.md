@@ -14,7 +14,7 @@ npm run dev
 3. Sign in with `ADMIN_USERNAME` / `ADMIN_PASSWORD`.
 4. Manage:
    - School name, tagline, phone, email, address
-   - Logo path (example: `/logo.png`)
+   - Logo path (example: `/logo.svg`)
    - Theme colors (`paper`, `brand400`, `brand600`, `brand700`)
    - Page visibility (hidden pages return 404)
    - News/events entries

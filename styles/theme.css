@@ -4,28 +4,28 @@
   --font-display: "Plus Jakarta Sans", "Manrope", "Segoe UI", sans-serif;
   --font-body: "Manrope", "Segoe UI", "Helvetica Neue", sans-serif;
 
-  --paper: #fbfaf6;
-  --ink-950: #0f1111;
-  --ink-900: #1b1f1e;
-  --ink-700: #2f3533;
-  --ink-600: #4b5551;
-  --ink-500: #65706b;
+  --paper: #0a0a0b;
+  --ink-950: #f9fafb;
+  --ink-900: #f3f4f6;
+  --ink-700: #d1d5db;
+  --ink-600: #9ca3af;
+  --ink-500: #6b7280;
 
-  --brand-50: #eaf1ff;
-  --brand-200: #c7d9ff;
-  --brand-400: #6f93f5;
-  --brand-600: #2f5bd7;
-  --brand-700: #2345a6;
-  --surface: #ffffff;
-  --surface-soft: #eef3ff;
-  --highlight: #dbe6ff;
-  --glare-blue: #4976ec;
-  --glare-gold: #d4a648;
+  --brand-50: #0f172a;
+  --brand-200: #1d4ed8;
+  --brand-400: #60a5fa;
+  --brand-600: #3b82f6;
+  --brand-700: #93c5fd;
+  --surface: #111214;
+  --surface-soft: #17191d;
+  --highlight: #23272f;
+  --glare-blue: #2563eb;
+  --glare-gold: #374151;
   --glare-blur: 24px;
   --glare-speed: 24s;
   --glare-size: 420px;
-  --hero-highlight: #dbe6ff;
-  --footer-button: #2f5bd7;
+  --hero-highlight: #13161b;
+  --footer-button: #3b82f6;
 
   --sand-200: #efe1c9;
   --sun-300: #f2c06c;
@@ -34,20 +34,20 @@
 }
 
 .theme-alt {
-  --paper: #f6f5f1;
-  --brand-600: #3f5b8b;
-  --brand-700: #32486f;
-  --brand-400: #8ea2c7;
-  --brand-200: #ccd6ea;
-  --brand-50: #eaf0fb;
-  --surface: #ffffff;
-  --surface-soft: #eef2fb;
-  --highlight: #d2dff6;
-  --glare-blue: #4d6ea8;
-  --glare-gold: #bf9a5d;
+  --paper: #101114;
+  --brand-600: #2563eb;
+  --brand-700: #60a5fa;
+  --brand-400: #3b82f6;
+  --brand-200: #1e3a8a;
+  --brand-50: #0f172a;
+  --surface: #171a20;
+  --surface-soft: #1f2430;
+  --highlight: #2b3444;
+  --glare-blue: #1d4ed8;
+  --glare-gold: #4b5563;
   --glare-blur: 24px;
   --glare-speed: 24s;
   --glare-size: 420px;
-  --hero-highlight: #d2dff6;
-  --footer-button: #3f5b8b;
+  --hero-highlight: #171a20;
+  --footer-button: #2563eb;
 }

@@ -69,7 +69,7 @@ async function RootWithConfig({
     <html lang="en">
       <body style={themeVars as CSSProperties}>
         <SiteConfigProvider value={config}>
-          <SplashScreen logoPath={config.logoPath || "/logo.svg"} />
+          <SplashScreen logoPath={config.logoPath || "/logo.png"} />
           <div className="site-shell">{children}</div>
         </SiteConfigProvider>
       </body>

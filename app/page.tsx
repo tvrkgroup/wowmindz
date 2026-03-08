@@ -135,7 +135,7 @@ export default async function Home() {
           <article className="card home-cbse-card home-theme-card">
             <div className="home-cbse-layout">
               <div className="home-cbse-logo-wrap">
-                <img className="home-cbse-logo" src={config.logoPath || "/logo.svg"} alt={`${config.schoolName} logo`} />
+                <img className="home-cbse-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
               </div>
               <div className="home-cbse-content">
                 <h2>{site.siteName.toUpperCase()}</h2>

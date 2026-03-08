@@ -62,7 +62,7 @@ export default function Nav() {
     <header className="nav-shell">
       <div className="container nav-bar">
         <Link href="/" className="logo">
-          <img className="logo-image" src={config.logoPath || "/logo.svg"} alt={`${config.schoolName} logo`} />
+          <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
           <span className="logo-text">
             <strong>{nameLines.lineOne}</strong>
             <span>{nameLines.lineTwo}</span>
@@ -107,7 +107,7 @@ export default function Nav() {
         <aside className="mobile-menu-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
           <div className="mobile-menu-head">
             <div className="mobile-menu-brand">
-              <img className="logo-image" src={config.logoPath || "/logo.svg"} alt={`${config.schoolName} logo`} />
+              <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
               <div className="logo-text">
                 <strong>{nameLines.lineOne}</strong>
                 <span>{nameLines.lineTwo}</span>
