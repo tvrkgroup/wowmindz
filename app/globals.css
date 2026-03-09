@@ -1233,13 +1233,14 @@ footer .grid.grid-3 {
 
 .admin-check-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(190px, 1fr));
   gap: 10px;
 }
 
 .admin-check {
-  display: inline-flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
   gap: 10px;
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 10px;
@@ -1247,6 +1248,17 @@ footer .grid.grid-3 {
   color: #dbeafe;
   background: rgba(15, 23, 42, 0.5);
   min-height: 44px;
+}
+
+.admin-check input[type="checkbox"] {
+  margin-top: 2px;
+}
+
+.admin-check span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .admin-article-list {
@@ -1423,7 +1435,7 @@ footer .grid.grid-3 {
   }
 
   .admin-check-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
   }
 }
 

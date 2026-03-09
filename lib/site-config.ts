@@ -34,6 +34,16 @@ function pickEnvByPattern(patterns: RegExp[]): string {
   return "";
 }
 
+function pickEnvValueByPattern(pattern: RegExp): string {
+  const keys = Object.keys(process.env);
+  for (const key of keys) {
+    const value = process.env[key];
+    if (!value || !value.trim()) continue;
+    if (pattern.test(value.trim())) return value.trim();
+  }
+  return "";
+}
+
 function getFirebaseCredentials() {
   const base =
     pickFirstEnv([
@@ -41,7 +51,10 @@ function getFirebaseCredentials() {
     "FIREBASE_DATABASE_URL",
     "SB_FIREBASE_DB_URL",
     "NEXT_PUBLIC_FIREBASE_DB_URL",
-    ]) || pickEnvByPattern([/FIREBASE/i, /(DB|DATABASE)?_?URL/i]);
+    ]) ||
+    pickEnvByPattern([/FIREBASE/i, /(DB|DATABASE)?_?URL/i]) ||
+    pickEnvByPattern([/(DB|DATABASE)/i, /URL/i]) ||
+    pickEnvValueByPattern(/^https?:\/\/[a-z0-9-]+\.firebaseio\.com\/?$/i);
   const secret =
     pickFirstEnv([
     "FIREBASE_DB_SECRET",
@@ -49,7 +62,9 @@ function getFirebaseCredentials() {
     "FIREBASE_DATABASE_SECRET",
     "SB_FIREBASE_DB_SECRET",
     "NEXT_PUBLIC_FIREBASE_DB_SECRET",
-    ]) || pickEnvByPattern([/FIREBASE/i, /(SECRET|TOKEN)/i]);
+    ]) ||
+    pickEnvByPattern([/FIREBASE/i, /(SECRET|TOKEN)/i]) ||
+    pickEnvByPattern([/(DB|DATABASE)/i, /(SECRET|TOKEN)/i]);
   return { base, secret };
 }
 
