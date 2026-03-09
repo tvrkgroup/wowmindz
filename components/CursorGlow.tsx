@@ -21,12 +21,6 @@ export default function CursorGlow() {
       setCursor(event.clientX, event.clientY);
     };
 
-    const onTouchMove = (event: TouchEvent) => {
-      const touch = event.touches[0];
-      if (!touch) return;
-      setCursor(touch.clientX, touch.clientY);
-    };
-
     const onPointerDown = () => root.style.setProperty("--cursor-press", "1");
     const onPointerUp = () => root.style.setProperty("--cursor-press", "0");
     const onLeave = () => root.style.setProperty("--cursor-intensity", "0.1");
@@ -37,7 +31,6 @@ export default function CursorGlow() {
     root.style.setProperty("--cursor-press", "0");
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("pointerup", onPointerUp, { passive: true });
     window.addEventListener("pointercancel", onPointerUp, { passive: true });
@@ -46,7 +39,6 @@ export default function CursorGlow() {
     return () => {
       if (decayTimer) clearTimeout(decayTimer);
       window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
