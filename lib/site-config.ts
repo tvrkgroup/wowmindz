@@ -10,10 +10,10 @@ import {
   type SitePost,
 } from "@/lib/site-config-schema";
 import {
+  formatStorageDiagnosisError,
   hasFirebaseCredentials,
   hasKvCredentials,
   resolveFirebaseCredentials,
-  runtimeStorageDiagnostics,
 } from "@/lib/runtime-storage";
 
 const KV_KEY = "site-config";
@@ -326,9 +326,8 @@ export async function saveSiteConfig(nextConfig: Partial<SiteConfig>): Promise<S
   } else if (hasKvConfig()) {
     await writeConfigToKv(merged);
   } else if (IS_VERCEL) {
-    const { base, secret } = resolveFirebaseCredentials();
     throw new Error(
-      `No dynamic storage configured. Set Firebase (FIREBASE_DB_URL + FIREBASE_DB_SECRET) or KV. Detected Firebase URL: ${base ? "yes" : "no"}, secret: ${secret ? "yes" : "no"}; ${runtimeStorageDiagnostics()}.`
+      formatStorageDiagnosisError("No dynamic storage configured. Set Firebase (FIREBASE_DB_URL + FIREBASE_DB_SECRET) or KV.")
     );
   } else {
     await ensureConfigFile();

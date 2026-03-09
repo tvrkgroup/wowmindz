@@ -1,10 +1,10 @@
 import { promises as fs } from "fs";
 import path from "path";
 import {
+  formatStorageDiagnosisError,
   hasFirebaseCredentials,
   hasKvCredentials,
   resolveFirebaseCredentials,
-  runtimeStorageDiagnostics,
 } from "@/lib/runtime-storage";
 
 export interface InquiryItem {
@@ -127,10 +127,7 @@ export async function listInquiries(): Promise<InquiryItem[]> {
 export async function addInquiry(item: InquiryItem) {
   const mode = getInquiryStorageMode();
   if (mode === "unconfigured") {
-    const { base, secret } = resolveFirebaseCredentials();
-    throw new Error(
-      `Inquiry storage is not configured. Detected Firebase URL: ${base ? "yes" : "no"}, secret: ${secret ? "yes" : "no"}; ${runtimeStorageDiagnostics()}.`
-    );
+    throw new Error(formatStorageDiagnosisError("Inquiry storage is not configured."));
   }
 
   const existing = await listInquiries();
