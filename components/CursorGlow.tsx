@@ -10,10 +10,10 @@ export default function CursorGlow() {
     const setCursor = (x: number, y: number) => {
       root.style.setProperty("--cursor-x", `${x}px`);
       root.style.setProperty("--cursor-y", `${y}px`);
-      root.style.setProperty("--cursor-intensity", "0.9");
+      root.style.setProperty("--cursor-intensity", "0.42");
       if (decayTimer) clearTimeout(decayTimer);
       decayTimer = setTimeout(() => {
-        root.style.setProperty("--cursor-intensity", "0.32");
+        root.style.setProperty("--cursor-intensity", "0.2");
       }, 180);
     };
 
@@ -29,11 +29,11 @@ export default function CursorGlow() {
 
     const onPointerDown = () => root.style.setProperty("--cursor-press", "1");
     const onPointerUp = () => root.style.setProperty("--cursor-press", "0");
-    const onLeave = () => root.style.setProperty("--cursor-intensity", "0.14");
+    const onLeave = () => root.style.setProperty("--cursor-intensity", "0.1");
 
     root.style.setProperty("--cursor-x", "50vw");
     root.style.setProperty("--cursor-y", "35vh");
-    root.style.setProperty("--cursor-intensity", "0.28");
+    root.style.setProperty("--cursor-intensity", "0.18");
     root.style.setProperty("--cursor-press", "0");
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });

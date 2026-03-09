@@ -16,6 +16,30 @@ const KV_KEY = "site-config";
 const IS_VERCEL = process.env.VERCEL === "1";
 const FIREBASE_KEY = "siteConfig";
 
+function pickFirstEnv(keys: string[]): string {
+  for (const key of keys) {
+    const value = process.env[key];
+    if (value && value.trim()) return value.trim();
+  }
+  return "";
+}
+
+function getFirebaseCredentials() {
+  const base = pickFirstEnv([
+    "FIREBASE_DB_URL",
+    "FIREBASE_DATABASE_URL",
+    "SB_FIREBASE_DB_URL",
+    "NEXT_PUBLIC_FIREBASE_DB_URL",
+  ]);
+  const secret = pickFirstEnv([
+    "FIREBASE_DB_SECRET",
+    "FIREBASE_SECRET",
+    "FIREBASE_DATABASE_SECRET",
+    "SB_FIREBASE_DB_SECRET",
+  ]);
+  return { base, secret };
+}
+
 function sanitizeEvent(input: Partial<SiteEvent>, index: number): SiteEvent {
   const date = (input.date ?? "").toString().trim().slice(0, 40);
   const title = (input.title ?? "").toString().trim().slice(0, 160);
@@ -222,7 +246,8 @@ function hasKvConfig() {
 }
 
 function hasFirebaseConfig() {
-  return Boolean(process.env.FIREBASE_DB_URL && process.env.FIREBASE_DB_SECRET);
+  const { base, secret } = getFirebaseCredentials();
+  return Boolean(base && secret);
 }
 
 async function kvFetch(pathname: string) {
@@ -262,8 +287,7 @@ async function writeConfigToKv(config: SiteConfig) {
 
 async function readConfigFromFirebase(): Promise<SiteConfig | null> {
   if (!hasFirebaseConfig()) return null;
-  const base = process.env.FIREBASE_DB_URL as string;
-  const secret = process.env.FIREBASE_DB_SECRET as string;
+  const { base, secret } = getFirebaseCredentials();
 
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     cache: "no-store",
@@ -279,8 +303,7 @@ async function readConfigFromFirebase(): Promise<SiteConfig | null> {
 }
 
 async function writeConfigToFirebase(config: SiteConfig) {
-  const base = process.env.FIREBASE_DB_URL as string;
-  const secret = process.env.FIREBASE_DB_SECRET as string;
+  const { base, secret } = getFirebaseCredentials();
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -322,8 +345,14 @@ export async function saveSiteConfig(nextConfig: Partial<SiteConfig>): Promise<S
   } else if (hasKvConfig()) {
     await writeConfigToKv(merged);
   } else if (IS_VERCEL) {
+    const hasFirebaseUrl = Boolean(
+      pickFirstEnv(["FIREBASE_DB_URL", "FIREBASE_DATABASE_URL", "SB_FIREBASE_DB_URL", "NEXT_PUBLIC_FIREBASE_DB_URL"])
+    );
+    const hasFirebaseSecret = Boolean(
+      pickFirstEnv(["FIREBASE_DB_SECRET", "FIREBASE_SECRET", "FIREBASE_DATABASE_SECRET", "SB_FIREBASE_DB_SECRET"])
+    );
     throw new Error(
-      "No dynamic storage configured. Set Firebase (FIREBASE_DB_URL, FIREBASE_DB_SECRET) or KV."
+      `No dynamic storage configured. Set Firebase (FIREBASE_DB_URL + FIREBASE_DB_SECRET) or KV. Detected Firebase URL: ${hasFirebaseUrl ? "yes" : "no"}, secret: ${hasFirebaseSecret ? "yes" : "no"}.`
     );
   } else {
     await ensureConfigFile();
