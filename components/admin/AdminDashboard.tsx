@@ -866,6 +866,10 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                         }
                       />
                     </div>
+                    <div className="admin-theme-inline-preview">
+                      <span className="swatch" style={{ background: config.theme[item.key] }} />
+                      <span>{config.theme[item.key].toUpperCase()}</span>
+                    </div>
                   </label>
                 ))}
                 {gradientNumericFields.map((item) => (

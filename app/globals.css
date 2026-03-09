@@ -18,13 +18,16 @@
   --ui-surface-2: rgb(var(--surface-rgb) / 0.72);
   --ui-accent-soft: rgb(var(--brand-600-rgb) / 0.2);
   --ui-accent-strong: rgb(var(--brand-600-rgb) / 0.34);
+  --space-section: clamp(58px, 6.5vw, 94px);
+  --space-section-tight: clamp(38px, 4.2vw, 62px);
+  --space-grid: 18px;
 }
 
 html,
 body {
   min-height: 100%;
   overflow-x: hidden;
-  overscroll-behavior-y: auto;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -53,6 +56,8 @@ img {
   position: relative;
   isolation: isolate;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   overflow-x: hidden;
   background:
     radial-gradient(820px 420px at 8% -8%, rgb(var(--brand-600-rgb) / 0.22), transparent 60%),
@@ -125,11 +130,11 @@ img {
 }
 
 .section {
-  padding: clamp(80px, 9vw, 124px) 0;
+  padding: var(--space-section) 0;
 }
 
 .section-tight {
-  padding: clamp(50px, 6vw, 76px) 0;
+  padding: var(--space-section-tight) 0;
 }
 
 .section-pattern {
@@ -265,7 +270,7 @@ span {
 
 .grid {
   display: grid;
-  gap: 22px;
+  gap: var(--space-grid);
 }
 
 .grid-2 {
@@ -283,7 +288,7 @@ span {
   border: 1px solid var(--ui-border-soft);
   background: linear-gradient(180deg, rgba(17, 22, 30, 0.94), rgba(13, 18, 25, 0.96));
   box-shadow: 0 24px 50px rgba(2, 6, 23, 0.45);
-  padding: clamp(24px, 2.4vw, 32px);
+  padding: clamp(20px, 2vw, 28px);
   transition: transform var(--motion-medium) var(--ease-out), border-color var(--motion-medium) var(--ease-out), box-shadow var(--motion-medium) var(--ease-out);
 }
 
@@ -350,22 +355,22 @@ span {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  border: 1px solid rgba(96, 165, 250, 0.28);
-  background: rgba(30, 64, 175, 0.25);
+  border: 1px solid var(--ui-border-strong);
+  background: rgb(var(--brand-600-rgb) / 0.22);
 }
 
 .icon {
   width: 18px;
   height: 18px;
   border-radius: 6px;
-  border: 1px solid rgba(96, 165, 250, 0.3);
-  background: rgba(30, 64, 175, 0.23);
+  border: 1px solid var(--ui-border-strong);
+  background: rgb(var(--brand-600-rgb) / 0.22);
   flex: 0 0 auto;
 }
 
 .info-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
 }
 
@@ -396,7 +401,7 @@ textarea:focus,
 select:focus,
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.55);
+  outline: 2px solid rgb(var(--brand-600-rgb) / 0.55);
   outline-offset: 2px;
 }
 
@@ -606,7 +611,7 @@ a:focus-visible {
 
 /* Hero */
 .page-hero {
-  padding: clamp(64px, 9vw, 110px) 0 clamp(34px, 5vw, 56px);
+  padding: clamp(48px, 6vw, 84px) 0 clamp(24px, 3.4vw, 44px);
 }
 
 .page-hero .container {
@@ -627,7 +632,7 @@ a:focus-visible {
 
 /* Home */
 .home-hero {
-  padding-top: clamp(58px, 8vw, 98px);
+  padding-top: clamp(44px, 5vw, 70px);
 }
 
 .home-hero-grid {
@@ -724,7 +729,7 @@ a:focus-visible {
 .home-exams-grid,
 .home-final-grid {
   display: grid;
-  gap: 22px;
+  gap: 18px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -780,8 +785,8 @@ a:focus-visible {
 footer {
   border-top: 1px solid rgba(148, 163, 184, 0.16);
   background: rgba(6, 9, 14, 0.9);
-  padding: 64px 0 36px;
-  margin-top: 0;
+  padding: clamp(36px, 4.4vw, 52px) 0 24px;
+  margin-top: auto;
 }
 
 .footer-contact,
@@ -791,7 +796,7 @@ footer h4 {
 
 footer .grid.grid-3 {
   align-items: start;
-  gap: 24px;
+  gap: 18px;
 }
 
 .footer-bottom {
@@ -1002,7 +1007,7 @@ footer .grid.grid-3 {
 
 .custom-select-option:hover,
 .custom-select-option.is-selected {
-  background: rgba(59, 130, 246, 0.2);
+  background: rgb(var(--brand-600-rgb) / 0.2);
 }
 
 /* Calendar */
@@ -1276,25 +1281,25 @@ footer .grid.grid-3 {
 
 .admin-check-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 10px;
 }
 
 .admin-check {
   display: grid;
-  grid-template-columns: 18px minmax(0, 1fr);
-  align-items: start;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
   gap: 10px;
   border: 1px solid var(--ui-border-soft);
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 10px 14px;
   color: var(--brand-700);
   background: var(--ui-surface-2);
   min-height: 44px;
 }
 
 .admin-check input[type="checkbox"] {
-  margin-top: 2px;
+  margin-top: 0;
 }
 
 .admin-check span {
@@ -1345,6 +1350,23 @@ footer .grid.grid-3 {
 .admin-theme-field {
   grid-template-columns: 68px 1fr;
   align-items: center;
+}
+
+.admin-theme-inline-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+.admin-theme-inline-preview .swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  display: inline-block;
 }
 
 .admin-color-strip {
