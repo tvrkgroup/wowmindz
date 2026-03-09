@@ -32,7 +32,7 @@
   --glass-shadow-2: 0 28px 60px rgb(2 6 23 / 0.44);
   --ambient-layer-opacity: 0.9;
   --ambient-reactive-opacity: 0.65;
-  --mesh-opacity: 0.36;
+  --mesh-opacity: 0.5;
 }
 
 html,
@@ -369,12 +369,12 @@ span {
   border-radius: 20px;
   border: 1px solid var(--glass-border);
   background:
-    linear-gradient(170deg, var(--glass-bg-mid), rgb(var(--surface-rgb) / 0.52)),
+    linear-gradient(170deg, var(--glass-bg-mid), rgb(var(--surface-rgb) / 0.4)),
     linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 28%);
   box-shadow: var(--glass-shadow-1), 0 1px 0 rgb(255 255 255 / 0.14) inset;
   padding: clamp(20px, 2vw, 28px);
   transition: transform var(--motion-medium) var(--ease-out), border-color var(--motion-medium) var(--ease-out), box-shadow var(--motion-medium) var(--ease-out);
-  backdrop-filter: blur(18px) saturate(122%);
+  backdrop-filter: blur(24px) saturate(126%);
 }
 
 .card::before,
@@ -388,6 +388,8 @@ span {
     radial-gradient(360px circle at var(--ambient-x) var(--ambient-y), rgb(var(--brand-400-rgb) / 0.12), transparent 64%),
     linear-gradient(180deg, rgb(255 255 255 / 0.2), transparent 38%);
   opacity: 0.82;
+  filter: blur(16px);
+  transform: scale(1.03);
 }
 
 .card::after,
@@ -416,11 +418,12 @@ span {
   border-radius: 18px;
   border: 1px solid var(--glass-border);
   background:
-    linear-gradient(170deg, var(--glass-bg-weak), rgb(var(--surface-rgb) / 0.48)),
+    linear-gradient(170deg, var(--glass-bg-weak), rgb(var(--surface-rgb) / 0.34)),
     linear-gradient(180deg, rgb(255 255 255 / 0.12), transparent 34%);
   display: grid;
   gap: 12px;
   transition: transform var(--motion-medium) var(--ease-out), border-color var(--motion-medium) var(--ease-out), box-shadow var(--motion-medium) var(--ease-out);
+  backdrop-filter: blur(22px) saturate(124%);
 }
 
 .info-card:hover,
@@ -1263,8 +1266,8 @@ footer .divider {
 .contact-office-card,
 .contact-form-card {
   background:
-    linear-gradient(170deg, var(--glass-bg-strong), rgb(var(--surface-rgb) / 0.5)),
-    radial-gradient(220px 110px at 8% 0, rgb(255 255 255 / 0.14), transparent 72%);
+    linear-gradient(170deg, var(--glass-bg-weak), rgb(var(--surface-rgb) / 0.28)),
+    radial-gradient(220px 110px at 8% 0, rgb(255 255 255 / 0.16), transparent 72%);
 }
 
 @keyframes ambient-float {
@@ -1898,7 +1901,7 @@ footer .divider {
   :root {
     --ambient-layer-opacity: 0.7;
     --ambient-reactive-opacity: 0.35;
-    --mesh-opacity: 0.24;
+    --mesh-opacity: 0.34;
   }
 
   .ambient-layer-reactive,
@@ -1922,7 +1925,7 @@ footer .divider {
   :root {
     --ambient-layer-opacity: 0.8;
     --ambient-reactive-opacity: 0.42;
-    --mesh-opacity: 0.2;
+    --mesh-opacity: 0.26;
   }
 
   .ambient-layer-reactive {
