@@ -11,15 +11,20 @@ export interface InquiryItem {
   createdAt: string;
 }
 
-const DATA_DIR = path.join(process.cwd(), "data");
+const IS_VERCEL = process.env.VERCEL === "1";
+const DATA_DIR = IS_VERCEL ? path.join("/tmp", "wowmindz-data") : path.join(process.cwd(), "data");
 const INQUIRIES_PATH = path.join(DATA_DIR, "inquiries.json");
 const KV_KEY = "site-inquiries";
 const FIREBASE_KEY = "inquiries";
 
+function normalizeEnvValue(value: string) {
+  return value.trim().replace(/^['"]|['"]$/g, "");
+}
+
 function pickFirstEnv(keys: string[]): string {
   for (const key of keys) {
     const value = process.env[key];
-    if (value && value.trim()) return value.trim();
+    if (value && value.trim()) return normalizeEnvValue(value);
   }
   return "";
 }
@@ -29,7 +34,7 @@ function pickEnvByPattern(patterns: RegExp[]): string {
   for (const key of keys) {
     if (!patterns.every((pattern) => pattern.test(key))) continue;
     const value = process.env[key];
-    if (value && value.trim()) return value.trim();
+    if (value && value.trim()) return normalizeEnvValue(value);
   }
   return "";
 }
@@ -39,12 +44,30 @@ function pickEnvValueByPattern(pattern: RegExp): string {
   for (const key of keys) {
     const value = process.env[key];
     if (!value || !value.trim()) continue;
-    if (pattern.test(value.trim())) return value.trim();
+    const normalized = normalizeEnvValue(value);
+    if (pattern.test(normalized)) return normalized;
   }
   return "";
 }
 
 function getFirebaseCredentials() {
+  const combined = pickFirstEnv(["FIREBASE_CREDENTIALS", "FIREBASE_CONFIG", "SB_FIREBASE_CONFIG"]);
+  if (combined) {
+    if (combined.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(combined) as { url?: string; base?: string; databaseUrl?: string; secret?: string; token?: string };
+        const base = normalizeEnvValue(parsed.url || parsed.base || parsed.databaseUrl || "");
+        const secret = normalizeEnvValue(parsed.secret || parsed.token || "");
+        if (base && secret) return { base, secret };
+      } catch {
+        // continue with individual env fallback
+      }
+    } else if (combined.includes("|")) {
+      const [base, secret] = combined.split("|").map((part) => normalizeEnvValue(part || ""));
+      if (base && secret) return { base, secret };
+    }
+  }
+
   const base =
     pickFirstEnv([
       "FIREBASE_DB_URL",
@@ -155,10 +178,9 @@ async function writeInquiriesToFirebase(next: InquiryItem[]) {
   if (!response.ok) throw new Error(`Firebase write failed: ${response.status}`);
 }
 
-export function getInquiryStorageMode(): "firebase" | "kv" | "file" | "unconfigured" {
+export function getInquiryStorageMode(): "firebase" | "kv" | "file" {
   if (hasFirebaseConfig()) return "firebase";
   if (hasKvConfig()) return "kv";
-  if (process.env.VERCEL === "1") return "unconfigured";
   return "file";
 }
 
@@ -172,12 +194,6 @@ export async function listInquiries(): Promise<InquiryItem[]> {
 
 export async function addInquiry(item: InquiryItem) {
   const mode = getInquiryStorageMode();
-  if (mode === "unconfigured") {
-    throw new Error(
-      "Inquiry storage is not configured. Add Firebase (FIREBASE_DB_URL, FIREBASE_DB_SECRET) or KV (KV_REST_API_URL, KV_REST_API_TOKEN)."
-    );
-  }
-
   const existing = await listInquiries();
   existing.unshift(item);
 

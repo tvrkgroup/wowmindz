@@ -4,6 +4,9 @@ import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { getSiteConfig, updateSiteConfig } from "@/lib/site-config";
 import type { SiteConfig } from "@/lib/site-config-schema";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) {

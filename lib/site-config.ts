@@ -10,16 +10,20 @@ import {
   type SitePost,
 } from "@/lib/site-config-schema";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const CONFIG_PATH = path.join(DATA_DIR, "site-config.json");
 const KV_KEY = "site-config";
 const IS_VERCEL = process.env.VERCEL === "1";
 const FIREBASE_KEY = "siteConfig";
+const DATA_DIR = IS_VERCEL ? path.join("/tmp", "wowmindz-data") : path.join(process.cwd(), "data");
+const CONFIG_PATH = path.join(DATA_DIR, "site-config.json");
+
+function normalizeEnvValue(value: string) {
+  return value.trim().replace(/^['"]|['"]$/g, "");
+}
 
 function pickFirstEnv(keys: string[]): string {
   for (const key of keys) {
     const value = process.env[key];
-    if (value && value.trim()) return value.trim();
+    if (value && value.trim()) return normalizeEnvValue(value);
   }
   return "";
 }
@@ -29,7 +33,7 @@ function pickEnvByPattern(patterns: RegExp[]): string {
   for (const key of keys) {
     if (!patterns.every((pattern) => pattern.test(key))) continue;
     const value = process.env[key];
-    if (value && value.trim()) return value.trim();
+    if (value && value.trim()) return normalizeEnvValue(value);
   }
   return "";
 }
@@ -39,12 +43,30 @@ function pickEnvValueByPattern(pattern: RegExp): string {
   for (const key of keys) {
     const value = process.env[key];
     if (!value || !value.trim()) continue;
-    if (pattern.test(value.trim())) return value.trim();
+    const normalized = normalizeEnvValue(value);
+    if (pattern.test(normalized)) return normalized;
   }
   return "";
 }
 
 function getFirebaseCredentials() {
+  const combined = pickFirstEnv(["FIREBASE_CREDENTIALS", "FIREBASE_CONFIG", "SB_FIREBASE_CONFIG"]);
+  if (combined) {
+    if (combined.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(combined) as { url?: string; base?: string; databaseUrl?: string; secret?: string; token?: string };
+        const base = normalizeEnvValue(parsed.url || parsed.base || parsed.databaseUrl || "");
+        const secret = normalizeEnvValue(parsed.secret || parsed.token || "");
+        if (base && secret) return { base, secret };
+      } catch {
+        // continue to individual env fallback
+      }
+    } else if (combined.includes("|")) {
+      const [base, secret] = combined.split("|").map((part) => normalizeEnvValue(part || ""));
+      if (base && secret) return { base, secret };
+    }
+  }
+
   const base =
     pickFirstEnv([
     "FIREBASE_DB_URL",
@@ -260,7 +282,6 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
 }
 
 async function ensureConfigFile() {
-  if (IS_VERCEL) return;
   await fs.mkdir(DATA_DIR, { recursive: true });
   try {
     await fs.access(CONFIG_PATH);
@@ -354,7 +375,6 @@ export async function getSiteConfig(): Promise<SiteConfig> {
 
   const kvConfig = await readConfigFromKv();
   if (kvConfig) return kvConfig;
-  if (IS_VERCEL) return defaultSiteConfig;
 
   await ensureConfigFile();
   try {
@@ -372,15 +392,8 @@ export async function saveSiteConfig(nextConfig: Partial<SiteConfig>): Promise<S
     await writeConfigToFirebase(merged);
   } else if (hasKvConfig()) {
     await writeConfigToKv(merged);
-  } else if (IS_VERCEL) {
-    const { base, secret } = getFirebaseCredentials();
-    const detectedFirebaseKeys = Object.keys(process.env)
-      .filter((key) => /FIREBASE/i.test(key))
-      .sort();
-    throw new Error(
-      `No dynamic storage configured. Set Firebase (FIREBASE_DB_URL + FIREBASE_DB_SECRET) or KV. Detected Firebase URL: ${base ? "yes" : "no"}, secret: ${secret ? "yes" : "no"}. Firebase-like env keys at runtime: ${detectedFirebaseKeys.length > 0 ? detectedFirebaseKeys.join(", ") : "none"}.`
-    );
   } else {
+    // Guaranteed writable fallback storage (local `data/` or Vercel `/tmp`).
     await ensureConfigFile();
     await fs.writeFile(CONFIG_PATH, JSON.stringify(merged, null, 2), "utf8");
   }
