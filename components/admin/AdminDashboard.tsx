@@ -1536,7 +1536,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
             </section>
           </div>
 
-          <div className="admin-actions">
+          <div className="admin-actions admin-actions-sticky">
             <button type="button" className="button" disabled={saving} onClick={() => saveConfig(config)}>
               {saving ? "Saving..." : "Save Settings"}
             </button>

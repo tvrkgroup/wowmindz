@@ -268,7 +268,11 @@ async function readConfigFromFirebase(): Promise<SiteConfig | null> {
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     cache: "no-store",
   });
-  if (!response.ok) throw new Error(`Firebase read failed: ${response.status}`);
+  if (!response.ok) {
+    throw new Error(
+      `Firebase read failed: ${response.status}. Verify FIREBASE_DB_URL, FIREBASE_DB_SECRET, and database access rules.`
+    );
+  }
   const payload = (await response.json()) as Partial<SiteConfig> | null;
   if (!payload) return null;
   return sanitizeConfig(payload);
@@ -282,7 +286,15 @@ async function writeConfigToFirebase(config: SiteConfig) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(config),
   });
-  if (!response.ok) throw new Error(`Firebase write failed: ${response.status}`);
+  if (!response.ok) {
+    const hint =
+      response.status === 401 || response.status === 403
+        ? "Auth denied. Check FIREBASE_DB_SECRET and ensure write access is allowed."
+        : response.status === 404
+          ? "Path not found. Check FIREBASE_DB_URL points to your Realtime Database root."
+          : "Check Firebase URL, secret, and rules.";
+    throw new Error(`Firebase write failed: ${response.status}. ${hint}`);
+  }
 }
 
 export async function getSiteConfig(): Promise<SiteConfig> {
