@@ -7,6 +7,7 @@ import {
   type SiteConfig,
   type SiteEvent,
   type SiteFile,
+  type SiteProject,
   type SitePost,
 } from "@/lib/site-config-schema";
 import {
@@ -93,6 +94,25 @@ function sanitizeSiteFile(input: Partial<SiteFile>, index: number): SiteFile {
   };
 }
 
+function sanitizeProject(input: Partial<SiteProject>, index: number): SiteProject {
+  const galleryInput = Array.isArray(input.galleryImages) ? input.galleryImages : [];
+  const galleryImages = galleryInput
+    .map((item) => item?.toString().trim().slice(0, 600))
+    .filter(Boolean)
+    .slice(0, 12);
+  const status = input.status === "draft" ? "draft" : "published";
+  return {
+    id: input.id?.toString().trim() || `project-${index + 1}`,
+    title: (input.title ?? "").toString().trim().slice(0, 160),
+    company: (input.company ?? "").toString().trim().slice(0, 160),
+    description: (input.description ?? "").toString().trim().slice(0, 2400),
+    website: (input.website ?? "").toString().trim().slice(0, 400),
+    coverImage: (input.coverImage ?? galleryImages[0] ?? "/images/ai-campus-1.svg").toString().trim().slice(0, 600),
+    galleryImages,
+    status,
+  };
+}
+
 function sanitizeHexColor(value: string, fallback: string): string {
   const normalized = value.trim();
   return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(normalized) ? normalized : fallback;
@@ -142,6 +162,12 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
     .map((item, index) => sanitizePost(item, index, "blog"))
     .filter((item) => item.status === "draft" || Boolean(item.date && item.title && item.summary));
 
+  const hasProjectsInput = Array.isArray(input.projects);
+  const projectsInput = (hasProjectsInput ? input.projects : defaultSiteConfig.projects) ?? [];
+  const projects = projectsInput
+    .map((item, index) => sanitizeProject(item, index))
+    .filter((item) => item.status === "draft" || Boolean(item.title && item.description));
+
   const siteFilesInput = Array.isArray(input.siteFiles) ? input.siteFiles : defaultSiteConfig.siteFiles;
   const siteFiles = siteFilesInput
     .map((item, index) => sanitizeSiteFile(item, index))
@@ -163,6 +189,7 @@ function sanitizeConfig(input: Partial<SiteConfig>): SiteConfig {
     events: hasEventsInput ? events : events.length > 0 ? events : defaultSiteConfig.events,
     newsPosts: hasNewsInput ? newsPosts : newsPosts.length > 0 ? newsPosts : defaultSiteConfig.newsPosts,
     blogPosts: hasBlogInput ? blogPosts : blogPosts.length > 0 ? blogPosts : defaultSiteConfig.blogPosts,
+    projects: hasProjectsInput ? projects : projects.length > 0 ? projects : defaultSiteConfig.projects,
     siteFiles,
     theme: {
       paper: sanitizeHexColor(input.theme?.paper ?? defaultSiteConfig.theme.paper, defaultSiteConfig.theme.paper),

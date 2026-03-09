@@ -9,6 +9,7 @@ import {
   type SiteConfig,
   type SiteEvent,
   type SiteFile,
+  type SiteProject,
   type SitePost,
 } from "@/lib/site-config-schema";
 import type { InquiryItem } from "@/lib/inquiries-store";
@@ -195,6 +196,20 @@ function emptyPost(type: "news" | "blog"): SitePost {
   };
 }
 
+function emptyProject(): SiteProject {
+  const now = Date.now();
+  return {
+    id: `project-${now}`,
+    title: "",
+    company: "",
+    description: "",
+    website: "",
+    coverImage: "/images/ai-campus-1.svg",
+    galleryImages: [],
+    status: "draft",
+  };
+}
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -222,9 +237,11 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
   const [expandedEvents, setExpandedEvents] = useState<Record<string, boolean>>({});
   const [expandedNews, setExpandedNews] = useState<Record<string, boolean>>({});
   const [expandedBlogs, setExpandedBlogs] = useState<Record<string, boolean>>({});
+  const [expandedProjects, setExpandedProjects] = useState<Record<string, boolean>>({});
   const [eventSnapshots, setEventSnapshots] = useState<Record<string, SiteEvent>>({});
   const [newsSnapshots, setNewsSnapshots] = useState<Record<string, SitePost>>({});
   const [blogSnapshots, setBlogSnapshots] = useState<Record<string, SitePost>>({});
+  const [projectSnapshots, setProjectSnapshots] = useState<Record<string, SiteProject>>({});
   const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
   const sectionAnchors = [
     { id: "admin-branding", label: "Branding" },
@@ -233,6 +250,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     { id: "admin-events", label: "Events" },
     { id: "admin-news", label: "News" },
     { id: "admin-blog", label: "Blog" },
+    { id: "admin-projects", label: "Projects" },
     { id: "admin-files", label: "Site Files" },
     { id: "admin-inquiries", label: "Inquiries" },
   ] as const;
@@ -398,6 +416,13 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     }));
   };
 
+  const updateProject = (id: string, patch: Partial<SiteProject>) => {
+    setConfig((prev) => ({
+      ...prev,
+      projects: prev.projects.map((project) => (project.id === id ? { ...project, ...patch } : project)),
+    }));
+  };
+
   const removePost = (type: "newsPosts" | "blogPosts", id: string) => {
     setConfig((prev) => ({
       ...prev,
@@ -427,6 +452,13 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     setEventSnapshots((prev) => ({ ...prev, [next.id]: deepClone(next) }));
   };
 
+  const addProject = () => {
+    const next = emptyProject();
+    setConfig((prev) => ({ ...prev, projects: [next, ...(prev.projects || [])] }));
+    setExpandedProjects((prev) => ({ ...prev, [next.id]: true }));
+    setProjectSnapshots((prev) => ({ ...prev, [next.id]: deepClone(next) }));
+  };
+
   const confirmDeletePost = (type: "newsPosts" | "blogPosts", id: string) => {
     const accepted = window.confirm("Delete this article permanently?");
     if (!accepted) return;
@@ -442,7 +474,14 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     setExpandedEvents((prev) => ({ ...prev, [id]: false }));
   };
 
-  const toggleEditor = (type: "events" | "newsPosts" | "blogPosts", id: string) => {
+  const confirmDeleteProject = (id: string) => {
+    const accepted = window.confirm("Delete this project permanently?");
+    if (!accepted) return;
+    setConfig((prev) => ({ ...prev, projects: (prev.projects || []).filter((project) => project.id !== id) }));
+    setExpandedProjects((prev) => ({ ...prev, [id]: false }));
+  };
+
+  const toggleEditor = (type: "events" | "newsPosts" | "blogPosts" | "projects", id: string) => {
     if (type === "events") {
       const currentlyOpen = Boolean(expandedEvents[id]);
       if (currentlyOpen) {
@@ -479,23 +518,41 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
       return;
     }
 
-    const currentlyOpen = Boolean(expandedBlogs[id]);
-    if (currentlyOpen) {
+    if (type === "blogPosts") {
+      const currentlyOpen = Boolean(expandedBlogs[id]);
+      if (currentlyOpen) {
+        const current = config.blogPosts.find((post) => post.id === id);
+        const snapshot = blogSnapshots[id];
+        const changed = Boolean(current && snapshot && JSON.stringify(current) !== JSON.stringify(snapshot));
+        if (changed && !window.confirm("You have unsaved changes. Discard and close?")) return;
+        closeEditor("blogPosts", id, changed);
+        return;
+      }
       const current = config.blogPosts.find((post) => post.id === id);
-      const snapshot = blogSnapshots[id];
-      const changed = Boolean(current && snapshot && JSON.stringify(current) !== JSON.stringify(snapshot));
-      if (changed && !window.confirm("You have unsaved changes. Discard and close?")) return;
-      closeEditor("blogPosts", id, changed);
+      if (current && !blogSnapshots[id]) {
+        setBlogSnapshots((snapshots) => ({ ...snapshots, [id]: deepClone(current) }));
+      }
+      setExpandedBlogs((prev) => ({ ...prev, [id]: true }));
       return;
     }
-    const current = config.blogPosts.find((post) => post.id === id);
-    if (current && !blogSnapshots[id]) {
-      setBlogSnapshots((snapshots) => ({ ...snapshots, [id]: deepClone(current) }));
+
+    const currentlyOpen = Boolean(expandedProjects[id]);
+    if (currentlyOpen) {
+      const current = (config.projects || []).find((project) => project.id === id);
+      const snapshot = projectSnapshots[id];
+      const changed = Boolean(current && snapshot && JSON.stringify(current) !== JSON.stringify(snapshot));
+      if (changed && !window.confirm("You have unsaved changes. Discard and close?")) return;
+      closeEditor("projects", id, changed);
+      return;
     }
-    setExpandedBlogs((prev) => ({ ...prev, [id]: true }));
+    const current = (config.projects || []).find((project) => project.id === id);
+    if (current && !projectSnapshots[id]) {
+      setProjectSnapshots((snapshots) => ({ ...snapshots, [id]: deepClone(current) }));
+    }
+    setExpandedProjects((prev) => ({ ...prev, [id]: true }));
   };
 
-  const closeEditor = (type: "events" | "newsPosts" | "blogPosts", id: string, discard: boolean) => {
+  const closeEditor = (type: "events" | "newsPosts" | "blogPosts" | "projects", id: string, discard: boolean) => {
     if (type === "events") {
       if (discard) {
         const snapshot = eventSnapshots[id];
@@ -524,12 +581,26 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
       return;
     }
 
-    if (discard) {
-      const snapshot = blogSnapshots[id];
-      if (snapshot) updatePost("blogPosts", id, snapshot);
+    if (type === "blogPosts") {
+      if (discard) {
+        const snapshot = blogSnapshots[id];
+        if (snapshot) updatePost("blogPosts", id, snapshot);
+      }
+      setExpandedBlogs((prev) => ({ ...prev, [id]: false }));
+      setBlogSnapshots((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+      return;
     }
-    setExpandedBlogs((prev) => ({ ...prev, [id]: false }));
-    setBlogSnapshots((prev) => {
+
+    if (discard) {
+      const snapshot = projectSnapshots[id];
+      if (snapshot) updateProject(id, snapshot);
+    }
+    setExpandedProjects((prev) => ({ ...prev, [id]: false }));
+    setProjectSnapshots((prev) => {
       const next = { ...prev };
       delete next[id];
       return next;
@@ -1395,6 +1466,126 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                 ) : null}
               </article>
             ))}
+              </div>
+            </section>
+
+            <section
+              className={`admin-section-box ${activePanel === "admin-projects" ? "is-active" : "is-hidden"}`}
+              id="admin-projects"
+            >
+              <div className="admin-section-head">
+                <h3>Projects Settings</h3>
+                <button type="button" className="button secondary" onClick={addProject}>
+                  Add Project
+                </button>
+              </div>
+              <p className="admin-help">
+                Add projects with company details, project link, and gallery images. Click each project to edit full
+                details.
+              </p>
+              <div className="admin-article-list">
+                {(config.projects || []).map((project) => (
+                  <article className="admin-article-card" key={project.id}>
+                    <div className="admin-article-actions">
+                      <strong>{project.title || "Untitled project"}</strong>
+                      <button type="button" className="button secondary" onClick={() => toggleEditor("projects", project.id)}>
+                        {expandedProjects[project.id] ? "Close Edit" : "Edit"}
+                      </button>
+                    </div>
+                    <p className="admin-help">
+                      {project.company || "No company"} · {project.status}
+                    </p>
+                    {expandedProjects[project.id] ? (
+                      <>
+                        <div className="admin-grid">
+                          <label>
+                            Project Title
+                            <input
+                              value={project.title}
+                              placeholder="Project name"
+                              onChange={(e) => updateProject(project.id, { title: e.target.value })}
+                            />
+                          </label>
+                          <label>
+                            Company
+                            <input
+                              value={project.company}
+                              placeholder="Client/company name"
+                              onChange={(e) => updateProject(project.id, { company: e.target.value })}
+                            />
+                          </label>
+                          <label>
+                            Website Link
+                            <input
+                              value={project.website}
+                              placeholder="https://example.com"
+                              onChange={(e) => updateProject(project.id, { website: e.target.value })}
+                            />
+                          </label>
+                          <label>
+                            Status
+                            <CustomSelect
+                              value={project.status}
+                              onChange={(next) => updateProject(project.id, { status: next as SiteProject["status"] })}
+                              ariaLabel="Select project status"
+                              options={[
+                                { value: "draft", label: "Draft" },
+                                { value: "published", label: "Published" },
+                              ]}
+                            />
+                          </label>
+                          <label>
+                            Cover Image URL / Path
+                            <input
+                              value={project.coverImage}
+                              placeholder="/images/project-cover.jpg"
+                              onChange={(e) => updateProject(project.id, { coverImage: e.target.value })}
+                            />
+                          </label>
+                        </div>
+                        <label className="admin-field">
+                          Project Description
+                          <textarea
+                            rows={4}
+                            placeholder="Detailed project/company description"
+                            value={project.description}
+                            onChange={(e) => updateProject(project.id, { description: e.target.value })}
+                          />
+                        </label>
+                        <label className="admin-field">
+                          Gallery Images (one URL/path per line)
+                          <textarea
+                            rows={4}
+                            placeholder={"/images/project-1.jpg\n/images/project-2.jpg"}
+                            value={project.galleryImages.join("\n")}
+                            onChange={(e) =>
+                              updateProject(project.id, {
+                                galleryImages: e.target.value
+                                  .split("\n")
+                                  .map((item) => item.trim())
+                                  .filter(Boolean),
+                              })
+                            }
+                          />
+                        </label>
+                        <div className="admin-rich-toolbar">
+                          <button type="button" className="button secondary" onClick={() => closeEditor("projects", project.id, false)}>
+                            Save and Close
+                          </button>
+                          <button type="button" className="button secondary" onClick={() => closeEditor("projects", project.id, true)}>
+                            Discard Changes
+                          </button>
+                          <button type="button" className="button secondary" onClick={() => confirmDeleteProject(project.id)}>
+                            Delete Project
+                          </button>
+                        </div>
+                      </>
+                    ) : null}
+                  </article>
+                ))}
+                {(config.projects || []).length === 0 ? (
+                  <p className="admin-help">No projects yet. Click "Add Project".</p>
+                ) : null}
               </div>
             </section>
 

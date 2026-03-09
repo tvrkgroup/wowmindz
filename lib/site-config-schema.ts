@@ -62,6 +62,17 @@ export interface SiteFile {
   uploadedBy?: string;
 }
 
+export interface SiteProject {
+  id: string;
+  title: string;
+  company: string;
+  description: string;
+  website: string;
+  coverImage: string;
+  galleryImages: string[];
+  status: "published" | "draft";
+}
+
 export interface SiteConfig {
   schoolName: string;
   schoolNameShort: string;
@@ -76,6 +87,7 @@ export interface SiteConfig {
   events: SiteEvent[];
   newsPosts: SitePost[];
   blogPosts: SitePost[];
+  projects: SiteProject[];
   siteFiles: SiteFile[];
   theme: {
     paper: string;
@@ -158,6 +170,38 @@ export const defaultSiteConfig: SiteConfig = {
       summary: "Why product execution improves when teams design systems instead of isolated features.",
       content:
         "Product quality compounds when teams think in systems. At WowMindz, we map dependencies, feedback loops, and execution constraints early so each release improves the next one. This creates cleaner decisions, better delivery speed, and stronger long-term outcomes.",
+      status: "published",
+    },
+  ],
+  projects: [
+    {
+      id: "project-1",
+      title: "ktvr.in",
+      company: "KTVR",
+      description: "Core platform and execution stream for digital products and scalable operations.",
+      website: "https://ktvr.in",
+      coverImage: "/images/ai-campus-1.svg",
+      galleryImages: ["/images/ai-campus-1.svg", "/images/ai-campus-2.svg"],
+      status: "published",
+    },
+    {
+      id: "project-2",
+      title: "prathipa.com",
+      company: "Prathipa",
+      description: "Brand and product web presence focused on positioning, trust, and conversion-ready content.",
+      website: "https://prathipa.com",
+      coverImage: "/images/ai-campus-3.svg",
+      galleryImages: ["/images/ai-campus-3.svg", "/images/ai-campus-4.svg"],
+      status: "published",
+    },
+    {
+      id: "project-3",
+      title: "wowmyspace.com",
+      company: "WowMySpace",
+      description: "Digital ecosystem initiative for audience growth, engagement, and platform integration.",
+      website: "https://wowmyspace.com",
+      coverImage: "/images/ai-campus-5.svg",
+      galleryImages: ["/images/ai-campus-5.svg", "/images/ai-campus-6.svg"],
       status: "published",
     },
   ],
