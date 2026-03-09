@@ -87,7 +87,12 @@ async function RootWithConfig({
         <SiteConfigProvider value={config}>
           <CursorGlow />
           <SplashScreen logoPath={config.logoPath || "/logo.png"} />
-          <div className="site-shell">{children}</div>
+          <div className="site-shell">
+            <div className="ambient-layer ambient-layer-static" aria-hidden="true" />
+            <div className="ambient-layer ambient-layer-reactive" aria-hidden="true" />
+            <div className="ambient-layer ambient-layer-grain" aria-hidden="true" />
+            {children}
+          </div>
         </SiteConfigProvider>
       </body>
     </html>
