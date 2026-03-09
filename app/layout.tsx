@@ -89,6 +89,7 @@ async function RootWithConfig({
           <SplashScreen logoPath={config.logoPath || "/logo.png"} />
           <div className="site-shell">
             <div className="ambient-layer ambient-layer-static" aria-hidden="true" />
+            <div className="ambient-layer ambient-layer-mesh" aria-hidden="true" />
             <div className="ambient-layer ambient-layer-reactive" aria-hidden="true" />
             <div className="ambient-layer ambient-layer-grain" aria-hidden="true" />
             {children}

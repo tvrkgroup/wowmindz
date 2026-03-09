@@ -32,6 +32,7 @@
   --glass-shadow-2: 0 28px 60px rgb(2 6 23 / 0.44);
   --ambient-layer-opacity: 0.9;
   --ambient-reactive-opacity: 0.65;
+  --mesh-opacity: 0.36;
 }
 
 html,
@@ -87,6 +88,32 @@ img {
     radial-gradient(640px 340px at 46% 108%, rgb(var(--highlight-rgb) / 0.14), transparent 68%),
     linear-gradient(180deg, rgb(var(--surface-rgb) / 0.06), transparent 60%);
   opacity: var(--ambient-layer-opacity);
+}
+
+.ambient-layer-mesh {
+  background:
+    radial-gradient(560px 300px at 18% 12%, rgb(var(--brand-400-rgb) / 0.18), transparent 74%),
+    radial-gradient(680px 340px at 86% 18%, rgb(var(--brand-600-rgb) / 0.14), transparent 76%),
+    radial-gradient(520px 260px at 52% 76%, rgb(var(--brand-700-rgb) / 0.12), transparent 78%),
+    linear-gradient(rgb(var(--brand-600-rgb) / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--brand-600-rgb) / 0.05) 1px, transparent 1px);
+  background-size:
+    auto,
+    auto,
+    auto,
+    34px 34px,
+    34px 34px;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    0 0;
+  filter: blur(0.2px) saturate(112%);
+  opacity: var(--mesh-opacity);
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(130% 98% at 50% 6%, black 46%, transparent 100%);
+  animation: mesh-drift 32s ease-in-out infinite alternate;
 }
 
 .ambient-layer-reactive {
@@ -1249,6 +1276,15 @@ footer .divider {
   }
 }
 
+@keyframes mesh-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-14px, 10px, 0) scale(1.018);
+  }
+}
+
 .inquiry-form,
 .admin-login-form {
   display: grid;
@@ -1859,6 +1895,19 @@ footer .divider {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --ambient-layer-opacity: 0.7;
+    --ambient-reactive-opacity: 0.35;
+    --mesh-opacity: 0.24;
+  }
+
+  .ambient-layer-reactive,
+  .ambient-layer-mesh,
+  .home-hero::after {
+    animation: none !important;
+    filter: blur(20px);
+  }
+
   *,
   *::before,
   *::after {
@@ -1866,6 +1915,39 @@ footer .divider {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@media (pointer: coarse) {
+  :root {
+    --ambient-layer-opacity: 0.8;
+    --ambient-reactive-opacity: 0.42;
+    --mesh-opacity: 0.2;
+  }
+
+  .ambient-layer-reactive {
+    filter: blur(26px) saturate(106%);
+    opacity: 0.38;
+  }
+
+  .ambient-layer-grain {
+    opacity: 0.04;
+  }
+
+  .ambient-layer-mesh {
+    background-size:
+      auto,
+      auto,
+      auto,
+      42px 42px,
+      42px 42px;
+    opacity: 0.16;
+  }
+
+  .card,
+  .info-card,
+  .page-hero .container {
+    backdrop-filter: blur(14px) saturate(112%);
   }
 }
 
