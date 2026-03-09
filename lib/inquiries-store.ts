@@ -1,5 +1,11 @@
 import { promises as fs } from "fs";
 import path from "path";
+import {
+  hasFirebaseCredentials,
+  hasKvCredentials,
+  resolveFirebaseCredentials,
+  runtimeStorageDiagnostics,
+} from "@/lib/runtime-storage";
 
 export interface InquiryItem {
   id: string;
@@ -17,83 +23,6 @@ const INQUIRIES_PATH = path.join(DATA_DIR, "inquiries.json");
 const KV_KEY = "site-inquiries";
 const FIREBASE_KEY = "inquiries";
 
-function normalizeEnvValue(value: string) {
-  return value.trim().replace(/^['"]|['"]$/g, "");
-}
-
-function pickFirstValue(values: Array<string | undefined>): string {
-  for (const value of values) {
-    if (value && value.trim()) return normalizeEnvValue(value);
-  }
-  return "";
-}
-
-function getFirebaseCredentials() {
-  const combined = pickFirstValue([
-    process.env.FIREBASE_CREDENTIALS,
-    process.env.FIREBASE_CONFIG,
-    process.env.SB_FIREBASE_CONFIG,
-  ]);
-  if (combined) {
-    if (combined.startsWith("{")) {
-      try {
-        const parsed = JSON.parse(combined) as { url?: string; base?: string; databaseUrl?: string; secret?: string; token?: string };
-        const base = normalizeEnvValue(parsed.url || parsed.base || parsed.databaseUrl || "");
-        const secret = normalizeEnvValue(parsed.secret || parsed.token || "");
-        if (base && secret) return { base, secret };
-      } catch {
-        // continue with individual env fallback
-      }
-    } else if (combined.includes("|")) {
-      const [base, secret] = combined.split("|").map((part) => normalizeEnvValue(part || ""));
-      if (base && secret) return { base, secret };
-    }
-  }
-
-  const base = pickFirstValue([
-    process.env.FIREBASE_DB_URL,
-    process.env.FIREBASE_DATABASE_URL,
-    process.env.SB_FIREBASE_DB_URL,
-    process.env.NEXT_PUBLIC_FIREBASE_DB_URL,
-  ]);
-  const secret = pickFirstValue([
-    process.env.FIREBASE_DB_SECRET,
-    process.env.FIREBASE_SECRET,
-    process.env.FIREBASE_DATABASE_SECRET,
-    process.env.SB_FIREBASE_DB_SECRET,
-    process.env.NEXT_PUBLIC_FIREBASE_DB_SECRET,
-  ]);
-  return { base, secret };
-}
-
-function runtimeStorageDiagnostics() {
-  const hasFirebaseUrl = Boolean(
-    pickFirstValue([
-      process.env.FIREBASE_DB_URL,
-      process.env.FIREBASE_DATABASE_URL,
-      process.env.SB_FIREBASE_DB_URL,
-      process.env.NEXT_PUBLIC_FIREBASE_DB_URL,
-      process.env.FIREBASE_CREDENTIALS,
-      process.env.FIREBASE_CONFIG,
-      process.env.SB_FIREBASE_CONFIG,
-    ])
-  );
-  const hasFirebaseSecret = Boolean(
-    pickFirstValue([
-      process.env.FIREBASE_DB_SECRET,
-      process.env.FIREBASE_SECRET,
-      process.env.FIREBASE_DATABASE_SECRET,
-      process.env.SB_FIREBASE_DB_SECRET,
-      process.env.NEXT_PUBLIC_FIREBASE_DB_SECRET,
-      process.env.FIREBASE_CREDENTIALS,
-      process.env.FIREBASE_CONFIG,
-      process.env.SB_FIREBASE_CONFIG,
-    ])
-  );
-  const hasKv = Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
-  return `runtime vercel=${process.env.VERCEL ?? "0"} env=${process.env.VERCEL_ENV ?? "unknown"} url=${process.env.VERCEL_URL ?? "none"} firebase_url_var=${hasFirebaseUrl ? "yes" : "no"} firebase_secret_var=${hasFirebaseSecret ? "yes" : "no"} kv=${hasKv ? "yes" : "no"}`;
-}
-
 function normalizeInquiry(input: Partial<InquiryItem>, index: number): InquiryItem {
   return {
     id: input.id?.toString().trim() || `inquiry-${Date.now()}-${index}`,
@@ -107,12 +36,11 @@ function normalizeInquiry(input: Partial<InquiryItem>, index: number): InquiryIt
 }
 
 function hasKvConfig() {
-  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+  return hasKvCredentials();
 }
 
 function hasFirebaseConfig() {
-  const { base, secret } = getFirebaseCredentials();
-  return Boolean(base && secret);
+  return hasFirebaseCredentials();
 }
 
 async function kvFetch(pathname: string) {
@@ -161,7 +89,7 @@ async function writeInquiriesToKv(next: InquiryItem[]) {
 
 async function readInquiriesFromFirebase(): Promise<InquiryItem[]> {
   if (!hasFirebaseConfig()) return [];
-  const { base, secret } = getFirebaseCredentials();
+  const { base, secret } = resolveFirebaseCredentials();
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     cache: "no-store",
   });
@@ -172,7 +100,7 @@ async function readInquiriesFromFirebase(): Promise<InquiryItem[]> {
 
 async function writeInquiriesToFirebase(next: InquiryItem[]) {
   if (!hasFirebaseConfig()) return;
-  const { base, secret } = getFirebaseCredentials();
+  const { base, secret } = resolveFirebaseCredentials();
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -199,7 +127,7 @@ export async function listInquiries(): Promise<InquiryItem[]> {
 export async function addInquiry(item: InquiryItem) {
   const mode = getInquiryStorageMode();
   if (mode === "unconfigured") {
-    const { base, secret } = getFirebaseCredentials();
+    const { base, secret } = resolveFirebaseCredentials();
     throw new Error(
       `Inquiry storage is not configured. Detected Firebase URL: ${base ? "yes" : "no"}, secret: ${secret ? "yes" : "no"}; ${runtimeStorageDiagnostics()}.`
     );

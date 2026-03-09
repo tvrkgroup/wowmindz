@@ -9,89 +9,18 @@ import {
   type SiteFile,
   type SitePost,
 } from "@/lib/site-config-schema";
+import {
+  hasFirebaseCredentials,
+  hasKvCredentials,
+  resolveFirebaseCredentials,
+  runtimeStorageDiagnostics,
+} from "@/lib/runtime-storage";
 
 const KV_KEY = "site-config";
 const IS_VERCEL = process.env.VERCEL === "1";
 const FIREBASE_KEY = "siteConfig";
 const DATA_DIR = path.join(process.cwd(), "data");
 const CONFIG_PATH = path.join(DATA_DIR, "site-config.json");
-
-function normalizeEnvValue(value: string) {
-  return value.trim().replace(/^['"]|['"]$/g, "");
-}
-
-function pickFirstValue(values: Array<string | undefined>): string {
-  for (const value of values) {
-    if (value && value.trim()) return normalizeEnvValue(value);
-  }
-  return "";
-}
-
-function getFirebaseCredentials() {
-  const combined = pickFirstValue([
-    process.env.FIREBASE_CREDENTIALS,
-    process.env.FIREBASE_CONFIG,
-    process.env.SB_FIREBASE_CONFIG,
-  ]);
-  if (combined) {
-    if (combined.startsWith("{")) {
-      try {
-        const parsed = JSON.parse(combined) as { url?: string; base?: string; databaseUrl?: string; secret?: string; token?: string };
-        const base = normalizeEnvValue(parsed.url || parsed.base || parsed.databaseUrl || "");
-        const secret = normalizeEnvValue(parsed.secret || parsed.token || "");
-        if (base && secret) return { base, secret };
-      } catch {
-        // continue to individual env fallback
-      }
-    } else if (combined.includes("|")) {
-      const [base, secret] = combined.split("|").map((part) => normalizeEnvValue(part || ""));
-      if (base && secret) return { base, secret };
-    }
-  }
-
-  const base = pickFirstValue([
-    process.env.FIREBASE_DB_URL,
-    process.env.FIREBASE_DATABASE_URL,
-    process.env.SB_FIREBASE_DB_URL,
-    process.env.NEXT_PUBLIC_FIREBASE_DB_URL,
-  ]);
-  const secret = pickFirstValue([
-    process.env.FIREBASE_DB_SECRET,
-    process.env.FIREBASE_SECRET,
-    process.env.FIREBASE_DATABASE_SECRET,
-    process.env.SB_FIREBASE_DB_SECRET,
-    process.env.NEXT_PUBLIC_FIREBASE_DB_SECRET,
-  ]);
-  return { base, secret };
-}
-
-function runtimeStorageDiagnostics() {
-  const hasFirebaseUrl = Boolean(
-    pickFirstValue([
-      process.env.FIREBASE_DB_URL,
-      process.env.FIREBASE_DATABASE_URL,
-      process.env.SB_FIREBASE_DB_URL,
-      process.env.NEXT_PUBLIC_FIREBASE_DB_URL,
-      process.env.FIREBASE_CREDENTIALS,
-      process.env.FIREBASE_CONFIG,
-      process.env.SB_FIREBASE_CONFIG,
-    ])
-  );
-  const hasFirebaseSecret = Boolean(
-    pickFirstValue([
-      process.env.FIREBASE_DB_SECRET,
-      process.env.FIREBASE_SECRET,
-      process.env.FIREBASE_DATABASE_SECRET,
-      process.env.SB_FIREBASE_DB_SECRET,
-      process.env.NEXT_PUBLIC_FIREBASE_DB_SECRET,
-      process.env.FIREBASE_CREDENTIALS,
-      process.env.FIREBASE_CONFIG,
-      process.env.SB_FIREBASE_CONFIG,
-    ])
-  );
-  const hasKv = Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
-  return `runtime vercel=${process.env.VERCEL ?? "0"} env=${process.env.VERCEL_ENV ?? "unknown"} url=${process.env.VERCEL_URL ?? "none"} firebase_url_var=${hasFirebaseUrl ? "yes" : "no"} firebase_secret_var=${hasFirebaseSecret ? "yes" : "no"} kv=${hasKv ? "yes" : "no"}`;
-}
 
 function sanitizeEvent(input: Partial<SiteEvent>, index: number): SiteEvent {
   const date = (input.date ?? "").toString().trim().slice(0, 40);
@@ -294,12 +223,11 @@ async function ensureConfigFile() {
 }
 
 function hasKvConfig() {
-  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+  return hasKvCredentials();
 }
 
 function hasFirebaseConfig() {
-  const { base, secret } = getFirebaseCredentials();
-  return Boolean(base && secret);
+  return hasFirebaseCredentials();
 }
 
 async function kvFetch(pathname: string) {
@@ -339,7 +267,7 @@ async function writeConfigToKv(config: SiteConfig) {
 
 async function readConfigFromFirebase(): Promise<SiteConfig | null> {
   if (!hasFirebaseConfig()) return null;
-  const { base, secret } = getFirebaseCredentials();
+  const { base, secret } = resolveFirebaseCredentials();
 
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     cache: "no-store",
@@ -355,7 +283,7 @@ async function readConfigFromFirebase(): Promise<SiteConfig | null> {
 }
 
 async function writeConfigToFirebase(config: SiteConfig) {
-  const { base, secret } = getFirebaseCredentials();
+  const { base, secret } = resolveFirebaseCredentials();
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -398,7 +326,7 @@ export async function saveSiteConfig(nextConfig: Partial<SiteConfig>): Promise<S
   } else if (hasKvConfig()) {
     await writeConfigToKv(merged);
   } else if (IS_VERCEL) {
-    const { base, secret } = getFirebaseCredentials();
+    const { base, secret } = resolveFirebaseCredentials();
     throw new Error(
       `No dynamic storage configured. Set Firebase (FIREBASE_DB_URL + FIREBASE_DB_SECRET) or KV. Detected Firebase URL: ${base ? "yes" : "no"}, secret: ${secret ? "yes" : "no"}; ${runtimeStorageDiagnostics()}.`
     );
