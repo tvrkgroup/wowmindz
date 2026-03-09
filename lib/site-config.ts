@@ -13,7 +13,7 @@ import {
 const KV_KEY = "site-config";
 const IS_VERCEL = process.env.VERCEL === "1";
 const FIREBASE_KEY = "siteConfig";
-const DATA_DIR = IS_VERCEL ? path.join("/tmp", "wowmindz-data") : path.join(process.cwd(), "data");
+const DATA_DIR = path.join(process.cwd(), "data");
 const CONFIG_PATH = path.join(DATA_DIR, "site-config.json");
 
 function normalizeEnvValue(value: string) {
@@ -88,6 +88,13 @@ function getFirebaseCredentials() {
     pickEnvByPattern([/FIREBASE/i, /(SECRET|TOKEN)/i]) ||
     pickEnvByPattern([/(DB|DATABASE)/i, /(SECRET|TOKEN)/i]);
   return { base, secret };
+}
+
+function runtimeStorageDiagnostics() {
+  const keys = Object.keys(process.env)
+    .filter((key) => /FIREBASE|DATABASE|KV/i.test(key))
+    .sort();
+  return `runtime vercel=${process.env.VERCEL ?? "0"} env=${process.env.VERCEL_ENV ?? "unknown"} url=${process.env.VERCEL_URL ?? "none"} keys=${keys.length > 0 ? keys.join(",") : "none"}`;
 }
 
 function sanitizeEvent(input: Partial<SiteEvent>, index: number): SiteEvent {
@@ -376,6 +383,8 @@ export async function getSiteConfig(): Promise<SiteConfig> {
   const kvConfig = await readConfigFromKv();
   if (kvConfig) return kvConfig;
 
+  if (IS_VERCEL) return defaultSiteConfig;
+
   await ensureConfigFile();
   try {
     const raw = await fs.readFile(CONFIG_PATH, "utf8");
@@ -392,8 +401,12 @@ export async function saveSiteConfig(nextConfig: Partial<SiteConfig>): Promise<S
     await writeConfigToFirebase(merged);
   } else if (hasKvConfig()) {
     await writeConfigToKv(merged);
+  } else if (IS_VERCEL) {
+    const { base, secret } = getFirebaseCredentials();
+    throw new Error(
+      `No dynamic storage configured. Set Firebase (FIREBASE_DB_URL + FIREBASE_DB_SECRET) or KV. Detected Firebase URL: ${base ? "yes" : "no"}, secret: ${secret ? "yes" : "no"}; ${runtimeStorageDiagnostics()}.`
+    );
   } else {
-    // Guaranteed writable fallback storage (local `data/` or Vercel `/tmp`).
     await ensureConfigFile();
     await fs.writeFile(CONFIG_PATH, JSON.stringify(merged, null, 2), "utf8");
   }

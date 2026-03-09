@@ -12,7 +12,7 @@ export interface InquiryItem {
 }
 
 const IS_VERCEL = process.env.VERCEL === "1";
-const DATA_DIR = IS_VERCEL ? path.join("/tmp", "wowmindz-data") : path.join(process.cwd(), "data");
+const DATA_DIR = path.join(process.cwd(), "data");
 const INQUIRIES_PATH = path.join(DATA_DIR, "inquiries.json");
 const KV_KEY = "site-inquiries";
 const FIREBASE_KEY = "inquiries";
@@ -89,6 +89,13 @@ function getFirebaseCredentials() {
     pickEnvByPattern([/FIREBASE/i, /(SECRET|TOKEN)/i]) ||
     pickEnvByPattern([/(DB|DATABASE)/i, /(SECRET|TOKEN)/i]);
   return { base, secret };
+}
+
+function runtimeStorageDiagnostics() {
+  const keys = Object.keys(process.env)
+    .filter((key) => /FIREBASE|DATABASE|KV/i.test(key))
+    .sort();
+  return `runtime vercel=${process.env.VERCEL ?? "0"} env=${process.env.VERCEL_ENV ?? "unknown"} url=${process.env.VERCEL_URL ?? "none"} keys=${keys.length > 0 ? keys.join(",") : "none"}`;
 }
 
 function normalizeInquiry(input: Partial<InquiryItem>, index: number): InquiryItem {
@@ -178,9 +185,10 @@ async function writeInquiriesToFirebase(next: InquiryItem[]) {
   if (!response.ok) throw new Error(`Firebase write failed: ${response.status}`);
 }
 
-export function getInquiryStorageMode(): "firebase" | "kv" | "file" {
+export function getInquiryStorageMode(): "firebase" | "kv" | "file" | "unconfigured" {
   if (hasFirebaseConfig()) return "firebase";
   if (hasKvConfig()) return "kv";
+  if (IS_VERCEL) return "unconfigured";
   return "file";
 }
 
@@ -194,6 +202,13 @@ export async function listInquiries(): Promise<InquiryItem[]> {
 
 export async function addInquiry(item: InquiryItem) {
   const mode = getInquiryStorageMode();
+  if (mode === "unconfigured") {
+    const { base, secret } = getFirebaseCredentials();
+    throw new Error(
+      `Inquiry storage is not configured. Detected Firebase URL: ${base ? "yes" : "no"}, secret: ${secret ? "yes" : "no"}; ${runtimeStorageDiagnostics()}.`
+    );
+  }
+
   const existing = await listInquiries();
   existing.unshift(item);
 
