@@ -16,6 +16,43 @@ const INQUIRIES_PATH = path.join(DATA_DIR, "inquiries.json");
 const KV_KEY = "site-inquiries";
 const FIREBASE_KEY = "inquiries";
 
+function pickFirstEnv(keys: string[]): string {
+  for (const key of keys) {
+    const value = process.env[key];
+    if (value && value.trim()) return value.trim();
+  }
+  return "";
+}
+
+function pickEnvByPattern(patterns: RegExp[]): string {
+  const keys = Object.keys(process.env);
+  for (const key of keys) {
+    if (!patterns.every((pattern) => pattern.test(key))) continue;
+    const value = process.env[key];
+    if (value && value.trim()) return value.trim();
+  }
+  return "";
+}
+
+function getFirebaseCredentials() {
+  const base =
+    pickFirstEnv([
+      "FIREBASE_DB_URL",
+      "FIREBASE_DATABASE_URL",
+      "SB_FIREBASE_DB_URL",
+      "NEXT_PUBLIC_FIREBASE_DB_URL",
+    ]) || pickEnvByPattern([/FIREBASE/i, /(DB|DATABASE)?_?URL/i]);
+  const secret =
+    pickFirstEnv([
+      "FIREBASE_DB_SECRET",
+      "FIREBASE_SECRET",
+      "FIREBASE_DATABASE_SECRET",
+      "SB_FIREBASE_DB_SECRET",
+      "NEXT_PUBLIC_FIREBASE_DB_SECRET",
+    ]) || pickEnvByPattern([/FIREBASE/i, /(SECRET|TOKEN)/i]);
+  return { base, secret };
+}
+
 function normalizeInquiry(input: Partial<InquiryItem>, index: number): InquiryItem {
   return {
     id: input.id?.toString().trim() || `inquiry-${Date.now()}-${index}`,
@@ -33,7 +70,8 @@ function hasKvConfig() {
 }
 
 function hasFirebaseConfig() {
-  return Boolean(process.env.FIREBASE_DB_URL && process.env.FIREBASE_DB_SECRET);
+  const { base, secret } = getFirebaseCredentials();
+  return Boolean(base && secret);
 }
 
 async function kvFetch(pathname: string) {
@@ -82,8 +120,7 @@ async function writeInquiriesToKv(next: InquiryItem[]) {
 
 async function readInquiriesFromFirebase(): Promise<InquiryItem[]> {
   if (!hasFirebaseConfig()) return [];
-  const base = process.env.FIREBASE_DB_URL as string;
-  const secret = process.env.FIREBASE_DB_SECRET as string;
+  const { base, secret } = getFirebaseCredentials();
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     cache: "no-store",
   });
@@ -94,8 +131,7 @@ async function readInquiriesFromFirebase(): Promise<InquiryItem[]> {
 
 async function writeInquiriesToFirebase(next: InquiryItem[]) {
   if (!hasFirebaseConfig()) return;
-  const base = process.env.FIREBASE_DB_URL as string;
-  const secret = process.env.FIREBASE_DB_SECRET as string;
+  const { base, secret } = getFirebaseCredentials();
   const response = await fetch(`${base.replace(/\/$/, "")}/${FIREBASE_KEY}.json?auth=${secret}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

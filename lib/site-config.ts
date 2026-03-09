@@ -24,19 +24,32 @@ function pickFirstEnv(keys: string[]): string {
   return "";
 }
 
+function pickEnvByPattern(patterns: RegExp[]): string {
+  const keys = Object.keys(process.env);
+  for (const key of keys) {
+    if (!patterns.every((pattern) => pattern.test(key))) continue;
+    const value = process.env[key];
+    if (value && value.trim()) return value.trim();
+  }
+  return "";
+}
+
 function getFirebaseCredentials() {
-  const base = pickFirstEnv([
+  const base =
+    pickFirstEnv([
     "FIREBASE_DB_URL",
     "FIREBASE_DATABASE_URL",
     "SB_FIREBASE_DB_URL",
     "NEXT_PUBLIC_FIREBASE_DB_URL",
-  ]);
-  const secret = pickFirstEnv([
+    ]) || pickEnvByPattern([/FIREBASE/i, /(DB|DATABASE)?_?URL/i]);
+  const secret =
+    pickFirstEnv([
     "FIREBASE_DB_SECRET",
     "FIREBASE_SECRET",
     "FIREBASE_DATABASE_SECRET",
     "SB_FIREBASE_DB_SECRET",
-  ]);
+    "NEXT_PUBLIC_FIREBASE_DB_SECRET",
+    ]) || pickEnvByPattern([/FIREBASE/i, /(SECRET|TOKEN)/i]);
   return { base, secret };
 }
 
@@ -345,14 +358,12 @@ export async function saveSiteConfig(nextConfig: Partial<SiteConfig>): Promise<S
   } else if (hasKvConfig()) {
     await writeConfigToKv(merged);
   } else if (IS_VERCEL) {
-    const hasFirebaseUrl = Boolean(
-      pickFirstEnv(["FIREBASE_DB_URL", "FIREBASE_DATABASE_URL", "SB_FIREBASE_DB_URL", "NEXT_PUBLIC_FIREBASE_DB_URL"])
-    );
-    const hasFirebaseSecret = Boolean(
-      pickFirstEnv(["FIREBASE_DB_SECRET", "FIREBASE_SECRET", "FIREBASE_DATABASE_SECRET", "SB_FIREBASE_DB_SECRET"])
-    );
+    const { base, secret } = getFirebaseCredentials();
+    const detectedFirebaseKeys = Object.keys(process.env)
+      .filter((key) => /FIREBASE/i.test(key))
+      .sort();
     throw new Error(
-      `No dynamic storage configured. Set Firebase (FIREBASE_DB_URL + FIREBASE_DB_SECRET) or KV. Detected Firebase URL: ${hasFirebaseUrl ? "yes" : "no"}, secret: ${hasFirebaseSecret ? "yes" : "no"}.`
+      `No dynamic storage configured. Set Firebase (FIREBASE_DB_URL + FIREBASE_DB_SECRET) or KV. Detected Firebase URL: ${base ? "yes" : "no"}, secret: ${secret ? "yes" : "no"}. Firebase-like env keys at runtime: ${detectedFirebaseKeys.length > 0 ? detectedFirebaseKeys.join(", ") : "none"}.`
     );
   } else {
     await ensureConfigFile();
