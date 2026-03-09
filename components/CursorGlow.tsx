@@ -11,8 +11,8 @@ export default function CursorGlow() {
 
     const target = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.38 };
     const current = { x: target.x, y: target.y };
-    const cursorEase = isCoarse ? 0.12 : 0.28;
-    const ambientEase = isCoarse ? 0.04 : 0.02;
+    const cursorEase = isCoarse ? 0.14 : 0.24;
+    const ambientEase = isCoarse ? 0.01 : 0;
 
     const updateVariables = () => {
       current.x += (target.x - current.x) * cursorEase;
@@ -29,10 +29,10 @@ export default function CursorGlow() {
     const onMouseMove = (event: MouseEvent) => {
       target.x = event.clientX;
       target.y = event.clientY;
-      root.style.setProperty("--cursor-intensity", isCoarse ? "0.18" : "0.34");
+      root.style.setProperty("--cursor-intensity", isCoarse ? "0.16" : "0.24");
       if (decayTimer) clearTimeout(decayTimer);
       decayTimer = setTimeout(() => {
-        root.style.setProperty("--cursor-intensity", isCoarse ? "0.13" : "0.22");
+        root.style.setProperty("--cursor-intensity", isCoarse ? "0.11" : "0.15");
       }, 240);
     };
 
