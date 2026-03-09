@@ -21,37 +21,19 @@ function normalizeEnvValue(value: string) {
   return value.trim().replace(/^['"]|['"]$/g, "");
 }
 
-function pickFirstEnv(keys: string[]): string {
-  for (const key of keys) {
-    const value = process.env[key];
+function pickFirstValue(values: Array<string | undefined>): string {
+  for (const value of values) {
     if (value && value.trim()) return normalizeEnvValue(value);
-  }
-  return "";
-}
-
-function pickEnvByPattern(patterns: RegExp[]): string {
-  const keys = Object.keys(process.env);
-  for (const key of keys) {
-    if (!patterns.every((pattern) => pattern.test(key))) continue;
-    const value = process.env[key];
-    if (value && value.trim()) return normalizeEnvValue(value);
-  }
-  return "";
-}
-
-function pickEnvValueByPattern(pattern: RegExp): string {
-  const keys = Object.keys(process.env);
-  for (const key of keys) {
-    const value = process.env[key];
-    if (!value || !value.trim()) continue;
-    const normalized = normalizeEnvValue(value);
-    if (pattern.test(normalized)) return normalized;
   }
   return "";
 }
 
 function getFirebaseCredentials() {
-  const combined = pickFirstEnv(["FIREBASE_CREDENTIALS", "FIREBASE_CONFIG", "SB_FIREBASE_CONFIG"]);
+  const combined = pickFirstValue([
+    process.env.FIREBASE_CREDENTIALS,
+    process.env.FIREBASE_CONFIG,
+    process.env.SB_FIREBASE_CONFIG,
+  ]);
   if (combined) {
     if (combined.startsWith("{")) {
       try {
@@ -68,34 +50,48 @@ function getFirebaseCredentials() {
     }
   }
 
-  const base =
-    pickFirstEnv([
-      "FIREBASE_DB_URL",
-      "FIREBASE_DATABASE_URL",
-      "SB_FIREBASE_DB_URL",
-      "NEXT_PUBLIC_FIREBASE_DB_URL",
-    ]) ||
-    pickEnvByPattern([/FIREBASE/i, /(DB|DATABASE)?_?URL/i]) ||
-    pickEnvByPattern([/(DB|DATABASE)/i, /URL/i]) ||
-    pickEnvValueByPattern(/^https?:\/\/[a-z0-9-]+\.firebaseio\.com\/?$/i);
-  const secret =
-    pickFirstEnv([
-      "FIREBASE_DB_SECRET",
-      "FIREBASE_SECRET",
-      "FIREBASE_DATABASE_SECRET",
-      "SB_FIREBASE_DB_SECRET",
-      "NEXT_PUBLIC_FIREBASE_DB_SECRET",
-    ]) ||
-    pickEnvByPattern([/FIREBASE/i, /(SECRET|TOKEN)/i]) ||
-    pickEnvByPattern([/(DB|DATABASE)/i, /(SECRET|TOKEN)/i]);
+  const base = pickFirstValue([
+    process.env.FIREBASE_DB_URL,
+    process.env.FIREBASE_DATABASE_URL,
+    process.env.SB_FIREBASE_DB_URL,
+    process.env.NEXT_PUBLIC_FIREBASE_DB_URL,
+  ]);
+  const secret = pickFirstValue([
+    process.env.FIREBASE_DB_SECRET,
+    process.env.FIREBASE_SECRET,
+    process.env.FIREBASE_DATABASE_SECRET,
+    process.env.SB_FIREBASE_DB_SECRET,
+    process.env.NEXT_PUBLIC_FIREBASE_DB_SECRET,
+  ]);
   return { base, secret };
 }
 
 function runtimeStorageDiagnostics() {
-  const keys = Object.keys(process.env)
-    .filter((key) => /FIREBASE|DATABASE|KV/i.test(key))
-    .sort();
-  return `runtime vercel=${process.env.VERCEL ?? "0"} env=${process.env.VERCEL_ENV ?? "unknown"} url=${process.env.VERCEL_URL ?? "none"} keys=${keys.length > 0 ? keys.join(",") : "none"}`;
+  const hasFirebaseUrl = Boolean(
+    pickFirstValue([
+      process.env.FIREBASE_DB_URL,
+      process.env.FIREBASE_DATABASE_URL,
+      process.env.SB_FIREBASE_DB_URL,
+      process.env.NEXT_PUBLIC_FIREBASE_DB_URL,
+      process.env.FIREBASE_CREDENTIALS,
+      process.env.FIREBASE_CONFIG,
+      process.env.SB_FIREBASE_CONFIG,
+    ])
+  );
+  const hasFirebaseSecret = Boolean(
+    pickFirstValue([
+      process.env.FIREBASE_DB_SECRET,
+      process.env.FIREBASE_SECRET,
+      process.env.FIREBASE_DATABASE_SECRET,
+      process.env.SB_FIREBASE_DB_SECRET,
+      process.env.NEXT_PUBLIC_FIREBASE_DB_SECRET,
+      process.env.FIREBASE_CREDENTIALS,
+      process.env.FIREBASE_CONFIG,
+      process.env.SB_FIREBASE_CONFIG,
+    ])
+  );
+  const hasKv = Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+  return `runtime vercel=${process.env.VERCEL ?? "0"} env=${process.env.VERCEL_ENV ?? "unknown"} url=${process.env.VERCEL_URL ?? "none"} firebase_url_var=${hasFirebaseUrl ? "yes" : "no"} firebase_secret_var=${hasFirebaseSecret ? "yes" : "no"} kv=${hasKv ? "yes" : "no"}`;
 }
 
 function normalizeInquiry(input: Partial<InquiryItem>, index: number): InquiryItem {
