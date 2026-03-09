@@ -28,6 +28,17 @@ export const viewport = {
 
 export const dynamic = "force-dynamic";
 
+function hexToRgb(hex: string) {
+  const normalized = hex.replace("#", "").trim();
+  const full = normalized.length === 3 ? normalized.split("").map((x) => x + x).join("") : normalized;
+  if (!/^[0-9a-fA-F]{6}$/.test(full)) return "59 130 246";
+  const num = Number.parseInt(full, 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  return `${r} ${g} ${b}`;
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -63,6 +74,11 @@ async function RootWithConfig({
     "--glare-size": `${config.theme.glareSize}px`,
     "--hero-highlight": config.theme.heroHighlight,
     "--footer-button": config.theme.footerButton,
+    "--brand-400-rgb": hexToRgb(config.theme.brand400),
+    "--brand-600-rgb": hexToRgb(config.theme.brand600),
+    "--brand-700-rgb": hexToRgb(config.theme.brand700),
+    "--highlight-rgb": hexToRgb(config.theme.highlight),
+    "--surface-rgb": hexToRgb(config.theme.surface),
   };
 
   return (

@@ -45,8 +45,8 @@ img {
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(820px 420px at 8% -8%, rgba(37, 99, 235, 0.18), transparent 60%),
-    radial-gradient(760px 380px at 100% 0%, rgba(29, 78, 216, 0.14), transparent 62%),
+    radial-gradient(820px 420px at 8% -8%, rgb(var(--brand-600-rgb) / 0.22), transparent 60%),
+    radial-gradient(760px 380px at 100% 0%, rgb(var(--brand-700-rgb) / 0.17), transparent 62%),
     linear-gradient(180deg, #080a0e 0%, #090c11 46%, #080a0e 100%);
 }
 
@@ -61,15 +61,15 @@ img {
 
 .site-shell::before {
   background:
-    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(56, 189, 248, 0.08), transparent 160px),
-    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(37, 99, 235, 0.12), transparent 280px);
+    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgb(var(--brand-400-rgb) / 0.1), transparent 160px),
+    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgb(var(--brand-600-rgb) / 0.16), transparent 280px);
   opacity: var(--cursor-intensity);
   transition: opacity 180ms ease;
 }
 
 .site-shell::after {
   background:
-    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(125, 211, 252, calc(0.1 + (var(--cursor-press) * 0.1))), transparent 92px);
+    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgb(var(--brand-700-rgb) / calc(0.1 + (var(--cursor-press) * 0.1))), transparent 92px);
   mix-blend-mode: screen;
 }
 
@@ -101,8 +101,8 @@ img {
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    linear-gradient(rgb(var(--brand-600-rgb) / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--brand-600-rgb) / 0.06) 1px, transparent 1px);
   background-size: 24px 24px;
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent 85%);
 }
@@ -178,7 +178,7 @@ span {
   width: 100%;
   border: 0;
   margin: 18px 0;
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.35), rgba(17, 24, 39, 0.1));
+  background: linear-gradient(90deg, rgb(var(--brand-600-rgb) / 0.4), rgb(var(--highlight-rgb) / 0.2));
 }
 
 .button {
@@ -187,16 +187,16 @@ span {
   justify-content: center;
   gap: 8px;
   border-radius: 11px;
-  border: 1px solid rgba(96, 165, 250, 0.35);
-  background: linear-gradient(180deg, #3b82f6, #2563eb);
+  border: 1px solid rgb(var(--brand-400-rgb) / 0.5);
+  background: linear-gradient(180deg, var(--brand-600), var(--brand-700));
   color: #f8fafc;
   padding: 11px 18px;
   font-size: 0.93rem;
   font-weight: 700;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
   box-shadow:
-    0 10px 26px rgba(30, 64, 175, 0.34),
-    0 0 0 1px rgba(96, 165, 250, 0.15) inset;
+    0 10px 26px rgb(var(--brand-600-rgb) / 0.34),
+    0 0 0 1px rgb(var(--brand-400-rgb) / 0.2) inset;
   cursor: pointer;
 }
 
@@ -204,8 +204,8 @@ span {
 .button:focus-visible {
   transform: translateY(-1px);
   box-shadow:
-    0 18px 32px rgba(37, 99, 235, 0.36),
-    0 0 20px rgba(56, 189, 248, 0.2);
+    0 18px 32px rgb(var(--brand-600-rgb) / 0.4),
+    0 0 20px rgb(var(--brand-400-rgb) / 0.3);
   filter: saturate(1.12);
 }
 
@@ -217,8 +217,8 @@ span {
 
 .button.secondary {
   background: rgba(17, 24, 39, 0.75);
-  color: #dbeafe;
-  border: 1px solid rgba(96, 165, 250, 0.26);
+  color: var(--brand-700);
+  border: 1px solid rgb(var(--brand-400-rgb) / 0.36);
   box-shadow: none;
 }
 
@@ -697,7 +697,7 @@ a:focus-visible {
   height: 9px;
   border-radius: 999px;
   display: inline-block;
-  background: #60a5fa;
+  background: var(--brand-400);
   margin-bottom: 10px;
 }
 
@@ -839,7 +839,7 @@ footer .grid.grid-3 {
   font-size: 0.74rem;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: #bfdbfe;
+  color: var(--brand-700);
 }
 
 .article-category::before {
@@ -847,7 +847,7 @@ footer .grid.grid-3 {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: #3b82f6;
+  background: var(--brand-600);
 }
 
 .article-read-btn {
