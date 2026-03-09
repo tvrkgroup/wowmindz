@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
 import type { SitePost } from "@/lib/site-config-schema";
 
 export default function ArticleCarousel({
@@ -11,7 +10,6 @@ export default function ArticleCarousel({
   posts: SitePost[];
   basePath: "/news" | "/blog";
 }) {
-  const railRef = useRef<HTMLDivElement | null>(null);
   const formatDate = (value: string) => {
     const parsed = Date.parse(value);
     if (Number.isNaN(parsed)) return value;
@@ -22,28 +20,11 @@ export default function ArticleCarousel({
     });
   };
 
-  const scrollByCards = (direction: "left" | "right") => {
-    if (!railRef.current) return;
-    const width = railRef.current.clientWidth;
-    railRef.current.scrollBy({
-      left: direction === "right" ? width * 0.82 : -width * 0.82,
-      behavior: "smooth",
-    });
-  };
-
   return (
     <div className="article-carousel-wrap">
-      <div className="article-carousel-nav">
-        <button type="button" className="carousel-arrow" onClick={() => scrollByCards("left")}>
-          ←
-        </button>
-        <button type="button" className="carousel-arrow" onClick={() => scrollByCards("right")}>
-          →
-        </button>
-      </div>
-      <div className="article-carousel" ref={railRef}>
+      <div className="article-carousel article-preview-grid">
         {posts.map((post) => (
-          <article className="article-card" key={post.id}>
+          <Link className="article-card article-preview-card" key={post.id} href={`${basePath}/${post.slug}`}>
             <h3>{post.title}</h3>
             <img src={post.image || "/images/ai-campus-1.svg"} alt={post.title} />
             <div className="article-meta-row">
@@ -51,12 +32,10 @@ export default function ArticleCarousel({
                 <p className="article-date">{formatDate(post.date)}</p>
                 <p className="article-category">{post.category}</p>
               </div>
-              <Link className="button secondary article-read-btn" href={`${basePath}/${post.slug}`}>
-                Learn More
-              </Link>
+              <span className="button secondary article-read-btn">Open</span>
             </div>
             <p>{post.summary}</p>
-          </article>
+          </Link>
         ))}
       </div>
     </div>
