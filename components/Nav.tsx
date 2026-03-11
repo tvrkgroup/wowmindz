@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSiteConfig } from "@/components/SiteConfigProvider";
 import { getPrimaryNavigation, isPageVisibleInTemplate } from "@/config/page-registry";
@@ -31,8 +32,14 @@ const safeFallback = {
   lineTwo: "Technologies",
 };
 
+function isActiveRoute(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const config = useSiteConfig();
   const safeLinks = getPrimaryNavigation(config);
   const nameLines = config.schoolNameShort
@@ -46,6 +53,10 @@ export default function Nav() {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -70,7 +81,11 @@ export default function Nav() {
         </Link>
         <nav className="nav-links">
           {safeLinks.map((link) => (
-            <Link key={link.key} href={link.href}>
+            <Link
+              key={link.key}
+              href={link.href}
+              className={isActiveRoute(pathname, link.href) ? "is-active" : ""}
+            >
               {link.label}
             </Link>
           ))}
@@ -83,7 +98,7 @@ export default function Nav() {
           ) : null}
         </div>
         <button
-          className="nav-toggle"
+          className={`nav-toggle ${open ? "is-open" : ""}`}
           type="button"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
@@ -119,22 +134,35 @@ export default function Nav() {
               aria-label="Close menu"
               onClick={() => setOpen(false)}
             >
-              X
+              <span />
+              <span />
             </button>
           </div>
           <nav className="mobile-menu-links" aria-label="Mobile links">
             {safeLinks.map((link) => (
-              <Link key={link.key} href={link.href} onClick={() => setOpen(false)}>
+              <Link
+                key={link.key}
+                href={link.href}
+                className={isActiveRoute(pathname, link.href) ? "is-active" : ""}
+                style={{ ["--item-index" as string]: String(safeLinks.findIndex((item) => item.key === link.key)) }}
+                onClick={() => setOpen(false)}
+              >
                 {link.label}
               </Link>
             ))}
-            {admissionsEnabled ? (
-              <Link href="/admissions" className="button" onClick={() => setOpen(false)}>
-                Apply Now
-              </Link>
-            ) : null}
-            <a href={`tel:${formatPhoneForHref(config.contactPhone)}`}>Call Office</a>
           </nav>
+          <div className="mobile-menu-actions">
+            <Link href="/projects" className="button" onClick={() => setOpen(false)}>
+              Explore Our Work
+            </Link>
+            <Link href="/contact" className="button secondary" onClick={() => setOpen(false)}>
+              Contact Us
+            </Link>
+          </div>
+          <div className="mobile-menu-meta">
+            <p>Involve. Solve. Evolve.</p>
+            <a href={`tel:${formatPhoneForHref(config.contactPhone)}`}>{config.contactPhone}</a>
+          </div>
         </aside>
       </div>
     </header>
