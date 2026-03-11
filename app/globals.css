@@ -659,13 +659,22 @@ select:focus {
 .nav-contact-button {
   min-width: 144px;
   justify-content: center;
-  box-shadow: 0 14px 28px rgb(var(--brand-600-rgb) / 0.18), 0 1px 0 rgb(255 255 255 / 0.12) inset;
-  transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out), border-color 0.22s ease;
+  background:
+    linear-gradient(180deg, rgb(var(--surface-rgb) / 0.68), rgb(var(--surface-rgb) / 0.5)),
+    linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 42%);
+  border-color: rgb(var(--brand-400-rgb) / 0.18);
+  box-shadow: 0 12px 24px rgb(2 6 23 / 0.24), 0 1px 0 rgb(255 255 255 / 0.1) inset;
+  transition: transform 0.24s var(--ease-out), box-shadow 0.24s var(--ease-out), border-color 0.24s ease,
+    background 0.24s ease;
 }
 
 .nav-contact-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 18px 34px rgb(var(--brand-600-rgb) / 0.24), 0 1px 0 rgb(255 255 255 / 0.12) inset;
+  transform: translateY(-2px) scale(1.01);
+  background:
+    linear-gradient(180deg, rgb(var(--surface-rgb) / 0.76), rgb(var(--surface-rgb) / 0.58)),
+    linear-gradient(180deg, rgb(255 255 255 / 0.06), transparent 42%);
+  border-color: rgb(var(--brand-400-rgb) / 0.26);
+  box-shadow: 0 18px 30px rgb(2 6 23 / 0.28), 0 1px 0 rgb(255 255 255 / 0.1) inset;
 }
 
 .nav-toggle {
@@ -741,10 +750,10 @@ select:focus {
 .mobile-menu-panel {
   --mobile-menu-pad: clamp(18px, 4vw, 24px);
   position: absolute;
-  right: clamp(14px, 4vw, 28px);
-  left: clamp(14px, 4vw, 28px);
-  top: max(14px, env(safe-area-inset-top));
-  bottom: max(14px, env(safe-area-inset-bottom));
+  right: clamp(10px, 3vw, 22px);
+  left: clamp(10px, 3vw, 22px);
+  top: max(10px, env(safe-area-inset-top));
+  bottom: max(10px, env(safe-area-inset-bottom));
   width: auto;
   min-height: auto;
   max-height: none;
@@ -2301,10 +2310,10 @@ footer .divider {
   }
 
   .mobile-menu-panel {
-    right: 12px;
-    left: 12px;
-    top: max(12px, env(safe-area-inset-top));
-    bottom: max(12px, env(safe-area-inset-bottom));
+    right: 10px;
+    left: 10px;
+    top: max(10px, env(safe-area-inset-top));
+    bottom: max(10px, env(safe-area-inset-bottom));
     --mobile-menu-pad: 20px;
     border-radius: 24px;
   }
