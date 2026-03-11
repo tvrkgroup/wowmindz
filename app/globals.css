@@ -338,8 +338,6 @@ span {
 }
 
 .button {
-  position: relative;
-  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -362,44 +360,6 @@ span {
   backdrop-filter: blur(8px) saturate(112%);
 }
 
-.button::before,
-.button::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  pointer-events: none;
-  transition: transform 0.34s var(--ease-out), opacity 0.34s var(--ease-out), clip-path 0.34s var(--ease-out);
-}
-
-.button::before {
-  background:
-    linear-gradient(90deg,
-      rgb(var(--brand-400-rgb) / 0.04) 0 8%,
-      transparent 8% 13%,
-      rgb(var(--brand-400-rgb) / 0.1) 13% 21%,
-      transparent 21% 27%,
-      rgb(var(--brand-600-rgb) / 0.16) 27% 36%,
-      transparent 36% 100%);
-  opacity: 0;
-  transform: translateX(-26%) scaleX(0.58);
-  clip-path: inset(0 50% 0 0 round 13px);
-}
-
-.button::after {
-  background:
-    linear-gradient(270deg,
-      rgb(var(--highlight-rgb) / 0.04) 0 8%,
-      transparent 8% 13%,
-      rgb(var(--highlight-rgb) / 0.1) 13% 21%,
-      transparent 21% 27%,
-      rgb(var(--brand-600-rgb) / 0.16) 27% 36%,
-      transparent 36% 100%);
-  opacity: 0;
-  transform: translateX(26%) scaleX(0.58);
-  clip-path: inset(0 0 0 50% round 13px);
-}
-
 .button:hover,
 .button:focus-visible {
   transform: translateY(-2px);
@@ -407,20 +367,6 @@ span {
     0 20px 36px rgb(var(--brand-600-rgb) / 0.42),
     0 0 22px rgb(var(--brand-400-rgb) / 0.24);
   filter: saturate(1.16);
-}
-
-.button:hover::before,
-.button:focus-visible::before {
-  opacity: 1;
-  transform: translateX(0) scaleX(1);
-  clip-path: inset(0 0 0 0 round 13px);
-}
-
-.button:hover::after,
-.button:focus-visible::after {
-  opacity: 1;
-  transform: translateX(0) scaleX(1);
-  clip-path: inset(0 0 0 0 round 13px);
 }
 
 .button:disabled {
