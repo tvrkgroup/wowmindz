@@ -38,7 +38,7 @@
   --glass-shadow-2: 0 28px 60px rgb(2 6 23 / 0.44);
   --ambient-layer-opacity: 0.9;
   --ambient-reactive-opacity: 0.34;
-  --mesh-opacity: 0.34;
+  --mesh-opacity: 0.5;
 }
 
 html,
@@ -98,13 +98,13 @@ img {
 
 .ambient-layer-mesh {
   background:
-    radial-gradient(680px 380px at 16% 10%, rgb(var(--brand-400-rgb) / 0.09), transparent 78%),
-    radial-gradient(820px 420px at 88% 16%, rgb(var(--brand-600-rgb) / 0.08), transparent 80%),
-    radial-gradient(620px 320px at 52% 76%, rgb(var(--brand-700-rgb) / 0.07), transparent 80%),
-    linear-gradient(rgb(var(--brand-600-rgb) / 0.013) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(var(--brand-600-rgb) / 0.013) 1px, transparent 1px),
-    repeating-radial-gradient(circle at 50% 42%, rgb(var(--highlight-rgb) / 0.015) 0 1px, transparent 1px 32px),
-    linear-gradient(135deg, rgb(var(--highlight-rgb) / 0.01) 1px, transparent 1px);
+    radial-gradient(680px 380px at 16% 10%, rgb(var(--brand-400-rgb) / 0.12), transparent 78%),
+    radial-gradient(820px 420px at 88% 16%, rgb(var(--brand-600-rgb) / 0.11), transparent 80%),
+    radial-gradient(620px 320px at 52% 76%, rgb(var(--brand-700-rgb) / 0.09), transparent 80%),
+    linear-gradient(rgb(var(--brand-600-rgb) / 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--brand-600-rgb) / 0.024) 1px, transparent 1px),
+    repeating-radial-gradient(circle at 50% 42%, rgb(var(--highlight-rgb) / 0.024) 0 1px, transparent 1px 32px),
+    linear-gradient(135deg, rgb(var(--highlight-rgb) / 0.016) 1px, transparent 1px);
   background-size:
     auto,
     auto,
@@ -121,9 +121,9 @@ img {
     calc(var(--cursor-nx) * -6px) calc(var(--cursor-ny) * -6px),
     0 0,
     calc(var(--cursor-nx) * -10px) calc(var(--cursor-ny) * -10px);
-  filter: blur(7px) saturate(108%);
+  filter: blur(4px) saturate(110%);
   opacity: var(--mesh-opacity);
-  mix-blend-mode: soft-light;
+  mix-blend-mode: overlay;
   mask-image: radial-gradient(140% 108% at 50% 8%, black 58%, transparent 100%);
   animation: mesh-drift 32s ease-in-out infinite alternate;
   transform: translate3d(calc(var(--cursor-nx) * -8px), calc(var(--cursor-ny) * -8px), 0);
