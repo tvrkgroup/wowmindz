@@ -10,6 +10,10 @@
   --ambient-x: 50vw;
   --ambient-y: 40vh;
   --cursor-intensity: 0.28;
+  --cursor-speed: 0;
+  --cursor-angle: 0rad;
+  --mesh-stretch-x: 1;
+  --mesh-stretch-y: 1;
   --cursor-press: 0;
   --motion-fast: 180ms;
   --motion-medium: 260ms;
@@ -92,9 +96,9 @@ img {
 
 .ambient-layer-mesh {
   background:
-    radial-gradient(560px 300px at 18% 12%, rgb(var(--brand-400-rgb) / 0.12), transparent 76%),
-    radial-gradient(680px 340px at 86% 18%, rgb(var(--brand-600-rgb) / 0.1), transparent 78%),
-    radial-gradient(520px 260px at 52% 76%, rgb(var(--brand-700-rgb) / 0.08), transparent 80%),
+    radial-gradient(620px 340px at 18% 12%, rgb(var(--brand-400-rgb) / 0.16), transparent 76%),
+    radial-gradient(760px 400px at 86% 18%, rgb(var(--brand-600-rgb) / 0.14), transparent 78%),
+    radial-gradient(560px 300px at 52% 76%, rgb(var(--brand-700-rgb) / 0.12), transparent 80%),
     linear-gradient(rgb(var(--brand-600-rgb) / 0.014) 1px, transparent 1px),
     linear-gradient(90deg, rgb(var(--brand-600-rgb) / 0.014) 1px, transparent 1px);
   background-size:
@@ -109,7 +113,7 @@ img {
     0 0,
     0 0,
     0 0;
-  filter: blur(2.4px) saturate(106%);
+  filter: blur(6px) saturate(112%);
   opacity: var(--mesh-opacity);
   mix-blend-mode: soft-light;
   mask-image: radial-gradient(130% 98% at 50% 6%, black 46%, transparent 100%);
@@ -118,12 +122,38 @@ img {
 
 .ambient-layer-reactive {
   background:
-    radial-gradient(420px 260px at var(--ambient-x) var(--ambient-y), rgb(var(--brand-400-rgb) / 0.14), transparent 72%),
-    radial-gradient(620px 380px at var(--ambient-x) var(--ambient-y), rgb(var(--brand-600-rgb) / 0.1), transparent 76%),
-    radial-gradient(780px 500px at var(--ambient-x) var(--ambient-y), rgb(var(--brand-700-rgb) / 0.07), transparent 78%);
-  filter: blur(24px) saturate(108%);
+    radial-gradient(
+      calc(320px * var(--mesh-stretch-x))
+      calc(210px * var(--mesh-stretch-y))
+      at var(--ambient-x) var(--ambient-y),
+      rgb(var(--brand-400-rgb) / 0.2),
+      transparent 72%
+    ),
+    radial-gradient(
+      calc(520px * var(--mesh-stretch-x))
+      calc(300px * var(--mesh-stretch-y))
+      at var(--ambient-x) var(--ambient-y),
+      rgb(var(--brand-600-rgb) / 0.14),
+      transparent 76%
+    ),
+    radial-gradient(
+      calc(700px * var(--mesh-stretch-x))
+      calc(420px * var(--mesh-stretch-y))
+      at var(--ambient-x) var(--ambient-y),
+      rgb(var(--brand-700-rgb) / 0.1),
+      transparent 78%
+    ),
+    conic-gradient(
+      from var(--cursor-angle) at var(--ambient-x) var(--ambient-y),
+      rgb(var(--brand-400-rgb) / 0.04),
+      rgb(var(--brand-600-rgb) / 0.09),
+      rgb(var(--highlight-rgb) / 0.05),
+      rgb(var(--brand-400-rgb) / 0.04)
+    );
+  filter: blur(calc(28px + (var(--cursor-speed) * 10px))) saturate(116%);
   opacity: calc(var(--ambient-reactive-opacity) * var(--cursor-intensity));
   mix-blend-mode: screen;
+  transform: translateZ(0);
 }
 
 .ambient-layer-grain {
@@ -303,6 +333,8 @@ span {
 }
 
 .button {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -325,6 +357,32 @@ span {
   backdrop-filter: blur(8px) saturate(112%);
 }
 
+.button::before,
+.button::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: transform 0.34s var(--ease-out), opacity 0.34s var(--ease-out), clip-path 0.34s var(--ease-out);
+}
+
+.button::before {
+  background:
+    linear-gradient(112deg, transparent 0 22%, rgb(var(--brand-400-rgb) / 0.12) 34%, transparent 48%),
+    radial-gradient(160px 68px at 12% 50%, rgb(var(--brand-400-rgb) / 0.18), transparent 70%);
+  opacity: 0;
+  transform: translateX(-18%) scaleX(0.84);
+  clip-path: polygon(0 0, 42% 0, 58% 100%, 0 100%);
+}
+
+.button::after {
+  background:
+    linear-gradient(90deg, transparent, rgb(var(--brand-600-rgb) / 0.22), rgb(var(--highlight-rgb) / 0.16), transparent);
+  opacity: 0;
+  transform: translateX(-36%) skewX(-16deg);
+}
+
 .button:hover,
 .button:focus-visible {
   transform: translateY(-2px);
@@ -332,6 +390,18 @@ span {
     0 20px 36px rgb(var(--brand-600-rgb) / 0.42),
     0 0 22px rgb(var(--brand-400-rgb) / 0.24);
   filter: saturate(1.16);
+}
+
+.button:hover::before,
+.button:focus-visible::before {
+  opacity: 1;
+  transform: translateX(18%) scaleX(1.16);
+}
+
+.button:hover::after,
+.button:focus-visible::after {
+  opacity: 1;
+  transform: translateX(42%) skewX(-16deg);
 }
 
 .button:disabled {
@@ -675,6 +745,17 @@ select:focus {
     linear-gradient(180deg, rgb(255 255 255 / 0.06), transparent 42%);
   border-color: rgb(var(--brand-400-rgb) / 0.26);
   box-shadow: 0 18px 30px rgb(2 6 23 / 0.28), 0 1px 0 rgb(255 255 255 / 0.1) inset;
+}
+
+.nav-contact-button::before {
+  background:
+    linear-gradient(112deg, transparent 0 18%, rgb(var(--brand-400-rgb) / 0.14) 32%, transparent 46%),
+    radial-gradient(150px 64px at 8% 50%, rgb(var(--brand-600-rgb) / 0.18), transparent 72%);
+}
+
+.nav-contact-button::after {
+  background:
+    linear-gradient(90deg, transparent, rgb(var(--brand-600-rgb) / 0.16), rgb(var(--highlight-rgb) / 0.12), transparent);
 }
 
 .nav-toggle {

@@ -11,6 +11,7 @@ export default function CursorGlow() {
 
     const target = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.38 };
     const current = { x: target.x, y: target.y };
+    const last = { x: target.x, y: target.y };
     const cursorEase = isCoarse ? 0.14 : 0.24;
     const ambientEase = isCoarse ? 0.01 : 0;
 
@@ -19,10 +20,23 @@ export default function CursorGlow() {
       current.y += (target.y - current.y) * cursorEase;
       const ambientX = current.x + (target.x - current.x) * ambientEase;
       const ambientY = current.y + (target.y - current.y) * ambientEase;
+      const dx = target.x - last.x;
+      const dy = target.y - last.y;
+      const speed = Math.min(1, Math.hypot(dx, dy) / 42);
+      const angle = Math.atan2(dy, dx);
+      const stretchX = 1 + speed * 0.42;
+      const stretchY = 1 - speed * 0.18;
+
       root.style.setProperty("--cursor-x", `${current.x}px`);
       root.style.setProperty("--cursor-y", `${current.y}px`);
       root.style.setProperty("--ambient-x", `${ambientX}px`);
       root.style.setProperty("--ambient-y", `${ambientY}px`);
+      root.style.setProperty("--cursor-speed", speed.toFixed(3));
+      root.style.setProperty("--cursor-angle", `${angle}rad`);
+      root.style.setProperty("--mesh-stretch-x", stretchX.toFixed(3));
+      root.style.setProperty("--mesh-stretch-y", stretchY.toFixed(3));
+      last.x = target.x;
+      last.y = target.y;
       animationFrame = window.requestAnimationFrame(updateVariables);
     };
 
@@ -50,6 +64,10 @@ export default function CursorGlow() {
     root.style.setProperty("--ambient-y", `${target.y}px`);
     root.style.setProperty("--cursor-intensity", isCoarse ? "0.14" : "0.2");
     root.style.setProperty("--cursor-press", "0");
+    root.style.setProperty("--cursor-speed", "0");
+    root.style.setProperty("--cursor-angle", "0rad");
+    root.style.setProperty("--mesh-stretch-x", "1");
+    root.style.setProperty("--mesh-stretch-y", "1");
     animationFrame = window.requestAnimationFrame(updateVariables);
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
