@@ -739,9 +739,8 @@ select:focus {
   border-radius: 28px;
   padding: var(--mobile-menu-pad);
   display: grid;
-  align-content: start;
-  grid-template-rows: auto auto auto;
-  gap: 14px;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
   box-shadow: 0 32px 72px rgb(2 6 23 / 0.46), 0 1px 0 rgb(255 255 255 / 0.12) inset;
   backdrop-filter: blur(20px) saturate(116%);
   transform: translateY(10px) scale(0.985);
@@ -815,6 +814,7 @@ select:focus {
 .mobile-menu-links {
   display: grid;
   align-content: start;
+  padding-top: 14px;
   gap: 10px;
 }
 
@@ -869,9 +869,9 @@ select:focus {
   justify-content: space-between;
   gap: 12px;
   align-items: center;
-  margin-top: 6px;
   padding-top: 10px;
   border-top: 1px solid rgb(var(--brand-400-rgb) / 0.14);
+  align-self: end;
 }
 
 .mobile-menu-meta p,
