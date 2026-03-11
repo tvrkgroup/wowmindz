@@ -573,7 +573,8 @@ select:focus {
 .nav-shell {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 220;
+  isolation: isolate;
   backdrop-filter: blur(20px) saturate(132%);
   background:
     linear-gradient(180deg, rgb(var(--surface-rgb) / 0.55), rgb(var(--surface-rgb) / 0.38)),
@@ -694,13 +695,15 @@ select:focus {
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  z-index: 180;
-  transition: opacity 0.24s ease;
+  z-index: 460;
+  transition: opacity 0.24s ease, visibility 0.24s ease;
+  visibility: hidden;
 }
 
 .mobile-menu.is-open {
   pointer-events: auto;
   opacity: 1;
+  visibility: visible;
 }
 
 .mobile-menu-backdrop {
@@ -708,9 +711,10 @@ select:focus {
   inset: 0;
   border: 0;
   background:
-    radial-gradient(560px 280px at 50% 10%, rgb(var(--brand-600-rgb) / 0.12), transparent 74%),
-    rgb(3 6 12 / 0.76);
-  backdrop-filter: blur(24px) saturate(112%);
+    radial-gradient(560px 280px at 50% 10%, rgb(var(--brand-600-rgb) / 0.08), transparent 76%),
+    rgb(2 5 10 / 0.84);
+  backdrop-filter: blur(30px) saturate(108%);
+  z-index: 0;
 }
 
 .mobile-menu-panel {
@@ -740,6 +744,7 @@ select:focus {
   opacity: 0;
   transition: transform 0.28s var(--ease-out), opacity 0.28s var(--ease-out), filter 0.28s var(--ease-out);
   filter: blur(8px);
+  z-index: 1;
 }
 
 .mobile-menu.is-open .mobile-menu-panel {
@@ -754,6 +759,14 @@ select:focus {
   align-items: center;
   padding-bottom: 10px;
   border-bottom: 1px solid rgb(var(--brand-400-rgb) / 0.16);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgb(var(--surface-rgb) / 0.94), rgb(var(--surface-rgb) / 0.76));
+  margin: -24px -24px 0;
+  padding: 24px 24px 14px;
+  backdrop-filter: blur(18px);
 }
 
 .mobile-menu-brand {
@@ -773,6 +786,7 @@ select:focus {
   color: var(--ink-900);
   position: relative;
   box-shadow: 0 10px 22px rgb(2 6 23 / 0.24), 0 1px 0 rgb(255 255 255 / 0.12) inset;
+  z-index: 3;
 }
 
 .mobile-menu-close span {
@@ -861,6 +875,12 @@ select:focus {
 .mobile-menu-meta a {
   color: #9ca3af;
   font-size: 0.88rem;
+}
+
+body.menu-open .site-shell > :not(.ambient-layer):not(.nav-shell) {
+  filter: blur(10px) saturate(0.88) brightness(0.7);
+  transform: scale(0.994);
+  transition: filter 0.24s ease, transform 0.24s ease;
 }
 
 /* Hero */
@@ -2255,6 +2275,11 @@ footer .divider {
     bottom: max(12px, env(safe-area-inset-bottom));
     padding: 20px;
     border-radius: 24px;
+  }
+
+  .mobile-menu-head {
+    margin: -20px -20px 0;
+    padding: 20px 20px 12px;
   }
 
   .container {

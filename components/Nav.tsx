@@ -49,8 +49,10 @@ export default function Nav() {
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    document.body.classList.toggle("menu-open", open);
     return () => {
       document.body.style.overflow = "";
+      document.body.classList.remove("menu-open");
     };
   }, [open]);
 
