@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useSiteConfig } from "@/components/SiteConfigProvider";
 import { getPrimaryNavigation, isPageVisibleInTemplate } from "@/config/page-registry";
 
@@ -39,6 +40,7 @@ function isActiveRoute(pathname: string, href: string) {
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const config = useSiteConfig();
   const safeLinks = getPrimaryNavigation(config);
@@ -46,6 +48,10 @@ export default function Nav() {
     ? splitHeaderName(config.schoolNameShort)
     : safeFallback;
   const admissionsEnabled = isPageVisibleInTemplate(config, "admissions");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -71,102 +77,102 @@ export default function Nav() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  return (
-    <header className="nav-shell">
-      <div className="container nav-bar">
-        <Link href="/" className="logo">
-          <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
-          <span className="logo-text">
-            <strong>{nameLines.lineOne}</strong>
-            <span>{nameLines.lineTwo}</span>
-          </span>
-        </Link>
-        <nav className="nav-links">
+  const mobileMenu = (
+    <div id="mobile-menu" className={`mobile-menu ${open ? "is-open" : ""}`} aria-hidden={!open}>
+      <button
+        type="button"
+        className="mobile-menu-backdrop"
+        aria-label="Close mobile menu"
+        onClick={() => setOpen(false)}
+        tabIndex={open ? 0 : -1}
+      />
+      <aside className="mobile-menu-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+        <div className="mobile-menu-head">
+          <div className="mobile-menu-brand">
+            <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
+            <div className="logo-text">
+              <strong>{nameLines.lineOne}</strong>
+              <span>{nameLines.lineTwo}</span>
+            </div>
+          </div>
+          <button className="mobile-menu-close" type="button" aria-label="Close menu" onClick={() => setOpen(false)}>
+            <span />
+            <span />
+          </button>
+        </div>
+        <nav className="mobile-menu-links" aria-label="Mobile links">
           {safeLinks.map((link) => (
             <Link
               key={link.key}
               href={link.href}
               className={isActiveRoute(pathname, link.href) ? "is-active" : ""}
+              style={{ ["--item-index" as string]: String(safeLinks.findIndex((item) => item.key === link.key)) }}
+              onClick={() => setOpen(false)}
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <div className="nav-actions">
-          {admissionsEnabled ? (
-            <Link href="/admissions" className="button">
-              Apply Now
-            </Link>
-          ) : null}
+        <div className="mobile-menu-actions">
+          <Link href="/projects" className="button" onClick={() => setOpen(false)}>
+            Explore Our Work
+          </Link>
+          <Link href="/contact" className="button secondary" onClick={() => setOpen(false)}>
+            Contact Us
+          </Link>
         </div>
-        <button
-          className={`nav-toggle ${open ? "is-open" : ""}`}
-          type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          onClick={() => setOpen((current) => !current)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-      </div>
+        <div className="mobile-menu-meta">
+          <p>Involve. Solve. Evolve.</p>
+          <a href={`tel:${formatPhoneForHref(config.contactPhone)}`}>{config.contactPhone}</a>
+        </div>
+      </aside>
+    </div>
+  );
 
-      <div id="mobile-menu" className={`mobile-menu ${open ? "is-open" : ""}`} aria-hidden={!open}>
-        <button
-          type="button"
-          className="mobile-menu-backdrop"
-          aria-label="Close mobile menu"
-          onClick={() => setOpen(false)}
-          tabIndex={open ? 0 : -1}
-        />
-        <aside className="mobile-menu-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
-          <div className="mobile-menu-head">
-            <div className="mobile-menu-brand">
-              <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
-              <div className="logo-text">
-                <strong>{nameLines.lineOne}</strong>
-                <span>{nameLines.lineTwo}</span>
-              </div>
-            </div>
-            <button
-              className="mobile-menu-close"
-              type="button"
-              aria-label="Close menu"
-              onClick={() => setOpen(false)}
-            >
-              <span />
-              <span />
-            </button>
-          </div>
-          <nav className="mobile-menu-links" aria-label="Mobile links">
+  return (
+    <>
+      <header className="nav-shell">
+        <div className="container nav-bar">
+          <Link href="/" className="logo">
+            <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
+            <span className="logo-text">
+              <strong>{nameLines.lineOne}</strong>
+              <span>{nameLines.lineTwo}</span>
+            </span>
+          </Link>
+          <nav className="nav-links">
             {safeLinks.map((link) => (
               <Link
                 key={link.key}
                 href={link.href}
                 className={isActiveRoute(pathname, link.href) ? "is-active" : ""}
-                style={{ ["--item-index" as string]: String(safeLinks.findIndex((item) => item.key === link.key)) }}
-                onClick={() => setOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="mobile-menu-actions">
-            <Link href="/projects" className="button" onClick={() => setOpen(false)}>
-              Explore Our Work
-            </Link>
-            <Link href="/contact" className="button secondary" onClick={() => setOpen(false)}>
-              Contact Us
-            </Link>
+          <div className="nav-actions">
+            {admissionsEnabled ? (
+              <Link href="/admissions" className="button">
+                Apply Now
+              </Link>
+            ) : null}
           </div>
-          <div className="mobile-menu-meta">
-            <p>Involve. Solve. Evolve.</p>
-            <a href={`tel:${formatPhoneForHref(config.contactPhone)}`}>{config.contactPhone}</a>
-          </div>
-        </aside>
-      </div>
-    </header>
+          <button
+            className={`nav-toggle ${open ? "is-open" : ""}`}
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            onClick={() => setOpen((current) => !current)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+      </header>
+      {mounted ? createPortal(mobileMenu, document.body) : null}
+    </>
   );
 }

@@ -692,10 +692,13 @@ select:focus {
 
 .mobile-menu {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
   opacity: 0;
-  z-index: 460;
+  z-index: 1000;
   transition: opacity 0.24s ease, visibility 0.24s ease;
   visibility: hidden;
 }
@@ -714,7 +717,7 @@ select:focus {
     radial-gradient(560px 280px at 50% 10%, rgb(var(--brand-600-rgb) / 0.06), transparent 76%),
     rgb(2 5 10 / 0.72);
   backdrop-filter: blur(18px) saturate(104%);
-  z-index: 0;
+  z-index: 1000;
 }
 
 .mobile-menu-panel {
@@ -744,7 +747,7 @@ select:focus {
   opacity: 0;
   transition: transform 0.28s var(--ease-out), opacity 0.28s var(--ease-out), filter 0.28s var(--ease-out);
   filter: blur(8px);
-  z-index: 1;
+  z-index: 1010;
 }
 
 .mobile-menu.is-open .mobile-menu-panel {
@@ -761,7 +764,7 @@ select:focus {
   border-bottom: 1px solid rgb(var(--brand-400-rgb) / 0.16);
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 1015;
   background:
     linear-gradient(180deg, rgb(var(--surface-rgb) / 0.94), rgb(var(--surface-rgb) / 0.76));
   margin: -24px -24px 0;
@@ -786,7 +789,7 @@ select:focus {
   color: var(--ink-900);
   position: relative;
   box-shadow: 0 10px 22px rgb(2 6 23 / 0.24), 0 1px 0 rgb(255 255 255 / 0.12) inset;
-  z-index: 3;
+  z-index: 1020;
 }
 
 .mobile-menu-close span {
