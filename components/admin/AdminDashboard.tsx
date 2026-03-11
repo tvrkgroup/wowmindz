@@ -18,7 +18,7 @@ import CustomSelect from "@/components/CustomSelect";
 const PAGE_LABELS: Record<ManagedPageKey, string> = {
   home: "Home",
   about: "About",
-  academics: "Academics",
+  academics: "Projects",
   admissions: "Admissions",
   campus: "Campus",
   activities: "Activities",
@@ -43,38 +43,39 @@ interface AdminDashboardProps {
 }
 
 const BLOG_CATEGORIES = [
-  "Academics",
-  "Student Life",
-  "Activities",
-  "Sports",
-  "Technology",
-  "Health & Wellness",
-  "Parenting & Guidance",
-  "Achievements",
-  "Others / Miscellaneous",
+  "App Development",
+  "Website Development",
+  "Social Media Marketing",
+  "Automation",
+  "Product Thinking",
+  "Digital Strategy",
+  "Startup Insights",
+  "Case Studies",
 ];
 
 const NEWS_CATEGORIES = [
+  "Company Updates",
+  "Product Launches",
+  "Project Milestones",
   "Announcements",
-  "Events",
-  "Achievements",
-  "Competitions",
-  "Admissions",
-  "Infrastructure",
-  "Notices",
-  "Others / Miscellaneous",
+  "Insights",
 ];
 
 const EVENT_CATEGORIES = [
   "Announcements",
-  "Events",
-  "Achievements",
-  "Competitions",
-  "Admissions",
-  "Notices",
-  "Academics",
-  "Sports",
-  "Others / Miscellaneous",
+  "Project Milestones",
+  "Launches",
+  "Company Updates",
+  "Internal Events",
+];
+
+const PROJECT_CATEGORIES = [
+  "Web Development",
+  "App Development",
+  "Branding & Marketing",
+  "Automation Systems",
+  "Product Design",
+  "Platform Development",
 ];
 
 const THEME_PRESETS: Array<{ id: string; name: string; description: string; values: SiteConfig["theme"] }> = [
@@ -200,9 +201,13 @@ function emptyProject(): SiteProject {
   const now = Date.now();
   return {
     id: `project-${now}`,
+    slug: `project-${now}`,
     title: "",
+    category: PROJECT_CATEGORIES[0],
     company: "",
+    summary: "",
     description: "",
+    content: "",
     website: "",
     coverImage: "/images/ai-campus-1.svg",
     galleryImages: [],
@@ -1503,7 +1508,32 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                             <input
                               value={project.title}
                               placeholder="Project name"
-                              onChange={(e) => updateProject(project.id, { title: e.target.value })}
+                              onChange={(e) =>
+                                updateProject(project.id, {
+                                  title: e.target.value,
+                                  slug: slugify(e.target.value || project.slug),
+                                })
+                              }
+                            />
+                          </label>
+                          <label>
+                            Project Slug
+                            <input
+                              value={project.slug}
+                              placeholder="project-slug"
+                              onChange={(e) => updateProject(project.id, { slug: slugify(e.target.value) })}
+                            />
+                          </label>
+                          <label>
+                            Category
+                            <CustomSelect
+                              value={project.category}
+                              onChange={(next) => updateProject(project.id, { category: next })}
+                              ariaLabel="Select project category"
+                              options={(PROJECT_CATEGORIES.includes(project.category)
+                                ? PROJECT_CATEGORIES
+                                : [project.category, ...PROJECT_CATEGORIES]
+                              ).map((item) => ({ value: item, label: item }))}
                             />
                           </label>
                           <label>
@@ -1544,12 +1574,30 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                           </label>
                         </div>
                         <label className="admin-field">
+                          Short Summary
+                          <textarea
+                            rows={3}
+                            placeholder="Short preview for project cards and detail header"
+                            value={project.summary}
+                            onChange={(e) => updateProject(project.id, { summary: e.target.value })}
+                          />
+                        </label>
+                        <label className="admin-field">
                           Project Description
                           <textarea
                             rows={4}
-                            placeholder="Detailed project/company description"
+                            placeholder="Concise overview of the project"
                             value={project.description}
                             onChange={(e) => updateProject(project.id, { description: e.target.value })}
+                          />
+                        </label>
+                        <label className="admin-field">
+                          Full Project Content
+                          <textarea
+                            rows={6}
+                            placeholder="Expanded project details, process, outcomes, and implementation notes"
+                            value={project.content}
+                            onChange={(e) => updateProject(project.id, { content: e.target.value })}
                           />
                         </label>
                         <label className="admin-field">

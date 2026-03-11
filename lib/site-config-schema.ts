@@ -64,9 +64,13 @@ export interface SiteFile {
 
 export interface SiteProject {
   id: string;
+  slug: string;
   title: string;
+  category: string;
   company: string;
+  summary: string;
   description: string;
+  content: string;
   website: string;
   coverImage: string;
   galleryImages: string[];
@@ -165,7 +169,7 @@ export const defaultSiteConfig: SiteConfig = {
       slug: "systems-thinking-in-modern-product-building",
       date: "March 2026",
       title: "Systems Thinking in Modern Product Building",
-      category: "Tech",
+      category: "Product Thinking",
       image: "/images/ai-campus-3.svg",
       summary: "Why product execution improves when teams design systems instead of isolated features.",
       content:
@@ -176,9 +180,14 @@ export const defaultSiteConfig: SiteConfig = {
   projects: [
     {
       id: "project-1",
+      slug: "ktvr-platform",
       title: "ktvr.in",
+      category: "Platform Development",
       company: "KTVR",
+      summary: "Core platform build for digital products and scalable operations.",
       description: "Core platform and execution stream for digital products and scalable operations.",
+      content:
+        "KTVR required a clean digital foundation that could support product growth, operational clarity, and future service expansion. WowMindz structured the platform around performance, scalable information architecture, and conversion-ready user journeys.",
       website: "https://ktvr.in",
       coverImage: "/images/ai-campus-1.svg",
       galleryImages: ["/images/ai-campus-1.svg", "/images/ai-campus-2.svg"],
@@ -186,9 +195,14 @@ export const defaultSiteConfig: SiteConfig = {
     },
     {
       id: "project-2",
+      slug: "prathipa-brand-site",
       title: "prathipa.com",
+      category: "Web Development",
       company: "Prathipa",
+      summary: "Brand-led website experience built for positioning, trust, and conversion.",
       description: "Brand and product web presence focused on positioning, trust, and conversion-ready content.",
+      content:
+        "Prathipa needed a web presence that felt credible, modern, and commercially clear. The project focused on message structure, trust-building design, and modular content blocks that support growth without losing clarity.",
       website: "https://prathipa.com",
       coverImage: "/images/ai-campus-3.svg",
       galleryImages: ["/images/ai-campus-3.svg", "/images/ai-campus-4.svg"],
@@ -196,9 +210,14 @@ export const defaultSiteConfig: SiteConfig = {
     },
     {
       id: "project-3",
+      slug: "wowmyspace-growth-ecosystem",
       title: "wowmyspace.com",
+      category: "Branding & Marketing",
       company: "WowMySpace",
+      summary: "Digital growth ecosystem focused on audience engagement and platform integration.",
       description: "Digital ecosystem initiative for audience growth, engagement, and platform integration.",
+      content:
+        "WowMySpace was designed as a broader digital ecosystem initiative. The work combined brand clarity, audience engagement pathways, and extensible platform thinking so future campaigns and product integrations can scale cleanly.",
       website: "https://wowmyspace.com",
       coverImage: "/images/ai-campus-5.svg",
       galleryImages: ["/images/ai-campus-5.svg", "/images/ai-campus-6.svg"],

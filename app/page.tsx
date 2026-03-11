@@ -138,7 +138,7 @@ export default async function Home() {
                 <img className="home-cbse-logo" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
               </div>
               <div className="home-cbse-content">
-                <h2>{site.siteName.toUpperCase()}</h2>
+                <h2>{site.siteName}</h2>
                 <p>Involve. Solve. Evolve.</p>
                 <p>Technology studio for digital products and scalable systems.</p>
                 <p>Contact: {site.phone}</p>
@@ -224,7 +224,7 @@ export default async function Home() {
           </article>
 
           <article className="card home-list-card home-theme-card">
-            <h3>Civil & Fitness</h3>
+            <h3>Strategy & Automation</h3>
             <ul className="list">
               {homeStudentLife.feeIncludes.map((item) => (
                 <li key={item}>{item}</li>

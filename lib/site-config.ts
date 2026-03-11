@@ -22,6 +22,26 @@ const IS_VERCEL = process.env.VERCEL === "1";
 const FIREBASE_KEY = "siteConfig";
 const DATA_DIR = path.join(process.cwd(), "data");
 const CONFIG_PATH = path.join(DATA_DIR, "site-config.json");
+const BLOG_CATEGORY_SET = new Set([
+  "App Development",
+  "Website Development",
+  "Social Media Marketing",
+  "Automation",
+  "Product Thinking",
+  "Digital Strategy",
+  "Startup Insights",
+  "Case Studies",
+]);
+const NEWS_CATEGORY_SET = new Set(["Company Updates", "Product Launches", "Project Milestones", "Announcements", "Insights"]);
+const PROJECT_CATEGORY_SET = new Set([
+  "Web Development",
+  "App Development",
+  "Branding & Marketing",
+  "Automation Systems",
+  "Product Design",
+  "Platform Development",
+]);
+const EVENT_CATEGORY_SET = new Set(["Announcements", "Project Milestones", "Launches", "Company Updates", "Internal Events"]);
 
 function sanitizeEvent(input: Partial<SiteEvent>, index: number): SiteEvent {
   const date = (input.date ?? "").toString().trim().slice(0, 40);
@@ -35,7 +55,9 @@ function sanitizeEvent(input: Partial<SiteEvent>, index: number): SiteEvent {
     id: input.id?.toString().trim() || `event-${index + 1}`,
     date,
     title,
-    category: (input.category ?? "Events").toString().trim().slice(0, 50),
+    category: EVENT_CATEGORY_SET.has((input.category ?? "").toString().trim())
+      ? (input.category ?? "").toString().trim().slice(0, 50)
+      : "Announcements",
     location: (input.location ?? "School Campus").toString().trim().slice(0, 120),
     shortDescription: (input.shortDescription ?? input.description ?? "").toString().trim().slice(0, 220),
     description: (input.description ?? "").toString().trim().slice(0, 1400),
@@ -66,7 +88,15 @@ function sanitizePost(input: Partial<SitePost>, index: number, type: "news" | "b
     slug: slugBase || `${type}-${index + 1}`,
     date: (input.date ?? "").toString().trim().slice(0, 40),
     title,
-    category: (input.category ?? (type === "news" ? "News" : "Blog")).toString().trim().slice(0, 40),
+    category: (
+      type === "news"
+        ? NEWS_CATEGORY_SET.has((input.category ?? "").toString().trim())
+        : BLOG_CATEGORY_SET.has((input.category ?? "").toString().trim())
+    )
+      ? (input.category ?? "").toString().trim().slice(0, 40)
+      : type === "news"
+        ? "Company Updates"
+        : "Product Thinking",
     image: (input.image ?? "/images/ai-campus-1.svg").toString().trim().slice(0, 200),
     summary: (input.summary ?? "").toString().trim().slice(0, 260),
     content: (input.content ?? "").toString().trim().slice(0, 5000),
@@ -100,12 +130,26 @@ function sanitizeProject(input: Partial<SiteProject>, index: number): SiteProjec
     .map((item) => item?.toString().trim().slice(0, 600))
     .filter(Boolean)
     .slice(0, 12);
+  const title = (input.title ?? "").toString().trim().slice(0, 160);
+  const slugSeed = input.slug ?? title ?? `project-${index + 1}`;
+  const slug = slugSeed
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
   const status = input.status === "draft" ? "draft" : "published";
   return {
     id: input.id?.toString().trim() || `project-${index + 1}`,
-    title: (input.title ?? "").toString().trim().slice(0, 160),
+    slug: slug || `project-${index + 1}`,
+    title,
+    category: PROJECT_CATEGORY_SET.has((input.category ?? "").toString().trim())
+      ? (input.category ?? "").toString().trim().slice(0, 60)
+      : "Platform Development",
     company: (input.company ?? "").toString().trim().slice(0, 160),
+    summary: (input.summary ?? input.description ?? "").toString().trim().slice(0, 260),
     description: (input.description ?? "").toString().trim().slice(0, 2400),
+    content: (input.content ?? input.description ?? "").toString().trim().slice(0, 5000),
     website: (input.website ?? "").toString().trim().slice(0, 400),
     coverImage: (input.coverImage ?? galleryImages[0] ?? "/images/ai-campus-1.svg").toString().trim().slice(0, 600),
     galleryImages,

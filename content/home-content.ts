@@ -16,25 +16,30 @@ export const homeHeroContent = {
     "To create a modern technology company that turns bold ideas into real products, scalable systems, and meaningful impact.",
   mission:
     "WowMindz exists to involve ideas, solve real problems, and evolve them into products, platforms, and ventures that create long-term value.",
-  badges: ["Product Thinking", "IT Solutions", "Startup Ideas", "Innovation Systems"],
+  badges: [
+    "App Development",
+    "Website Development",
+    "Social Media Marketing",
+    "Product Thinking & Automation",
+  ],
 };
 
 export const homeSpecialFeatures: TemplateCardItem[] = [
   {
-    title: "Custom Digital Solutions",
-    detail: "Custom digital solutions for modern needs.",
+    title: "App & Platform Development",
+    detail: "From product MVPs to operational platforms, we build applications structured for usability, speed, and scale.",
   },
   {
-    title: "Product-Focused Execution",
-    detail: "Product-focused execution with business thinking.",
+    title: "Website Systems That Convert",
+    detail: "Web experiences designed to communicate clearly, build trust, and support measurable business outcomes.",
   },
   {
-    title: "Built for Scale",
-    detail: "Systems built for scale, not just showcase.",
+    title: "Marketing with Execution Depth",
+    detail: "Social media and digital campaigns shaped with positioning, content clarity, and system-led consistency.",
   },
   {
-    title: "Future-Ready Foundation",
-    detail: "Flexible foundation for future ventures and experiments.",
+    title: "Automation for Real Problems",
+    detail: "We simplify repeated workflows, decision loops, and delivery bottlenecks through product thinking and automation.",
   },
 ];
 
@@ -82,5 +87,5 @@ export const homeStudentLife = {
     "The blog extends the WowMindz thinking style into practical, system-led writing.",
   sports: ["Tech insights", "Architecture notes", "Practical implementation patterns"],
   activities: ["Business observations", "Execution lessons", "Product and startup systems"],
-  feeIncludes: ["Civil and construction learnings", "Fitness discipline", "Long-term growth thinking"],
+  feeIncludes: ["Automation playbooks", "Product strategy notes", "Digital growth thinking"],
 };

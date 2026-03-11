@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo } from "react";
 import type { SiteProject } from "@/lib/site-config-schema";
 
@@ -28,20 +29,25 @@ export default function ProjectsShowcase({ projects }: ProjectsShowcaseProps) {
     <div className="projects-layout">
       <div className="projects-grid">
         {published.map((project) => (
-          <a
-            key={project.id}
-            className="projects-card"
-            href={project.website || "#"}
-            target={project.website ? "_blank" : undefined}
-            rel={project.website ? "noreferrer" : undefined}
-          >
+          <article key={project.id} className="projects-card">
             <img src={project.images[0]} alt={project.title} />
             <div className="projects-card-content">
+              <p className="article-category">{project.category || "Project"}</p>
               <strong>{project.title}</strong>
               <span>{project.company || "Company profile"}</span>
-              <p>{project.description || "Project overview"}</p>
+              <p>{project.summary || project.description || "Project overview"}</p>
+              <div className="projects-card-actions">
+                <Link href={`/projects/${project.slug}`} className="button secondary article-read-btn">
+                  View Details
+                </Link>
+                {project.website ? (
+                  <a href={project.website} target="_blank" rel="noreferrer" className="projects-inline-link">
+                    Visit Site
+                  </a>
+                ) : null}
+              </div>
             </div>
-          </a>
+          </article>
         ))}
       </div>
     </div>

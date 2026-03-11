@@ -54,12 +54,12 @@ export const templatePageHeroes: Partial<Record<ManagedPageKey, PageHeroContent>
     title: "Blog",
     eyebrow: "Insights",
     description:
-      "Practical writing on systems thinking, execution, technology, business, fitness discipline, and selected civil learnings.",
+      "Practical writing on app development, websites, automation, digital strategy, and product-led execution.",
   },
   news: {
     title: "News",
     eyebrow: "Updates",
-    description: "Latest announcements and updates.",
+    description: "Company updates, launches, milestones, and selected operational insights from WowMindz.",
   },
   curriculum: {
     title: "Curriculum",

@@ -32,7 +32,7 @@ export default function ArticleCarousel({
                 <p className="article-date">{formatDate(post.date)}</p>
                 <p className="article-category">{post.category}</p>
               </div>
-              <span className="button secondary article-read-btn">Open</span>
+              <span className="button secondary article-read-btn">View Details</span>
             </div>
             <p>{post.summary}</p>
           </Link>
