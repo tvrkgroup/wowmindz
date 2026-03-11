@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useSiteConfig } from "@/components/SiteConfigProvider";
-import { getPrimaryNavigation, isPageVisibleInTemplate } from "@/config/page-registry";
+import { getPrimaryNavigation } from "@/config/page-registry";
 
 function formatPhoneForHref(phone: string) {
   return phone.replace(/[^\d+]/g, "");
@@ -47,7 +47,6 @@ export default function Nav() {
   const nameLines = config.schoolNameShort
     ? splitHeaderName(config.schoolNameShort)
     : safeFallback;
-  const admissionsEnabled = isPageVisibleInTemplate(config, "admissions");
 
   useEffect(() => {
     setMounted(true);
@@ -144,11 +143,9 @@ export default function Nav() {
             ))}
           </nav>
           <div className="nav-actions">
-            {admissionsEnabled ? (
-              <Link href="/admissions" className="button">
-                Apply Now
-              </Link>
-            ) : null}
+            <Link href="/contact" className="button nav-contact-button">
+              Contact Us
+            </Link>
           </div>
           <button
             className={`nav-toggle ${open ? "is-open" : ""}`}
