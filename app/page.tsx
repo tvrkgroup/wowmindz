@@ -1,4 +1,5 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
 import { getSiteConfig } from "@/lib/site-config";
@@ -11,6 +12,10 @@ import {
   homeStudentLife,
 } from "@/content/home-content";
 import { getTemplateSiteIdentity } from "@/config/template-config";
+
+const HeroLogo3D = dynamic(() => import("@/components/HeroLogo3D"), {
+  ssr: false,
+});
 
 function formatPhoneForHref(phone: string) {
   return phone.replace(/[^\d+]/g, "");
@@ -57,6 +62,10 @@ export default async function Home() {
           </div>
 
           <aside className="home-hero-right card">
+            <div className="home-hero-brand-object">
+              <div className="home-hero-brand-aura" aria-hidden="true" />
+              <HeroLogo3D />
+            </div>
             <h3>WowMindz Technologies</h3>
             <p>Building at the intersection of technology, execution, and future-ready thinking.</p>
             <div className="divider" />

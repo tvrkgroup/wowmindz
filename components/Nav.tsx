@@ -144,7 +144,7 @@ export default function Nav() {
           </nav>
           <div className="nav-actions">
             <Link href="/contact" className="button nav-contact-button">
-              <span className="nav-contact-label">Contact Us</span>
+              Contact Us
             </Link>
           </div>
           <button
