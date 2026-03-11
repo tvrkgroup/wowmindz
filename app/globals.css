@@ -721,6 +721,7 @@ select:focus {
 }
 
 .mobile-menu-panel {
+  --mobile-menu-pad: clamp(18px, 4vw, 24px);
   position: absolute;
   right: clamp(14px, 4vw, 28px);
   left: clamp(14px, 4vw, 28px);
@@ -736,10 +737,10 @@ select:focus {
     radial-gradient(300px 180px at 100% 0, rgb(var(--brand-400-rgb) / 0.08), transparent 78%);
   border: 1px solid var(--glass-border);
   border-radius: 28px;
-  padding: 24px;
+  padding: var(--mobile-menu-pad);
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  gap: 24px;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
   box-shadow: 0 32px 72px rgb(2 6 23 / 0.46), 0 1px 0 rgb(255 255 255 / 0.12) inset;
   backdrop-filter: blur(20px) saturate(116%);
   transform: translateY(10px) scale(0.985);
@@ -760,15 +761,14 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 10px;
   border-bottom: 1px solid rgb(var(--brand-400-rgb) / 0.16);
   position: sticky;
   top: 0;
   z-index: 1015;
   background:
     linear-gradient(180deg, rgb(var(--surface-rgb) / 0.94), rgb(var(--surface-rgb) / 0.76));
-  margin: -24px -24px 0;
-  padding: 24px 24px 14px;
+  margin: calc(var(--mobile-menu-pad) * -1) calc(var(--mobile-menu-pad) * -1) 0;
+  padding: var(--mobile-menu-pad) var(--mobile-menu-pad) 14px;
   backdrop-filter: blur(18px);
 }
 
@@ -776,6 +776,7 @@ select:focus {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .mobile-menu-close {
@@ -813,7 +814,7 @@ select:focus {
 .mobile-menu-links {
   display: grid;
   align-content: start;
-  gap: 10px;
+  gap: 12px;
 }
 
 .mobile-menu-links a {
@@ -822,7 +823,7 @@ select:focus {
   background:
     linear-gradient(180deg, rgb(var(--surface-rgb) / 0.48), rgb(var(--surface-rgb) / 0.28)),
     linear-gradient(180deg, rgb(255 255 255 / 0.06), transparent 45%);
-  padding: 16px 18px;
+  padding: 16px 20px;
   color: #f3f4f6;
   font-size: clamp(1.18rem, 4vw, 1.45rem);
   font-weight: 700;
@@ -830,6 +831,7 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   box-shadow: 0 10px 24px rgb(2 6 23 / 0.18);
   opacity: 0;
   transform: translateY(10px);
@@ -847,6 +849,8 @@ select:focus {
   content: "";
   width: 9px;
   height: 9px;
+  flex: 0 0 auto;
+  margin-right: 2px;
   border-top: 2px solid rgb(var(--brand-400-rgb) / 0.72);
   border-right: 2px solid rgb(var(--brand-400-rgb) / 0.72);
   transform: rotate(45deg);
@@ -859,18 +863,12 @@ select:focus {
     linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 45%);
 }
 
-.mobile-menu-actions {
-  display: grid;
-  gap: 10px;
-  padding-top: 6px;
-}
-
 .mobile-menu-meta {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   align-items: center;
-  padding-top: 6px;
+  padding-top: 8px;
   border-top: 1px solid rgb(var(--brand-400-rgb) / 0.14);
 }
 
@@ -878,6 +876,15 @@ select:focus {
 .mobile-menu-meta a {
   color: #9ca3af;
   font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.mobile-menu-meta p {
+  margin: 0;
+}
+
+.mobile-menu-meta a {
+  text-align: right;
 }
 
 body.menu-open .site-shell > :not(.ambient-layer):not(.nav-shell) {
@@ -2276,13 +2283,12 @@ footer .divider {
     left: 12px;
     top: max(12px, env(safe-area-inset-top));
     bottom: max(12px, env(safe-area-inset-bottom));
-    padding: 20px;
+    --mobile-menu-pad: 20px;
     border-radius: 24px;
   }
 
   .mobile-menu-head {
-    margin: -20px -20px 0;
-    padding: 20px 20px 12px;
+    padding-bottom: 12px;
   }
 
   .container {

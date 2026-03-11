@@ -113,14 +113,6 @@ export default function Nav() {
             </Link>
           ))}
         </nav>
-        <div className="mobile-menu-actions">
-          <Link href="/projects" className="button" onClick={() => setOpen(false)}>
-            Explore Our Work
-          </Link>
-          <Link href="/contact" className="button secondary" onClick={() => setOpen(false)}>
-            Contact Us
-          </Link>
-        </div>
         <div className="mobile-menu-meta">
           <p>Involve. Solve. Evolve.</p>
           <a href={`tel:${formatPhoneForHref(config.contactPhone)}`}>{config.contactPhone}</a>
