@@ -685,8 +685,8 @@ select:focus {
   position: absolute;
   inset: 0;
   border: 0;
-  background: rgb(3 6 12 / 0.58);
-  backdrop-filter: blur(12px);
+  background: rgb(3 6 12 / 0.68);
+  backdrop-filter: blur(18px) saturate(112%);
 }
 
 .mobile-menu-panel {
@@ -694,19 +694,20 @@ select:focus {
   right: clamp(12px, 4vw, 28px);
   top: calc(100% + 12px);
   width: min(360px, calc(100vw - 24px));
-  max-height: min(78vh, 620px);
+  min-height: min(68vh, 560px);
+  max-height: min(84vh, 720px);
   overflow: auto;
   background:
-    linear-gradient(180deg, rgb(var(--surface-rgb) / 0.84), rgb(var(--surface-rgb) / 0.62)),
-    radial-gradient(220px 140px at 10% 0, rgb(255 255 255 / 0.12), transparent 72%);
+    linear-gradient(180deg, rgb(var(--surface-rgb) / 0.9), rgb(var(--surface-rgb) / 0.74)),
+    radial-gradient(260px 150px at 10% 0, rgb(255 255 255 / 0.14), transparent 72%);
   border: 1px solid var(--glass-border);
   border-radius: 22px;
-  padding: 20px;
+  padding: 22px;
   display: grid;
   grid-template-rows: auto 1fr;
-  gap: 18px;
-  box-shadow: 0 28px 60px rgb(2 6 23 / 0.46), 0 1px 0 rgb(255 255 255 / 0.14) inset;
-  backdrop-filter: blur(24px) saturate(124%);
+  gap: 20px;
+  box-shadow: 0 34px 70px rgb(2 6 23 / 0.52), 0 1px 0 rgb(255 255 255 / 0.16) inset;
+  backdrop-filter: blur(28px) saturate(128%);
   transform: translateY(-10px) scale(0.98);
   transform-origin: top right;
   opacity: 0;
@@ -2139,6 +2140,7 @@ footer .divider {
     left: 12px;
     width: auto;
     top: calc(100% + 10px);
+    min-height: min(66vh, 520px);
   }
 
   .container {
