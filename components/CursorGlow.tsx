@@ -31,6 +31,8 @@ export default function CursorGlow() {
       root.style.setProperty("--cursor-y", `${current.y}px`);
       root.style.setProperty("--ambient-x", `${ambientX}px`);
       root.style.setProperty("--ambient-y", `${ambientY}px`);
+      root.style.setProperty("--cursor-nx", ((current.x / window.innerWidth - 0.5) * 2).toFixed(4));
+      root.style.setProperty("--cursor-ny", ((current.y / window.innerHeight - 0.5) * 2).toFixed(4));
       root.style.setProperty("--cursor-speed", speed.toFixed(3));
       root.style.setProperty("--cursor-angle", `${angle}rad`);
       root.style.setProperty("--mesh-stretch-x", stretchX.toFixed(3));
@@ -64,6 +66,8 @@ export default function CursorGlow() {
     root.style.setProperty("--ambient-y", `${target.y}px`);
     root.style.setProperty("--cursor-intensity", isCoarse ? "0.14" : "0.2");
     root.style.setProperty("--cursor-press", "0");
+    root.style.setProperty("--cursor-nx", "0");
+    root.style.setProperty("--cursor-ny", "0");
     root.style.setProperty("--cursor-speed", "0");
     root.style.setProperty("--cursor-angle", "0rad");
     root.style.setProperty("--mesh-stretch-x", "1");
