@@ -1144,56 +1144,6 @@ body.menu-open .site-shell > :not(.ambient-layer):not(.nav-shell) {
   gap: 9px;
 }
 
-.home-hero-brand-object {
-  position: relative;
-  min-height: 320px;
-  margin-bottom: 8px;
-  border-radius: 22px;
-  overflow: hidden;
-  border: 1px solid rgb(var(--brand-400-rgb) / 0.14);
-  background:
-    radial-gradient(320px 180px at 50% 10%, rgb(var(--brand-400-rgb) / 0.12), transparent 72%),
-    radial-gradient(360px 240px at 50% 100%, rgb(var(--brand-700-rgb) / 0.18), transparent 76%),
-    linear-gradient(180deg, rgb(var(--surface-rgb) / 0.4), rgb(var(--surface-rgb) / 0.18));
-  box-shadow: 0 22px 42px rgb(2 6 23 / 0.24), 0 1px 0 rgb(255 255 255 / 0.08) inset;
-}
-
-.home-hero-brand-object::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(rgb(var(--brand-400-rgb) / 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(var(--brand-400-rgb) / 0.05) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: radial-gradient(80% 60% at 50% 44%, black 42%, transparent 100%);
-  opacity: 0.32;
-}
-
-.home-hero-brand-aura {
-  position: absolute;
-  inset: 12% 10% 10%;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 50%, rgb(var(--brand-400-rgb) / 0.22), transparent 52%),
-    radial-gradient(circle at 50% 60%, rgb(var(--highlight-rgb) / 0.1), transparent 68%);
-  filter: blur(26px);
-  opacity: 0.9;
-  pointer-events: none;
-}
-
-.hero-logo-stage {
-  position: absolute;
-  inset: 0;
-}
-
-.hero-logo-stage canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
-}
-
 .home-stats {
   margin-top: 8px;
   display: grid;
@@ -2438,10 +2388,6 @@ footer .divider {
     grid-template-columns: 1fr;
   }
 
-  .home-hero-brand-object {
-    min-height: 280px;
-  }
-
   .footer-bottom,
   .admin-panel-head {
     align-items: flex-start;
@@ -2486,10 +2432,6 @@ footer .divider {
     padding-bottom: 12px;
   }
 
-  .home-hero-brand-object {
-    min-height: 240px;
-    border-radius: 18px;
-  }
 
   .container {
     width: min(1160px, 94vw);
