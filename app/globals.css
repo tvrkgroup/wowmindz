@@ -761,7 +761,7 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 88px;
+  min-height: 84px;
   border-bottom: 1px solid rgb(var(--brand-400-rgb) / 0.16);
   position: sticky;
   top: 0;
@@ -769,7 +769,7 @@ select:focus {
   background:
     linear-gradient(180deg, rgb(var(--surface-rgb) / 0.94), rgb(var(--surface-rgb) / 0.76));
   margin: calc(var(--mobile-menu-pad) * -1) calc(var(--mobile-menu-pad) * -1) 0;
-  padding: calc(var(--mobile-menu-pad) - 2px) var(--mobile-menu-pad) 16px;
+  padding: calc(var(--mobile-menu-pad) - 5px) var(--mobile-menu-pad) 14px;
   backdrop-filter: blur(18px);
 }
 
@@ -778,6 +778,7 @@ select:focus {
   align-items: center;
   gap: 12px;
   min-width: 0;
+  transform: translateY(-2px);
 }
 
 .mobile-menu-close {
@@ -815,7 +816,7 @@ select:focus {
 .mobile-menu-links {
   display: grid;
   align-content: start;
-  padding-top: 18px;
+  padding-top: 20px;
   gap: 10px;
 }
 
@@ -2291,8 +2292,8 @@ footer .divider {
   }
 
   .mobile-menu-head {
-    min-height: 84px;
-    padding-bottom: 14px;
+    min-height: 80px;
+    padding-bottom: 12px;
   }
 
   .container {
