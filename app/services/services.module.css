@@ -188,6 +188,9 @@
 }
 .sectionHeading .kicker {
   margin: 0;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  letter-spacing: .06em;
+  line-height: 1.5;
 }
 .status,
 .upcomingStatus {

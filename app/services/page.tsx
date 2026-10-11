@@ -97,6 +97,8 @@ export default async function ServicesPage() {
   ];
   const otherWork = published.filter(
     (project) =>
+      hostOf(project.website) !== "wowmyspace.com" &&
+      !/wowmyspace/i.test(`${project.title} ${project.slug}`) &&
       !featured.some((item) => item.domain === hostOf(project.website)),
   );
 
@@ -219,55 +221,6 @@ export default async function ServicesPage() {
         </section>
 
         <section
-          id="learning"
-          className={`container ${styles.serviceSection}`}
-          aria-labelledby="lms-title"
-        >
-          <div className={styles.sectionHeading}>
-            <p className={styles.kicker}>02 / Learning management systems</p>
-            <span className={styles.status}>Live products</span>
-          </div>
-          <div className={styles.sectionIntro}>
-            <h2 id="lms-title">
-              Two products.
-              <br />
-              One learning ecosystem.
-            </h2>
-            <p>
-              Our LMS brings QuizLexa and CourseLexa together under one roof, at
-              lms.wowmindz.com.
-            </p>
-          </div>
-          <div className={styles.products}>
-            {products.map((product) => (
-              <article key={product.name} className={styles.product}>
-                <div className={styles.productTop}>
-                  <span className={styles.productMark} aria-hidden="true">
-                    {product.mark}
-                    <i />
-                  </span>
-                  <span className={styles.productType}>{product.kind}</span>
-                </div>
-                <h3>{product.name}</h3>
-                <p className={styles.productTagline}>{product.label}</p>
-                <p className={styles.productDescription}>
-                  {product.description}
-                </p>
-                <a
-                  href="https://lms.wowmindz.com"
-                  className={styles.productLink}
-                >
-                  Explore {product.name} <Arrow diagonal />
-                </a>
-              </article>
-            ))}
-          </div>
-          <p className={styles.productNote}>
-            Both products are available through our shared LMS portal.
-          </p>
-        </section>
-
-        <section
           id="selected-work"
           className={`container ${styles.serviceSection}`}
           aria-labelledby="work-title"
@@ -336,6 +289,55 @@ export default async function ServicesPage() {
           <p className={styles.productNote}>
             And more. Have something in mind?{" "}
             <Link href="/contact">Let&apos;s talk about it.</Link>
+          </p>
+        </section>
+
+        <section
+          id="learning"
+          className={`container ${styles.serviceSection}`}
+          aria-labelledby="lms-title"
+        >
+          <div className={styles.sectionHeading}>
+            <p className={styles.kicker}>02 / Learning management systems</p>
+            <span className={styles.status}>Live products</span>
+          </div>
+          <div className={styles.sectionIntro}>
+            <h2 id="lms-title">
+              Two products.
+              <br />
+              One learning ecosystem.
+            </h2>
+            <p>
+              Our LMS brings QuizLexa and CourseLexa together under one roof, at
+              lms.wowmindz.com.
+            </p>
+          </div>
+          <div className={styles.products}>
+            {products.map((product) => (
+              <article key={product.name} className={styles.product}>
+                <div className={styles.productTop}>
+                  <span className={styles.productMark} aria-hidden="true">
+                    {product.mark}
+                    <i />
+                  </span>
+                  <span className={styles.productType}>{product.kind}</span>
+                </div>
+                <h3>{product.name}</h3>
+                <p className={styles.productTagline}>{product.label}</p>
+                <p className={styles.productDescription}>
+                  {product.description}
+                </p>
+                <a
+                  href="https://lms.wowmindz.com"
+                  className={styles.productLink}
+                >
+                  Explore {product.name} <Arrow diagonal />
+                </a>
+              </article>
+            ))}
+          </div>
+          <p className={styles.productNote}>
+            Both products are available through our shared LMS portal.
           </p>
         </section>
 
