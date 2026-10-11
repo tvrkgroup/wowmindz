@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useSiteConfig } from "@/components/SiteConfigProvider";
 import { getPrimaryNavigation } from "@/config/page-registry";
@@ -16,8 +16,8 @@ function splitHeaderName(name: string) {
   const words = cleaned.split(" ").filter(Boolean);
   if (words.length <= 2) {
     return {
-      lineOne: words.join(" ") || "WowMindz",
-      lineTwo: "Technologies",
+      lineOne: words[0] || "WowMindz",
+      lineTwo: words[1] || "Technologies",
     };
   }
 
@@ -41,6 +41,7 @@ function isActiveRoute(pathname: string, href: string) {
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const panelRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const config = useSiteConfig();
   const safeLinks = getPrimaryNavigation(config);
@@ -53,11 +54,40 @@ export default function Nav() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    document.body.classList.toggle("menu-open", open);
+    if (!open) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    const shell = document.querySelector<HTMLElement>(".site-shell");
+    const wasInert = shell?.inert ?? false;
+    document.body.style.overflow = "hidden";
+    document.body.classList.add("menu-open");
+    if (shell) shell.inert = true;
+    const focusFrame = requestAnimationFrame(() => {
+      panelRef.current?.querySelector<HTMLButtonElement>(".mobile-menu-close")?.focus({ preventScroll: true });
+    });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Tab") return;
+      const items = panelRef.current?.querySelectorAll<HTMLElement>("a[href], button:not(:disabled)");
+      if (!items?.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.body.style.overflow = "";
+      cancelAnimationFrame(focusFrame);
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
       document.body.classList.remove("menu-open");
+      if (shell) shell.inert = wasInert;
+      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
     };
   }, [open]);
 
@@ -66,14 +96,10 @@ export default function Nav() {
   }, [pathname]);
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    const desktop = window.matchMedia("(min-width: 861px)");
+    const onChange = () => { if (desktop.matches) setOpen(false); };
+    desktop.addEventListener("change", onChange);
+    return () => desktop.removeEventListener("change", onChange);
   }, []);
 
   const mobileMenu = (
@@ -83,9 +109,9 @@ export default function Nav() {
         className="mobile-menu-backdrop"
         aria-label="Close mobile menu"
         onClick={() => setOpen(false)}
-        tabIndex={open ? 0 : -1}
+        tabIndex={-1}
       />
-      <aside className="mobile-menu-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+      <aside ref={panelRef} className="mobile-menu-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
         <div className="mobile-menu-head">
           <div className="mobile-menu-brand">
             <img className="logo-image" src={config.logoPath || "/logo.png"} alt={`${config.schoolName} logo`} />
@@ -104,6 +130,7 @@ export default function Nav() {
             <Link
               key={link.key}
               href={link.href}
+              aria-current={isActiveRoute(pathname, link.href) ? "page" : undefined}
               className={isActiveRoute(pathname, link.href) ? "is-active" : ""}
               style={{ ["--item-index" as string]: String(safeLinks.findIndex((item) => item.key === link.key)) }}
               onClick={() => setOpen(false)}
@@ -131,11 +158,12 @@ export default function Nav() {
               <span>{nameLines.lineTwo}</span>
             </span>
           </Link>
-          <nav className="nav-links">
+          <nav className="nav-links" aria-label="Main navigation">
             {safeLinks.map((link) => (
               <Link
                 key={link.key}
                 href={link.href}
+                aria-current={isActiveRoute(pathname, link.href) ? "page" : undefined}
                 className={isActiveRoute(pathname, link.href) ? "is-active" : ""}
               >
                 {link.label}

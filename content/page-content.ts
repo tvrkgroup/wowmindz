@@ -14,11 +14,11 @@ export const templatePageHeroes: Partial<Record<ManagedPageKey, PageHeroContent>
     eyebrow: "Who We Are",
     description:
       "WowMindz is a modern technology studio focused on building digital systems, product ideas, and scalable solutions for the future.",
-    ctaLabel: "View Projects",
-    ctaHref: "/projects",
+    ctaLabel: "Explore Services",
+    ctaHref: "/services",
   },
   academics: {
-    title: "Projects",
+    title: "Services",
     eyebrow: "What We Build",
     description:
       "We design and ship product-focused digital solutions, scalable systems, and innovation-led initiatives.",

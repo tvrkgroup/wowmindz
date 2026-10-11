@@ -5,6 +5,8 @@ import { useEffect } from "react";
 export default function CursorGlow() {
   useEffect(() => {
     const root = document.documentElement;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse)");
+    if (motion.matches) return;
     const isCoarse = window.matchMedia("(pointer: coarse)").matches;
     let animationFrame = 0;
     let decayTimer: ReturnType<typeof setTimeout> | null = null;
@@ -39,12 +41,17 @@ export default function CursorGlow() {
       root.style.setProperty("--mesh-stretch-y", stretchY.toFixed(3));
       last.x = target.x;
       last.y = target.y;
-      animationFrame = window.requestAnimationFrame(updateVariables);
+      animationFrame = 0;
+      if (!document.hidden && !motion.matches && Math.hypot(target.x - current.x, target.y - current.y) > 0.1) {
+        animationFrame = window.requestAnimationFrame(updateVariables);
+      }
     };
 
     const onMouseMove = (event: MouseEvent) => {
+      if (motion.matches || document.hidden) return;
       target.x = event.clientX;
       target.y = event.clientY;
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(updateVariables);
       root.style.setProperty("--cursor-intensity", isCoarse ? "0.16" : "0.24");
       if (decayTimer) clearTimeout(decayTimer);
       decayTimer = setTimeout(() => {

@@ -47,7 +47,7 @@ export default async function Home() {
               ))}
             </div>
             <div className="home-actions">
-              <Link href="/projects" className="button">
+              <Link href="/services" className="button">
                 Explore Our Work
               </Link>
               <Link href="/contact" className="button secondary">

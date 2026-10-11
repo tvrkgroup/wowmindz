@@ -18,7 +18,7 @@ import CustomSelect from "@/components/CustomSelect";
 const PAGE_LABELS: Record<ManagedPageKey, string> = {
   home: "Home",
   about: "About",
-  academics: "Projects",
+  academics: "Services",
   admissions: "Admissions",
   campus: "Campus",
   activities: "Activities",
@@ -255,7 +255,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
     { id: "admin-events", label: "Events" },
     { id: "admin-news", label: "News" },
     { id: "admin-blog", label: "Blog" },
-    { id: "admin-projects", label: "Projects" },
+    { id: "admin-projects", label: "Featured Work" },
     { id: "admin-files", label: "Site Files" },
     { id: "admin-inquiries", label: "Inquiries" },
   ] as const;
@@ -1479,14 +1479,14 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
               id="admin-projects"
             >
               <div className="admin-section-head">
-                <h3>Projects Settings</h3>
+                <h3>Services: Featured Work</h3>
                 <button type="button" className="button secondary" onClick={addProject}>
                   Add Project
                 </button>
               </div>
               <p className="admin-help">
-                Add projects with company details, project link, and gallery images. Click each project to edit full
-                details.
+                Published projects appear in Selected Work on the Services page. Add company details, a website
+                link, and gallery images. Click each project to edit full details.
               </p>
               <div className="admin-article-list">
                 {(config.projects || []).map((project) => (
