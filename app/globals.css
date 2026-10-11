@@ -45,13 +45,31 @@ html,
 body {
   min-height: 100%;
   overflow-x: hidden;
-  overscroll-behavior-y: auto;
+  overscroll-behavior-y: none;
 }
 
 html {
+  background: var(--paper, #0a0a0b);
+  scroll-behavior: smooth;
   scrollbar-gutter: stable;
   scroll-padding-top: 110px;
   color-scheme: dark;
+}
+
+/* Viewport emphasis never hides content or changes its position. */
+:where(.card, .info-card, .projects-card, .article-preview-card, [data-interactive-surface]) {
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+}
+
+:where(.card, .info-card, .projects-card, .article-preview-card, [data-interactive-surface])[data-in-view="true"] {
+  outline-color: rgb(var(--brand-400-rgb) / 0.12);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :where(.card, .info-card, .projects-card, .article-preview-card, [data-interactive-surface]):hover {
+    outline-color: rgb(var(--brand-400-rgb) / 0.26);
+  }
 }
 
 body {

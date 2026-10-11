@@ -6,6 +6,7 @@ import { getSiteConfig } from "@/lib/site-config";
 import { SiteConfigProvider } from "@/components/SiteConfigProvider";
 import SplashScreen from "@/components/SplashScreen";
 import CursorGlow from "@/components/CursorGlow";
+import SurfaceMotion from "@/components/SurfaceMotion";
 import { getTemplateSiteIdentity } from "@/config/template-config";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -88,6 +89,7 @@ async function RootWithConfig({
           <CursorGlow />
           <SplashScreen logoPath={config.logoPath || "/logo.png"} />
           <div className="site-shell">
+            <SurfaceMotion />
             <div className="ambient-layer ambient-layer-static" aria-hidden="true" />
             <div className="ambient-layer ambient-layer-mesh" aria-hidden="true" />
             <div className="ambient-layer ambient-layer-reactive" aria-hidden="true" />

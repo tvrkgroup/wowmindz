@@ -131,24 +131,27 @@ export default async function ServicesPage() {
               </a>
             </div>
           </div>
-          <div className={styles.brandObject} aria-hidden="true">
+          <nav className={styles.brandObject} aria-label="Service orbit">
             <div className={styles.orbit} />
             <div className={styles.orbitInner} />
             <span className={styles.objectLabel}>Ideas, connected.</span>
             <div className={styles.core}>
               <img src={config.logoPath || "/logo.png"} alt="" />
             </div>
-            <span className={`${styles.node} ${styles.nodeWeb}`}>
+            <a href="#websites" className={`${styles.node} ${styles.nodeWeb}`}>
               01 / Websites
-            </span>
-            <span className={`${styles.node} ${styles.nodeLearn}`}>
+            </a>
+            <a
+              href="#learning"
+              className={`${styles.node} ${styles.nodeLearn}`}
+            >
               02 / Learning
-            </span>
-            <span className={`${styles.node} ${styles.nodeSystems}`}>
+            </a>
+            <a href="#next" className={`${styles.node} ${styles.nodeSystems}`}>
               03 / Systems
-            </span>
+            </a>
             <span className={styles.objectFoot}>Involve. Solve. Evolve.</span>
-          </div>
+          </nav>
         </section>
 
         <nav
@@ -241,7 +244,11 @@ export default async function ServicesPage() {
                 (item) => hostOf(item.website) === work.domain,
               );
               return (
-                <article className={styles.workRow} key={work.domain}>
+                <article
+                  data-interactive-surface
+                  className={styles.workRow}
+                  key={work.domain}
+                >
                   <span className={styles.workNumber}>0{index + 1}</span>
                   <div className={styles.workName}>
                     <h3>{work.title}</h3>
@@ -270,7 +277,11 @@ export default async function ServicesPage() {
               );
             })}
             {otherWork.map((project) => (
-              <article className={styles.workRow} key={project.id}>
+              <article
+                data-interactive-surface
+                className={styles.workRow}
+                key={project.id}
+              >
                 <span className={styles.workNumber} aria-hidden="true">
                   +
                 </span>
@@ -314,7 +325,11 @@ export default async function ServicesPage() {
           </div>
           <div className={styles.products}>
             {products.map((product) => (
-              <article key={product.name} className={styles.product}>
+              <article
+                data-interactive-surface
+                key={product.name}
+                className={styles.product}
+              >
                 <div className={styles.productTop}>
                   <span className={styles.productMark} aria-hidden="true">
                     {product.mark}
@@ -366,7 +381,7 @@ export default async function ServicesPage() {
           </div>
           <div className={styles.roadmap}>
             {upcoming.map((item) => (
-              <article key={item.code}>
+              <article data-interactive-surface key={item.code}>
                 <span className={styles.systemCode}>{item.code}</span>
                 <h3>{item.name}</h3>
                 <p>{item.description}</p>

@@ -117,6 +117,21 @@
   color: var(--ink-700);
   background: rgb(var(--surface-rgb) / 0.92);
   box-shadow: 0 10px 24px #0003;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  z-index: 2;
+  transition:
+    background-color 240ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease;
+}
+.node:hover,
+.node:focus-visible {
+  background-color: rgb(var(--brand-600-rgb) / 0.18);
+  border-color: rgb(var(--brand-400-rgb) / 0.42);
+  box-shadow: 0 8px 24px rgb(var(--brand-600-rgb) / 0.09);
 }
 .nodeWeb {
   top: 16%;
@@ -129,6 +144,46 @@
 .nodeSystems {
   bottom: 13%;
   left: 8%;
+}
+
+/* Motion paths keep labels upright as they travel around the logo. */
+@supports (offset-path: ellipse(34% 32% at 50% 50%)) {
+  .node {
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: auto;
+    width: max-content;
+    offset-path: ellipse(34% 32% at 50% 50%);
+    offset-rotate: 0deg;
+    offset-anchor: center;
+    animation: orbitTravel 54s linear infinite;
+  }
+  .nodeWeb {
+    offset-distance: 0%;
+    animation-delay: 0s;
+  }
+  .nodeLearn {
+    offset-distance: 33.333%;
+    animation-delay: -18s;
+  }
+  .nodeSystems {
+    offset-distance: 66.667%;
+    animation-delay: -36s;
+  }
+  .brandObject:hover .node,
+  .brandObject:focus-within .node {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes orbitTravel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
 }
 .objectLabel,
 .objectFoot {
@@ -157,6 +212,9 @@
   padding: 24px 20px;
   font-size: 0.82rem;
   font-weight: 600;
+  transition:
+    background-color 240ms ease,
+    color 240ms ease;
 }
 .index a + a {
   border-left: 1px solid var(--line);
@@ -164,17 +222,36 @@
 .index a span {
   color: var(--brand-700);
   font-size: 0.65rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .index svg {
   margin-left: auto;
   width: 16px;
 }
-.index a:hover {
+.index a:hover,
+.index a:focus-visible {
   background: rgb(var(--brand-600-rgb) / 0.06);
 }
 .serviceSection {
   padding-block: clamp(60px, 7vw, 100px);
-  scroll-margin-top: 110px;
+  scroll-margin-top: 16px;
+}
+.serviceSection:target .sectionHeading .kicker {
+  text-shadow: 0 0 22px rgb(var(--brand-400-rgb) / 0.22);
+}
+.product[data-in-view="true"],
+.roadmap article[data-in-view="true"] {
+  border-color: rgb(var(--brand-400-rgb) / 0.24);
+}
+.roadmap article {
+  transition:
+    background-color 260ms ease,
+    outline-color 260ms ease;
+}
+.roadmap article:hover,
+.roadmap article:focus-within {
+  background-color: rgb(var(--brand-600-rgb) / 0.035);
 }
 .serviceSection + .serviceSection {
   border-top: 1px solid var(--line);
@@ -189,7 +266,7 @@
 .sectionHeading .kicker {
   margin: 0;
   font-size: clamp(1rem, 1.6vw, 1.3rem);
-  letter-spacing: .06em;
+  letter-spacing: 0.06em;
   line-height: 1.5;
 }
 .status,
@@ -613,6 +690,9 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .node {
+    animation: none;
+  }
   .core {
     animation: none;
   }
