@@ -329,6 +329,9 @@ export default async function ServicesPage() {
                 </p>
                 <a
                   href="https://lms.wowmindz.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Explore ${product.name} (opens in a new tab)`}
                   className={styles.productLink}
                 >
                   Explore {product.name} <Arrow diagonal />
