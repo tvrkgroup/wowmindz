@@ -27,6 +27,13 @@ export default function AdminLogin() {
       return;
     }
 
+    // The public domain currently embeds this app in a forwarding frame.
+    // Sessions must continue in the app's own secure top-level context.
+    if (window.top && window.top !== window.self) {
+      window.top.location.href = window.location.href;
+      return;
+    }
+
     window.location.reload();
   }
 
