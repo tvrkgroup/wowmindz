@@ -44,8 +44,8 @@
 html,
 body {
   min-height: 100%;
-  overflow-x: hidden;
-  overscroll-behavior-y: none;
+  overflow-x: clip;
+  overscroll-behavior-y: auto;
 }
 
 html {
@@ -99,7 +99,7 @@ img {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  overflow-x: clip;
   background:
     linear-gradient(180deg, #05080f 0%, #080c14 45%, #05080f 100%);
 }
