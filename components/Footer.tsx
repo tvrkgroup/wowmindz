@@ -72,6 +72,7 @@ export default async function Footer() {
         <div className="divider" />
         <div className="footer-bottom">
           <span>{templateFooterHours.copyright || `${config.schoolName} © 2026`}</span>
+          <Link href="/workplace-policy">Workplace Policy</Link>
           <span>
             Designed and developed by{" "}
             <a href="https://wowmindz.com" target="_blank" rel="noreferrer">
