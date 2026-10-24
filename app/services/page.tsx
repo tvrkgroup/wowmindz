@@ -9,7 +9,7 @@ import styles from "./services.module.css";
 export const metadata: Metadata = {
   title: "Services & Products | WowMindz Technologies",
   description:
-    "Website development, QuizLexa and CourseLexa learning platforms, and upcoming business management systems from WowMindz.",
+    "Website development and LexaMent, the modular management platform from WowMindz. Explore EdLexa today, with MedLexa and BldLexa coming soon.",
 };
 
 const products = [
@@ -17,38 +17,34 @@ const products = [
     name: "QuizLexa",
     label: "Assess. Understand. Improve.",
     description:
-      "A dedicated space for quizzes and assessments, within the WowMindz learning ecosystem.",
+      "Manage MCQ tests, mock tests, question banks, reports and test selling, with assessment security settings and certificates for eligible assessments.",
     kind: "Assessment platform",
     mark: "Q",
+    href: "https://lms.wowmindz.com/quizlexa",
   },
   {
     name: "CourseLexa",
     label: "Teach. Learn. Move forward.",
     description:
-      "A home for courses and structured learning, within the same connected LMS ecosystem.",
+      "Create courses, deliver lessons and manage learner access, progress and branding, with certificates for eligible courses.",
     kind: "Course platform",
     mark: "C",
+    href: "https://lms.wowmindz.com/courselexa",
   },
 ];
 
 const upcoming = [
   {
-    code: "HMS",
-    name: "Hospital Management",
-    description:
-      "Connected systems for healthcare operations and administration.",
+    code: "MedLexa",
+    name: "Healthcare management",
+    description: "A future healthcare-management division under LexaMent. Coming soon; early-access enquiries are open.",
+    href: "https://lms.wowmindz.com/medlexa",
   },
   {
-    code: "CMS",
-    name: "Construction Management",
-    description:
-      "A clearer view of construction projects, resources, and progress.",
-  },
-  {
-    code: "ERP",
-    name: "Enterprise Resource Planning",
-    description:
-      "Business processes and resources, brought into one connected system.",
+    code: "BldLexa",
+    name: "Construction & property management",
+    description: "A future construction and property-management division under LexaMent. Coming soon; early-access enquiries are open.",
+    href: "https://lms.wowmindz.com/bldlexa",
   },
 ];
 
@@ -90,9 +86,9 @@ export default async function ServicesPage() {
     { title: "Prathipa", domain: "prathipa.com", type: "Website development" },
     { title: "KTVR", domain: "ktvr.in", type: "Website development" },
     {
-      title: "WowMindz LMS",
+      title: "LexaMent",
       domain: "lms.wowmindz.com",
-      type: "QuizLexa + CourseLexa",
+      type: "Modular management platform · EdLexa available now",
     },
   ];
   const otherWork = published.filter(
@@ -142,10 +138,10 @@ export default async function ServicesPage() {
               01 / Websites
             </a>
             <a
-              href="#learning"
+              href="#management"
               className={`${styles.node} ${styles.nodeLearn}`}
             >
-              02 / Learning
+              02 / LexaMent
             </a>
             <a href="#next" className={`${styles.node} ${styles.nodeSystems}`}>
               03 / Systems
@@ -161,8 +157,8 @@ export default async function ServicesPage() {
           <a href="#websites">
             <span>01</span> Website Development <Arrow />
           </a>
-          <a href="#learning">
-            <span>02</span> Learning Platforms <Arrow />
+          <a href="#management">
+            <span>02</span> Management Platforms <Arrow />
           </a>
           <a href="#next">
             <span>03</span> What&apos;s Next <Arrow />
@@ -304,24 +300,40 @@ export default async function ServicesPage() {
         </section>
 
         <section
-          id="learning"
+          id="management"
           className={`container ${styles.serviceSection}`}
           aria-labelledby="lms-title"
         >
           <div className={styles.sectionHeading}>
-            <p className={styles.kicker}>02 / Learning management systems</p>
-            <span className={styles.status}>Live products</span>
+            <p className={styles.kicker}>02 / LexaMent management platform</p>
+            <span className={styles.status}>EdLexa available now</span>
           </div>
           <div className={styles.sectionIntro}>
             <h2 id="lms-title">
-              Two products.
+              Focused divisions.
               <br />
-              One learning ecosystem.
+              One management platform.
             </h2>
             <p>
-              Our LMS brings QuizLexa and CourseLexa together under one roof, at
-              lms.wowmindz.com.
+              LexaMent is the modular management platform from WowMindz.
+              Start with EdLexa for education, learning and assessment. MedLexa
+              and BldLexa are coming soon.
             </p>
+          </div>
+          <span id="learning" aria-hidden="true" />
+          <div className={styles.platformIntro}>
+            <a href="https://lms.wowmindz.com/" className="button" target="_blank" rel="noopener noreferrer">
+              Explore LexaMent <Arrow diagonal />
+            </a>
+            <p className={styles.description}>Discover focused management divisions from WowMindz. Start with EdLexa for education, learning and assessment.</p>
+            <div className={styles.sectionHeading}>
+              <div>
+                <p className={styles.kicker}>LexaMent / Available now</p>
+                <h3>EdLexa</h3>
+              </div>
+              <a href="https://lms.wowmindz.com/edlexa" className={styles.textLink} target="_blank" rel="noopener noreferrer">Explore EdLexa <Arrow diagonal /></a>
+            </div>
+            <p className={styles.description}>Our education-management division brings CourseLexa and QuizLexa together, with shared assistance from Lexa AI.</p>
           </div>
           <div className={styles.products}>
             {products.map((product) => (
@@ -343,7 +355,7 @@ export default async function ServicesPage() {
                   {product.description}
                 </p>
                 <a
-                  href="https://lms.wowmindz.com"
+                  href={product.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Explore ${product.name} (opens in a new tab)`}
@@ -355,8 +367,17 @@ export default async function ServicesPage() {
             ))}
           </div>
           <p className={styles.productNote}>
-            Both products are available through our shared LMS portal.
+            Certificates are part of EdLexa and apply to eligible CourseLexa courses and QuizLexa assessments.
           </p>
+          <aside className={styles.platformIntro} aria-label="EdLexa shared assistance">
+            <h3>Lexa AI, shared across EdLexa</h3>
+            <p className={styles.description}>Free guidance and help are available now. Advanced task-based AI tools are planned, with transparent credit usage when introduced.</p>
+            <div className={styles.actions}>
+              <a className={styles.textLink} href="https://lms.wowmindz.com/sign-in" target="_blank" rel="noopener noreferrer">Open workspace <Arrow diagonal /></a>
+              <a className={styles.textLink} href="https://lms.wowmindz.com/academies" target="_blank" rel="noopener noreferrer">Find an academy <Arrow diagonal /></a>
+              <a className={styles.textLink} href="https://lms.wowmindz.com/help" target="_blank" rel="noopener noreferrer">Get help <Arrow diagonal /></a>
+            </div>
+          </aside>
         </section>
 
         <section
@@ -375,8 +396,7 @@ export default async function ServicesPage() {
               Real-world possibilities.
             </h2>
             <p>
-              Our next chapter focuses on the tools that help organisations work
-              better. These systems are upcoming and aren&apos;t available yet.
+              The next LexaMent divisions will focus on healthcare and construction/property management. Both are coming soon and open for early-access enquiries only.
             </p>
           </div>
           <div className={styles.roadmap}>
@@ -385,10 +405,7 @@ export default async function ServicesPage() {
                 <span className={styles.systemCode}>{item.code}</span>
                 <h3>{item.name}</h3>
                 <p>{item.description}</p>
-                <span className={styles.roadmapLabel}>
-                  On the horizon{" "}
-                  <span aria-hidden="true">&middot;&middot;&middot;</span>
-                </span>
+                <a href={item.href} className={styles.roadmapLabel} target="_blank" rel="noopener noreferrer">Coming soon · Early access <Arrow diagonal /></a>
               </article>
             ))}
           </div>

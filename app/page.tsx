@@ -47,9 +47,9 @@ export default async function Home() {
               ))}
             </div>
             <div className="home-actions">
-              <Link href="/services" className="button">
-                Explore Our Work
-              </Link>
+              <a href="https://lms.wowmindz.com/" className="button">
+                Explore LexaMent
+              </a>
               <Link href="/contact" className="button secondary">
                 Contact Us
               </Link>
@@ -57,14 +57,14 @@ export default async function Home() {
           </div>
 
           <aside className="home-hero-right card">
-            <h3>WowMindz Technologies</h3>
-            <p>Building at the intersection of technology, execution, and future-ready thinking.</p>
+            <h3>LexaMent by WowMindz</h3>
+            <p>Discover focused management divisions from WowMindz. Start with EdLexa for education, learning and assessment.</p>
             <div className="divider" />
             <p>
-              From digital platforms to venture ideas, WowMindz is designed to explore, test, and build what matters
-              next.
+              EdLexa brings CourseLexa, QuizLexa and shared Lexa AI assistance together.
+              MedLexa and BldLexa are coming soon for healthcare and construction/property management.
             </p>
-            <p>Contact: {site.phone}</p>
+            <p><Link href="/services#management">Explore our management platform and divisions</Link></p>
             <div className="home-stats">
               <div>
                 <strong>Build</strong>

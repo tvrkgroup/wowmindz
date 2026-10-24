@@ -47,6 +47,9 @@ export default async function Footer() {
           <div>
             <h4>Quick Links</h4>
             <div className="divider" />
+            <p><a href="https://lms.wowmindz.com/">Explore LexaMent</a></p>
+            <p><a href="https://lms.wowmindz.com/edlexa">EdLexa</a></p>
+            <p><a href="https://lms.wowmindz.com/sign-in">Open workspace</a></p>
             {quickLinks.map((item) => (
               <p key={item.key}>
                 <Link href={item.href}>{item.label}</Link>

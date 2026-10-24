@@ -511,11 +511,20 @@
 }
 .roadmap {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   border: 1px solid var(--line);
   border-radius: 20px;
   overflow: hidden;
   background: rgb(var(--surface-rgb) / 0.3);
+}
+.platformIntro {
+  padding-block: 28px;
+}
+.platformIntro h3 {
+  font-size: clamp(1.4rem, 2.8vw, 2rem);
+}
+.platformIntro .description {
+  max-width: 70ch;
 }
 .roadmap article {
   padding: 32px;

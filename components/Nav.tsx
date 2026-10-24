@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useSiteConfig } from "@/components/SiteConfigProvider";
 import { getPrimaryNavigation } from "@/config/page-registry";
+import ProductNavigation from "@/components/ProductNavigation";
 
 function formatPhoneForHref(phone: string) {
   return phone.replace(/[^\d+]/g, "");
@@ -68,7 +69,7 @@ export default function Nav() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
       if (event.key !== "Tab") return;
-      const items = panelRef.current?.querySelectorAll<HTMLElement>("a[href], button:not(:disabled)");
+      const items = Array.from(panelRef.current?.querySelectorAll<HTMLElement>("a[href], button:not(:disabled), summary") || []).filter((item) => item.getClientRects().length > 0);
       if (!items?.length) return;
       const first = items[0];
       const last = items[items.length - 1];
@@ -126,6 +127,7 @@ export default function Nav() {
           </button>
         </div>
         <nav className="mobile-menu-links" aria-label="Mobile links">
+          <ProductNavigation onNavigate={() => setOpen(false)} />
           {safeLinks.map((link) => (
             <Link
               key={link.key}
@@ -159,6 +161,7 @@ export default function Nav() {
             </span>
           </Link>
           <nav className="nav-links" aria-label="Main navigation">
+            <ProductNavigation />
             {safeLinks.map((link) => (
               <Link
                 key={link.key}
